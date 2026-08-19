@@ -1,14 +1,22 @@
-import { useState } from 'react'
-import './App.css'
+import React from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import AppRoutes from './routes/AppRoutes';
+import './styles/globals.css';
+import { AuthProvider } from './context/AuthContext';
+import { TravelProvider } from './context/TravelContext';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '354228945620-gkh32809u182sksd.apps.googleusercontent.com';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-blue-600">
-        Tourism Traverl
-      </h1>
-    </div>
-  )
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <AuthProvider>
+        <TravelProvider>
+          <AppRoutes />
+        </TravelProvider>
+      </AuthProvider>
+    </GoogleOAuthProvider>
+  );
 }
 
-export default App
+export default App;
