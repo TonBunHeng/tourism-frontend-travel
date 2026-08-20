@@ -18,7 +18,8 @@ export const AuthProvider = ({ children }) => {
         try {
           const res = await authService.me();
           if (res?.data) {
-            setUser(res.data);
+            const userObj = res.data.user || res.data;
+            setUser(userObj);
           }
         } catch (err) {
           if (err?.status === 401) {
@@ -33,44 +34,48 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const res = await authService.login(credentials);
-    if (res?.data?.token && res?.data?.user) {
+    if (res?.data?.token && (res?.data?.user || res?.data)) {
       setToken(res.data.token);
-      setUser(res.data.user);
+      const userObj = res.data.user || res.data;
+      setUser(userObj);
       closeAuthModal();
-      return res.data.user;
+      return userObj;
     }
     throw new Error(res?.message || 'Login failed');
   };
 
   const register = async (formData) => {
     const res = await authService.register(formData);
-    if (res?.data?.token && res?.data?.user) {
+    if (res?.data?.token && (res?.data?.user || res?.data)) {
       setToken(res.data.token);
-      setUser(res.data.user);
+      const userObj = res.data.user || res.data;
+      setUser(userObj);
       closeAuthModal();
-      return res.data.user;
+      return userObj;
     }
     throw new Error(res?.message || 'Registration failed');
   };
 
   const googleLogin = async (data) => {
     const res = await authService.googleLogin(data);
-    if (res?.data?.token && res?.data?.user) {
+    if (res?.data?.token && (res?.data?.user || res?.data)) {
       setToken(res.data.token);
-      setUser(res.data.user);
+      const userObj = res.data.user || res.data;
+      setUser(userObj);
       closeAuthModal();
-      return res.data.user;
+      return userObj;
     }
     throw new Error(res?.message || 'Google login failed');
   };
 
   const facebookLogin = async (data) => {
     const res = await authService.facebookLogin(data);
-    if (res?.data?.token && res?.data?.user) {
+    if (res?.data?.token && (res?.data?.user || res?.data)) {
       setToken(res.data.token);
-      setUser(res.data.user);
+      const userObj = res.data.user || res.data;
+      setUser(userObj);
       closeAuthModal();
-      return res.data.user;
+      return userObj;
     }
     throw new Error(res?.message || 'Facebook login failed');
   };
@@ -84,8 +89,9 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (data) => {
     const res = await authService.updateProfile(data);
     if (res?.data) {
-      setUser(res.data);
-      return res.data;
+      const userObj = res.data.user || res.data;
+      setUser(userObj);
+      return userObj;
     }
     throw new Error(res?.message || 'Profile update failed');
   };
@@ -95,10 +101,21 @@ export const AuthProvider = ({ children }) => {
     formData.append('avatar', file);
     const res = await authService.uploadAvatar(formData);
     if (res?.data) {
-      setUser(res.data);
-      return res.data;
+      const userObj = res.data.user || res.data;
+      setUser(userObj);
+      return userObj;
     }
     throw new Error(res?.message || 'Avatar upload failed');
+  };
+
+  const deleteAvatar = async () => {
+    const res = await authService.deleteAvatar();
+    if (res?.data) {
+      const userObj = res.data.user || res.data;
+      setUser(userObj);
+      return userObj;
+    }
+    throw new Error(res?.message || 'Avatar deletion failed');
   };
 
   const openAuthModal = (mode = 'login') => {
@@ -123,6 +140,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         updateProfile,
         uploadAvatar,
+        deleteAvatar,
         authModal,
         openAuthModal,
         closeAuthModal,
@@ -140,3 +158,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export default AuthContext;

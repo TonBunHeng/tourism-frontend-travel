@@ -14,6 +14,7 @@ import Galleries from '../pages/galleries/Galleries';
 import Favorites from '../pages/favorites/Favorites';
 import Achievements from '../pages/achievements/Achievements';
 import Profile from '../pages/profiles/Profile';
+import Notifications from '../pages/notifications/Notifications';
 import DeletionRequests from '../pages/delete/DeletionRequests';
 import Settings from '../pages/settings/Settings';
 import Login from '../pages/auth/Login';
@@ -35,6 +36,7 @@ export default function AppRoutes() {
           <Route path="/wishlist" element={<Favorites />} />
           <Route path="/achievements" element={<Achievements />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/deletion-request" element={<DeletionRequests />} />
           <Route path="/delete" element={<DeletionRequests />} />
           <Route path="/settings" element={<Settings />} />

@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award } from 'lucide-react';
+import { ArrowRight, Award, Camera, Image as ImageIcon } from 'lucide-react';
 import { placeService } from '../../services/placeService';
 import { eventService } from '../../services/eventService';
+import { galleryService } from '../../services/galleryService';
 import { useTravel } from '../../context/TravelContext';
 import HomeHero from './HomeHero';
 import PlaceCard from '../../components/common/PlaceCard';
 import EventCard from '../../components/common/EventCard';
 import ProvinceCard from '../../components/common/ProvinceCard';
+import GalleryCard from '../../components/common/GalleryCard';
 import EventDetailsModal from '../events/EventDetailsModal';
+import MediaLightboxModal from '../../components/common/MediaLightboxModal';
 
 export default function Home() {
   const { provinces } = useTravel();
   const [featuredPlaces, setFeaturedPlaces] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [featuredGalleries, setFeaturedGalleries] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
   useEffect(() => {
     const loadHomeData = async () => {
       try {
-        const [placesRes, eventsRes] = await Promise.allSettled([
+        const [placesRes, eventsRes, galleryRes] = await Promise.allSettled([
           placeService.getPlaces({ per_page: 6, sort_by: 'popular' }),
           eventService.getEvents({ per_page: 3, status: 'Upcoming' }),
+          galleryService.getGalleries({ per_page: 3 })
         ]);
 
         if (placesRes.status === 'fulfilled' && placesRes.value?.data) {
@@ -32,6 +40,9 @@ export default function Home() {
         }
         if (eventsRes.status === 'fulfilled' && eventsRes.value?.data) {
           setUpcomingEvents(eventsRes.value.data);
+        }
+        if (galleryRes.status === 'fulfilled' && galleryRes.value?.data) {
+          setFeaturedGalleries(galleryRes.value.data.slice(0, 3));
         }
       } catch (err) {
         console.error('Failed to load homepage data', err);
@@ -46,6 +57,21 @@ export default function Home() {
   const handleViewEventDetails = (event) => {
     setSelectedEvent(event);
     setIsEventModalOpen(true);
+  };
+
+  const handlePreviewGallery = (item) => {
+    setSelectedMedia(item);
+    setIsLightboxOpen(true);
+  };
+
+  const handleNavigateLightbox = (direction) => {
+    if (!selectedMedia) return;
+    const currentIndex = featuredGalleries.findIndex((g) => g.id === selectedMedia.id);
+    if (direction === 'next' && currentIndex < featuredGalleries.length - 1) {
+      setSelectedMedia(featuredGalleries[currentIndex + 1]);
+    } else if (direction === 'prev' && currentIndex > 0) {
+      setSelectedMedia(featuredGalleries[currentIndex - 1]);
+    }
   };
 
   return (
@@ -80,6 +106,46 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {featuredPlaces.map((place) => (
               <PlaceCard key={place.id} place={place} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Photo & Media Gallery */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-2 mb-4 pb-2 border-b border-gray-200 dark:border-zinc-800">
+          <div>
+            <div className="flex items-center gap-1.5">
+              <Camera className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                Photo & Media Gallery
+              </h2>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-zinc-400">Captivating photography of Angkor and Cambodian landscapes</p>
+          </div>
+          <Link
+            to="/gallery"
+            className="flex items-center gap-1 text-xs font-semibold text-[#003E83] dark:text-[#60a5fa] hover:underline"
+          >
+            Explore Gallery
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-80 bg-gray-200 dark:bg-zinc-800 rounded-xl"></div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredGalleries.map((item) => (
+              <GalleryCard
+                key={item.id}
+                item={item}
+                onPreview={handlePreviewGallery}
+              />
             ))}
           </div>
         )}
@@ -164,6 +230,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Event Details Modal */}
       <EventDetailsModal
         isOpen={isEventModalOpen}
         event={selectedEvent}
@@ -172,6 +239,19 @@ export default function Home() {
           setSelectedEvent(null);
         }}
       />
+
+      {/* Media Lightbox Modal */}
+      <MediaLightboxModal
+        isOpen={isLightboxOpen}
+        item={selectedMedia}
+        items={featuredGalleries}
+        onClose={() => {
+          setIsLightboxOpen(false);
+          setSelectedMedia(null);
+        }}
+        onNavigate={handleNavigateLightbox}
+      />
     </div>
   );
 }
+

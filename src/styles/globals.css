@@ -201,3 +201,120 @@ input[type="date"][value=""]:not(:focus)::-webkit-datetime-edit,
 input[type="date"]:invalid:not(:focus)::-webkit-datetime-edit {
   color: transparent;
 }
+/* Alert Modal Icon Animations */
+@keyframes alertIconPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-15deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.2) rotate(6deg);
+  }
+  80% {
+    transform: scale(0.92) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes alertIconShake {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  15%, 45%, 75% {
+    transform: translateX(-4px) rotate(-5deg);
+  }
+  30%, 60%, 90% {
+    transform: translateX(4px) rotate(5deg);
+  }
+}
+
+@keyframes alertIconWiggle {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-12deg) scale(1.1);
+  }
+  50% {
+    transform: rotate(12deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(-6deg) scale(1.05);
+  }
+}
+
+@keyframes alertPulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 12px rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes alertPulseDanger {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes alertPulseWarning {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 12px rgba(245, 158, 11, 0);
+  }
+}
+
+@keyframes alertPulseInfo {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.45);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
+  }
+}
+
+.animate-alert-pop {
+  animation: alertIconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-alert-shake {
+  animation: alertIconShake 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+.animate-alert-wiggle {
+  animation: alertIconWiggle 0.6s ease-in-out forwards;
+}
+
+.animate-pulse-glow-success {
+  animation: alertPulseGlow 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.animate-pulse-glow-danger {
+  animation: alertPulseDanger 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.animate-pulse-glow-warning {
+  animation: alertPulseWarning 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.animate-pulse-glow-info {
+  animation: alertPulseInfo 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}

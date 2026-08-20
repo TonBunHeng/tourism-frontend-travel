@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { X, Star, AlertCircle } from 'lucide-react';
 import { reviewService } from '../../services/reviewService';
 import { useTravel } from '../../context/TravelContext';
+import { useAlert } from '../../context/AlertContext';
 
 export default function ReviewModal({ isOpen, onClose, place, onReviewSubmitted }) {
   const { showToast } = useTravel();
+  const { showSuccess, showError } = useAlert();
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [title, setTitle] = useState('');
@@ -34,13 +36,14 @@ export default function ReviewModal({ isOpen, onClose, place, onReviewSubmitted 
         visit_date: visitDate || undefined,
       });
 
-      showToast('Thank you! Your review has been submitted.', 'success');
       setTitle('');
       setComment('');
       if (onReviewSubmitted) onReviewSubmitted();
       onClose();
+      showSuccess(`Thank you for reviewing "${place.name}"! Your feedback helps fellow travelers.`, 'Review Submitted');
     } catch (err) {
       setError(err.message || 'Failed to submit review. Try again.');
+      showError(err.message || 'Failed to submit review.', 'Review Failed');
     } finally {
       setLoading(false);
     }
@@ -48,16 +51,16 @@ export default function ReviewModal({ isOpen, onClose, place, onReviewSubmitted 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md fade-in"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-800 overflow-hidden zoom-in p-6 space-y-4 transition-colors"
+        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-2xl border border-gray-200 dark:border-zinc-800 overflow-hidden zoom-in p-6 space-y-4 transition-colors"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1 rounded-md text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-white transition-colors"
+          className="absolute top-4 right-4 p-1 rounded-md text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-white transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -137,14 +140,14 @@ export default function ReviewModal({ isOpen, onClose, place, onReviewSubmitted 
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-1.5 rounded-md border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 font-semibold"
+              className="px-3.5 py-1.5 rounded-md border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 font-semibold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-1.5 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white font-semibold rounded-md shadow-xs transition-colors"
+              className="px-4 py-1.5 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white font-semibold rounded-md shadow-xs transition-colors cursor-pointer"
             >
               {loading ? 'Submitting...' : 'Post Review'}
             </button>

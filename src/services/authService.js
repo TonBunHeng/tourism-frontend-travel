@@ -6,7 +6,8 @@ export const authService = {
     if (res.success && res.data?.token) {
       localStorage.setItem('auth_token', res.data.token);
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      const userObj = res.data.user || res.data;
+      localStorage.setItem('user', JSON.stringify(userObj));
       window.dispatchEvent(new Event('user-profile-updated'));
     }
     return res;
@@ -17,7 +18,8 @@ export const authService = {
     if (res.success && res.data?.token) {
       localStorage.setItem('auth_token', res.data.token);
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      const userObj = res.data.user || res.data;
+      localStorage.setItem('user', JSON.stringify(userObj));
       window.dispatchEvent(new Event('user-profile-updated'));
     }
     return res;
@@ -28,7 +30,8 @@ export const authService = {
     if (res.success && res.data?.token) {
       localStorage.setItem('auth_token', res.data.token);
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      const userObj = res.data.user || res.data;
+      localStorage.setItem('user', JSON.stringify(userObj));
       window.dispatchEvent(new Event('user-profile-updated'));
     }
     return res;
@@ -39,7 +42,8 @@ export const authService = {
     if (res.success && res.data?.token) {
       localStorage.setItem('auth_token', res.data.token);
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      const userObj = res.data.user || res.data;
+      localStorage.setItem('user', JSON.stringify(userObj));
       window.dispatchEvent(new Event('user-profile-updated'));
     }
     return res;
@@ -48,7 +52,8 @@ export const authService = {
   async me() {
     const res = await api.get('/auth/me');
     if (res.success && res.data) {
-      localStorage.setItem('user', JSON.stringify(res.data));
+      const userObj = res.data.user || res.data;
+      localStorage.setItem('user', JSON.stringify(userObj));
       window.dispatchEvent(new Event('user-profile-updated'));
     }
     return res;
@@ -57,7 +62,8 @@ export const authService = {
   async updateProfile(data) {
     const res = await api.put('/auth/profile', data);
     if (res.success && res.data) {
-      localStorage.setItem('user', JSON.stringify(res.data));
+      const userObj = res.data.user || res.data;
+      localStorage.setItem('user', JSON.stringify(userObj));
       window.dispatchEvent(new Event('user-profile-updated'));
     }
     return res;
@@ -72,7 +78,18 @@ export const authService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     if (res.success && res.data) {
-      localStorage.setItem('user', JSON.stringify(res.data));
+      const userObj = res.data.user || res.data;
+      localStorage.setItem('user', JSON.stringify(userObj));
+      window.dispatchEvent(new Event('user-profile-updated'));
+    }
+    return res;
+  },
+
+  async deleteAvatar() {
+    const res = await api.delete('/auth/avatar');
+    if (res.success && res.data) {
+      const userObj = res.data.user || res.data;
+      localStorage.setItem('user', JSON.stringify(userObj));
       window.dispatchEvent(new Event('user-profile-updated'));
     }
     return res;
