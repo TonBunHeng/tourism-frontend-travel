@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
@@ -19,6 +19,10 @@ export default function AuthModal() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
+
+  useEffect(() => {
+    setIsLogin(authModal.mode === 'login');
+  }, [authModal.mode, authModal.isOpen]);
 
   if (!authModal.isOpen) return null;
 

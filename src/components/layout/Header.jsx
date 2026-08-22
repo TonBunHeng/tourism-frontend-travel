@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Compass, 
@@ -21,8 +21,7 @@ import {
   Moon,
   Bell,
   CheckCheck,
-  ArrowRight,
-  Sparkle
+  ArrowRight
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
@@ -94,11 +93,19 @@ export default function Header() {
   }, [isAuthenticated]);
 
   useEffect(() => {
-    fetchTravelNotifications();
+    let isMounted = true;
+    const loadNotifs = async () => {
+      if (isMounted) {
+        await fetchTravelNotifications();
+      }
+    };
+    loadNotifs();
+
     const handleUpdate = () => fetchTravelNotifications();
     window.addEventListener('travel-notifications-updated', handleUpdate);
     const interval = setInterval(fetchTravelNotifications, 45000);
     return () => {
+      isMounted = false;
       window.removeEventListener('travel-notifications-updated', handleUpdate);
       clearInterval(interval);
     };
@@ -158,9 +165,12 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    setMenuOpen(false);
-    setDropdownOpen(false);
-    setNotifDropdownOpen(false);
+    const timer = setTimeout(() => {
+      setMenuOpen(false);
+      setDropdownOpen(false);
+      setNotifDropdownOpen(false);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   const handleMarkAllRead = async (e) => {
@@ -230,7 +240,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-1.5">
+          <nav className="hidden md:flex items-center gap-1 lg:gap-1.5 shrink-0">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const active = isLinkActive(link.path);
@@ -238,10 +248,10 @@ export default function Header() {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs lg:text-sm font-medium transition-all duration-150 ${
+                  className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-lg text-xs lg:text-sm font-medium transition-all duration-150 ${
                     active
-                      ? 'bg-blue-50 dark:bg-blue-950/50 text-[#003E83] dark:text-[#60a5fa] font-semibold shadow-xs'
-                      : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100/70 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-white'
+                      ? 'bg-blue-50/90 dark:bg-blue-950/60 text-[#003E83] dark:text-[#60a5fa] font-semibold shadow-2xs border border-blue-100/80 dark:border-blue-800/40'
+                      : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100/70 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-white border border-transparent'
                   }`}
                 >
                   <Icon className={`w-4 h-4 ${active ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-400'}`} />
@@ -251,14 +261,14 @@ export default function Header() {
             })}
           </nav>
 
-          {/* Search Bar (Desktop / Large Tablet) */}
-          <form onSubmit={handleSearchSubmit} className="hidden lg:flex items-center relative max-w-xs w-full">
+          {/* Search Bar (Desktop / Tablet) */}
+          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center relative min-w-[150px] max-w-[200px] lg:max-w-[250px] xl:max-w-xs w-full transition-all">
             <input
               type="text"
-              placeholder="Search destinations, temples..."
+              placeholder="Search destinations..."
               value={navSearch}
               onChange={(e) => setNavSearch(e.target.value)}
-              className="w-full pl-8.5 pr-8 py-1.5 text-xs bg-gray-100/80 dark:bg-zinc-800/80 border border-gray-200/80 dark:border-zinc-700/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003E83]/20 dark:focus:ring-blue-400/20 focus:border-[#003E83] dark:focus:border-blue-400 focus:bg-white dark:focus:bg-zinc-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-500 transition-all"
+              className="w-full pl-8.5 pr-8 py-1.5 text-xs bg-gray-100/80 dark:bg-zinc-800/80 border border-gray-200/80 dark:border-zinc-700/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003E83]/20 dark:focus:ring-blue-400/20 focus:border-[#003E83] dark:focus:border-blue-400 focus:bg-white dark:focus:bg-zinc-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-400 truncate transition-all"
             />
             <Search className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             {navSearch && (
@@ -403,7 +413,7 @@ export default function Header() {
 
             {/* User Profile or Sign In / Register */}
             {isAuthenticated ? (
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative shrink-0" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className={`flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border transition-all cursor-pointer ${
@@ -494,16 +504,16 @@ export default function Header() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
                   onClick={() => openAuthModal('login')}
-                  className="px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-zinc-300 hover:text-[#003E83] dark:hover:text-[#60a5fa] hover:bg-gray-100/70 dark:hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
+                  className="px-3 py-1.5 text-xs font-semibold whitespace-nowrap shrink-0 text-gray-700 dark:text-zinc-300 hover:text-[#003E83] dark:hover:text-[#60a5fa] hover:bg-gray-100/70 dark:hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={() => openAuthModal('register')}
-                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#003E83] hover:bg-[#002e62] dark:bg-blue-600 dark:hover:bg-blue-700 rounded-lg shadow-xs transition-all cursor-pointer active:scale-98"
+                  className="px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap shrink-0 text-white bg-[#003E83] hover:bg-[#002e62] dark:bg-blue-600 dark:hover:bg-blue-700 rounded-lg shadow-xs transition-all cursor-pointer active:scale-98"
                 >
                   Register
                 </button>

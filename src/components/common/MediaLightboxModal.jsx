@@ -186,7 +186,7 @@ export default function MediaLightboxModal({ isOpen, item, items = [], onClose, 
       {/* Modal Container */}
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-5xl max-h-[92vh] flex flex-col lg:flex-row bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl"
+        className="w-full max-w-5xl max-h-[92vh] flex flex-col lg:flex-row bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-2xl transition-colors"
       >
         {/* Left Side: Video Player or High-Res Photo */}
         <div className="relative flex-1 bg-black flex items-center justify-center min-h-[300px] lg:min-h-[520px] overflow-hidden">
@@ -230,32 +230,32 @@ export default function MediaLightboxModal({ isOpen, item, items = [], onClose, 
         </div>
 
         {/* Right Side: Media Details & Comments Section */}
-        <div className="w-full lg:w-96 p-5 bg-zinc-900 border-t lg:border-t-0 lg:border-l border-zinc-800 flex flex-col justify-between space-y-4 max-h-[50vh] lg:max-h-[85vh] overflow-y-auto">
+        <div className="w-full lg:w-96 p-5 bg-slate-50 dark:bg-zinc-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-zinc-800 flex flex-col justify-between space-y-4 max-h-[50vh] lg:max-h-[85vh] overflow-y-auto transition-colors">
           
           <div className="space-y-3.5">
             {/* Header info */}
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs text-blue-400 flex items-center gap-1 font-medium">
+                <span className="text-xs text-[#003E83] dark:text-blue-400 flex items-center gap-1 font-semibold">
                   <MapPin className="w-3.5 h-3.5" />
                   {item.location || item.province || item.place || 'Cambodia'}
                 </span>
                 {item.author && (
-                  <span className="text-xs text-zinc-400">· By {item.author}</span>
+                  <span className="text-xs text-gray-500 dark:text-zinc-400">· By {item.author}</span>
                 )}
               </div>
-              <h2 className="text-base font-bold text-white leading-snug">
+              <h2 className="text-base font-bold text-gray-900 dark:text-white leading-snug">
                 {item.title}
               </h2>
               {item.description && (
-                <p className="text-xs text-zinc-300 leading-relaxed mt-1">
+                <p className="text-xs text-gray-600 dark:text-zinc-300 leading-relaxed mt-1">
                   {item.description}
                 </p>
               )}
             </div>
 
             {/* Like & Share Action Bar */}
-            <div className="flex items-center justify-between pt-2 pb-3 border-y border-zinc-800 text-xs">
+            <div className="flex items-center justify-between pt-2 pb-3 border-y border-gray-200 dark:border-zinc-800 text-xs">
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -263,7 +263,7 @@ export default function MediaLightboxModal({ isOpen, item, items = [], onClose, 
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
                     isLiked
                       ? 'bg-rose-500 text-white shadow-xs'
-                      : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200'
+                      : 'bg-gray-200/80 dark:bg-zinc-800 hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-200'
                   }`}
                 >
                   <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
@@ -273,7 +273,7 @@ export default function MediaLightboxModal({ isOpen, item, items = [], onClose, 
                 <button
                   type="button"
                   onClick={handleShare}
-                  className="p-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-full bg-gray-200/80 dark:bg-zinc-800 hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-600 dark:text-zinc-300 transition-colors cursor-pointer"
                   title="Share"
                 >
                   <Share2 className="w-4 h-4" />
@@ -282,7 +282,7 @@ export default function MediaLightboxModal({ isOpen, item, items = [], onClose, 
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="p-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-full bg-gray-200/80 dark:bg-zinc-800 hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-600 dark:text-zinc-300 transition-colors cursor-pointer"
                   title="Download"
                 >
                   <Download className="w-4 h-4" />
@@ -293,7 +293,7 @@ export default function MediaLightboxModal({ isOpen, item, items = [], onClose, 
                 <Link
                   to={`/places/${item.place_id}`}
                   onClick={onClose}
-                  className="inline-flex items-center gap-1 font-semibold text-blue-400 hover:underline"
+                  className="inline-flex items-center gap-1 font-semibold text-[#003E83] dark:text-blue-400 hover:underline"
                 >
                   <span>Destination</span>
                   <ExternalLink className="w-3 h-3" />
@@ -303,31 +303,31 @@ export default function MediaLightboxModal({ isOpen, item, items = [], onClose, 
 
             {/* Comments List */}
             <div className="space-y-3">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-300">
-                <MessageSquare className="w-4 h-4 text-blue-400" />
+              <div className="flex items-center gap-1.5 text-xs font-bold text-gray-800 dark:text-zinc-200">
+                <MessageSquare className="w-4 h-4 text-[#003E83] dark:text-blue-400" />
                 <span>Comments ({comments.length})</span>
               </div>
 
               <div className="space-y-2.5 max-h-52 overflow-y-auto pr-1">
                 {comments.length > 0 ? (
                   comments.map((c) => (
-                    <div key={c.id} className="p-2.5 rounded-lg bg-zinc-800/60 border border-zinc-700/50 space-y-1">
+                    <div key={c.id} className="p-2.5 rounded-lg bg-white dark:bg-zinc-800/60 border border-gray-200/80 dark:border-zinc-700/50 space-y-1 shadow-2xs">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
                           <div className="w-5 h-5 rounded-full bg-[#003E83] text-white text-[10px] font-bold flex items-center justify-center">
                             {c.user_name?.charAt(0) || 'T'}
                           </div>
-                          <span className="text-xs font-bold text-zinc-200">{c.user_name}</span>
+                          <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">{c.user_name}</span>
                         </div>
-                        <span className="text-[10px] text-zinc-500">{formatCommentDate(c.created_at)}</span>
+                        <span className="text-[10px] text-gray-400 dark:text-zinc-400">{formatCommentDate(c.created_at)}</span>
                       </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed pl-6.5">
+                      <p className="text-xs text-gray-700 dark:text-zinc-300 leading-relaxed pl-6.5">
                         {c.comment}
                       </p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-zinc-500 py-3 text-center">
+                  <p className="text-xs text-gray-500 dark:text-zinc-400 font-medium py-4 text-center bg-gray-100/70 dark:bg-zinc-800/30 rounded-lg border border-gray-200/80 dark:border-zinc-800/60">
                     No comments yet. Be the first to leave a comment!
                   </p>
                 )}
@@ -338,14 +338,14 @@ export default function MediaLightboxModal({ isOpen, item, items = [], onClose, 
           </div>
 
           {/* Comment Input Box */}
-          <form onSubmit={handleCommentSubmit} className="pt-2 border-t border-zinc-800">
+          <form onSubmit={handleCommentSubmit} className="pt-2 border-t border-gray-200 dark:border-zinc-800">
             <div className="relative flex items-center">
               <input
                 type="text"
                 placeholder={isAuthenticated ? "Write a comment..." : "Comment as guest traveler..."}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                className="w-full pl-3 pr-10 py-2 text-xs bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                className="w-full pl-3 pr-10 py-2 text-xs bg-white dark:bg-zinc-800/90 border border-gray-300 dark:border-zinc-700 rounded-lg text-gray-900 dark:text-zinc-100 placeholder-gray-400 dark:placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-[#003E83] dark:focus:ring-blue-400 focus:border-[#003E83] dark:focus:border-blue-400"
               />
               <button
                 type="submit"
