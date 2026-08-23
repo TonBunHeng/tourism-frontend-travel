@@ -60,7 +60,7 @@ export default function AuthModal() {
       onClick={closeAuthModal}
     >
       <div
-        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-800 overflow-hidden zoom-in p-6 space-y-4 my-8 transition-colors"
+        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-800 overflow-hidden zoom-in p-5 sm:p-6 space-y-4 my-auto max-h-[90vh] overflow-y-auto transition-colors"
         onClick={(e) => e.stopPropagation()}
       >
         <button

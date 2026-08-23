@@ -98,7 +98,7 @@ export default function ChatWidget() {
       {/* Floating Chat Trigger Button */}
       <button
         onClick={toggleChat}
-        className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#003E83] dark:bg-[#60a5fa] dark:text-zinc-950 text-white shadow-lg flex items-center justify-center hover:scale-105 transition-all cursor-pointer"
+        className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#003E83] dark:bg-[#60a5fa] dark:text-zinc-950 text-white shadow-lg flex items-center justify-center hover:scale-105 transition-all cursor-pointer"
         title="Live Travel Assistant"
       >
         {isChatOpen ? <X className="w-5 h-5" /> : <MessageSquare className="w-5 h-5" />}
@@ -106,7 +106,7 @@ export default function ChatWidget() {
 
       {/* Slide-in Chat Drawer */}
       {isChatOpen && (
-        <div className="fixed bottom-22 right-6 z-40 w-80 sm:w-96 bg-white dark:bg-zinc-900 rounded-lg shadow-2xl border border-gray-200 dark:border-zinc-800 overflow-hidden flex flex-col h-[480px] zoom-in transition-colors">
+        <div className="fixed bottom-18 sm:bottom-22 right-3 sm:right-6 left-3 sm:left-auto z-40 w-auto sm:w-96 max-w-[calc(100vw-1.5rem)] bg-white dark:bg-zinc-900 rounded-lg shadow-2xl border border-gray-200 dark:border-zinc-800 overflow-hidden flex flex-col h-[80vh] max-h-[480px] sm:h-[480px] zoom-in transition-colors">
           
           {/* Header */}
           <div className="px-4 py-3 bg-[#003E83] dark:bg-zinc-800 text-white flex items-center justify-between">

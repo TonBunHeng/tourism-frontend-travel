@@ -125,7 +125,7 @@ export default function PlaceDetails() {
           <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1">{place.address}</p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleShare}
             className="p-2 rounded-md border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"

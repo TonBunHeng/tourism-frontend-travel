@@ -51,7 +51,7 @@ export const TravelProvider = ({ children }) => {
     if (isAuthenticated) {
       try {
         const res = await favoriteService.getFavorites();
-        if (res?.data) {
+        if (res?.data && Array.isArray(res.data)) {
           setFavorites(res.data);
         }
       } catch (e) {
@@ -67,33 +67,38 @@ export const TravelProvider = ({ children }) => {
   }, [fetchFavorites]);
 
   const isFavorite = (placeId) => {
-    return favorites.some((fav) => fav.place_id === Number(placeId) || fav.place?.id === Number(placeId));
+    if (!placeId) return false;
+    const targetId = Number(placeId);
+    return favorites.some((fav) => Number(fav.place_id) === targetId || Number(fav.place?.id) === targetId);
   };
 
   const toggleFavorite = async (place) => {
     if (!isAuthenticated) {
-      openAuthModal('login');
+      if (openAuthModal) openAuthModal('login');
       showToast('Please log in to save favorites to your wishlist', 'info');
       return;
     }
 
-    const placeId = place.id || place.place_id;
-    const existing = favorites.find((f) => f.place_id === placeId || f.place?.id === placeId);
+    const rawId = place.id || place.place_id;
+    if (!rawId) return;
+    const targetId = Number(rawId);
+
+    const existing = favorites.find((f) => Number(f.place_id) === targetId || Number(f.place?.id) === targetId);
 
     if (existing) {
       try {
-        await favoriteService.removeFavorite(placeId);
-        setFavorites((prev) => prev.filter((f) => f.place_id !== placeId && f.place?.id !== placeId));
-        showToast(`Removed "${place.name}" from wishlist`, 'info');
+        await favoriteService.removeFavorite(targetId);
+        setFavorites((prev) => prev.filter((f) => Number(f.place_id) !== targetId && Number(f.place?.id) !== targetId));
+        showToast(`Removed "${place.name || 'destination'}" from wishlist`, 'info');
       } catch (e) {
         showToast('Failed to remove favorite', 'error');
       }
     } else {
       try {
-        const res = await favoriteService.addFavorite({ place_id: placeId, visited: false });
+        const res = await favoriteService.addFavorite({ place_id: targetId, visited: false });
         if (res?.data) {
-          setFavorites((prev) => [res.data, ...prev]);
-          showToast(`Added "${place.name}" to wishlist!`, 'success');
+          setFavorites((prev) => [res.data, ...prev.filter((f) => Number(f.place_id) !== targetId)]);
+          showToast(`Added "${place.name || 'destination'}" to wishlist!`, 'success');
         }
       } catch (e) {
         showToast('Failed to add favorite', 'error');

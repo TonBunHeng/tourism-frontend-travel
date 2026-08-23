@@ -504,7 +504,7 @@ export default function Header() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
                   onClick={() => openAuthModal('login')}
                   className="px-3 py-1.5 text-xs font-semibold whitespace-nowrap shrink-0 text-gray-700 dark:text-zinc-300 hover:text-[#003E83] dark:hover:text-[#60a5fa] hover:bg-gray-100/70 dark:hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
@@ -537,7 +537,7 @@ export default function Header() {
       {menuOpen && (
         <div 
           ref={mobileMenuRef}
-          className="md:hidden border-t border-gray-200 dark:border-zinc-800 bg-white/98 dark:bg-zinc-900/98 backdrop-blur-lg px-4 py-4 space-y-3 animate-smooth-pop text-xs shadow-xl"
+          className="md:hidden border-t border-gray-200 dark:border-zinc-800 bg-white/98 dark:bg-zinc-900/98 backdrop-blur-lg px-4 py-4 pb-24 space-y-3 animate-smooth-pop text-xs shadow-xl relative z-50 max-h-[85vh] overflow-y-auto"
         >
           {/* Mobile Search */}
           <form onSubmit={handleSearchSubmit} className="relative w-full">
@@ -628,7 +628,7 @@ export default function Header() {
           </div>
 
           {/* Auth Section in Mobile Menu */}
-          <div className="border-t border-gray-100 dark:border-zinc-800 pt-3">
+          <div className="border-t border-gray-100 dark:border-zinc-800 pt-3 pb-8">
             {isAuthenticated ? (
               <div className="space-y-2">
                 <div className="flex items-center gap-2.5 px-3 py-1">
@@ -657,7 +657,7 @@ export default function Header() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 pr-12 sm:pr-0">
                 <button
                   onClick={() => openAuthModal('login')}
                   className="py-2 text-center font-bold rounded-lg border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"

@@ -1,14 +1,11 @@
 import api from './api';
-import { placeService } from './placeService';
 
 const STORAGE_COMMENTS_KEY = 'angkor_gallery_comments';
-const STORAGE_LIKES_KEY = 'angkor_gallery_likes';
 
-// Curated high quality photo & video collection with comments and likes
 const fallbackGalleries = [
   {
     id: 1,
-    title: 'Angkor Wat Sunrise Reflections',
+    title: 'Sunset over Angkor Wat Reflection Pond',
     description: 'Golden morning light reflecting over the lotus ponds of Angkor Wat temple.',
     media_url: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=1200&q=80',
     thumbnail_url: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=600&q=80',
@@ -25,18 +22,11 @@ const fallbackGalleries = [
     created_at: '2026-07-15',
     comments: [
       {
-        id: 'c1',
+        id: 1,
         user_name: 'Sarah Jenkins',
         avatar: null,
         comment: 'The 5:30 AM sunrise view was the most spiritual experience of my entire trip to Southeast Asia!',
         created_at: '2026-08-18T08:30:00Z'
-      },
-      {
-        id: 'c2',
-        user_name: 'Sopheap Chan',
-        avatar: null,
-        comment: 'Beautiful lighting composition of the central lotus pond reflection.',
-        created_at: '2026-08-19T14:15:00Z'
       }
     ]
   },
@@ -58,132 +48,7 @@ const fallbackGalleries = [
     likes_count: 612,
     comments_count: 28,
     created_at: '2026-07-22',
-    comments: [
-      {
-        id: 'c3',
-        user_name: 'David Miller',
-        avatar: null,
-        comment: 'The scale of this ancient city from the air is completely breathtaking!',
-        created_at: '2026-08-15T11:20:00Z'
-      },
-      {
-        id: 'c4',
-        user_name: 'Nary Lim',
-        avatar: null,
-        comment: 'Amazing video quality! Truly proud of our Cambodian heritage.',
-        created_at: '2026-08-17T09:40:00Z'
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: 'Bayon Temple Smiling Stone Faces',
-    description: 'Enigmatic 216 giant smiling stone faces of Avalokiteshvara at Bayon.',
-    media_url: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80',
-    thumbnail_url: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=600&q=80',
-    media_type: 'photo',
-    category: 'Architecture',
-    location: 'Angkor Thom',
-    province: 'Siem Reap',
-    place_id: 2,
-    place_name: 'Bayon Temple',
-    author: 'Dara Media',
-    views_count: 980,
-    likes_count: 245,
-    comments_count: 9,
-    created_at: '2026-07-20',
-    comments: [
-      {
-        id: 'c5',
-        user_name: 'Lucas Dupont',
-        avatar: null,
-        comment: 'Every single angle reveals a different smiling face. Outstanding architecture.',
-        created_at: '2026-08-12T16:00:00Z'
-      }
-    ]
-  },
-  {
-    id: 4,
-    title: 'Cambodian Traditional Water Festival Drone Video',
-    description: 'Vibrant racing longboats on the Tonle Sap river in front of the Royal Palace during Bon Om Touk.',
-    media_url: 'https://assets.mixkit.co/videos/preview/mixkit-traditional-river-boat-moving-through-a-canal-42774-large.mp4',
-    thumbnail_url: 'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=600&q=80',
-    media_type: 'video',
-    duration: '0:32',
-    category: 'Video Highlights',
-    location: 'Sisowath Quay',
-    province: 'Phnom Penh',
-    place_id: 4,
-    place_name: 'Royal Palace Phnom Penh',
-    author: 'Travel Asia Video',
-    views_count: 3410,
-    likes_count: 780,
-    comments_count: 36,
-    created_at: '2026-08-05',
-    comments: [
-      {
-        id: 'c6',
-        user_name: 'Kosal Rith',
-        avatar: null,
-        comment: 'The energy during the boat races is unbeatable! Must experience in November.',
-        created_at: '2026-08-16T19:10:00Z'
-      }
-    ]
-  },
-  {
-    id: 5,
-    title: 'Ta Prohm Tree Roots Embracing Ruins',
-    description: 'Massive silk-cotton tree roots intertwined with ancient sandstone corridors.',
-    media_url: 'https://images.unsplash.com/photo-1583207804784-198ba4353030?auto=format&fit=crop&w=1200&q=80',
-    thumbnail_url: 'https://images.unsplash.com/photo-1583207804784-198ba4353030?auto=format&fit=crop&w=600&q=80',
-    media_type: 'photo',
-    category: 'Historical Temples',
-    location: 'Siem Reap',
-    province: 'Siem Reap',
-    place_id: 3,
-    place_name: 'Ta Prohm Temple',
-    author: 'Elena Rostova',
-    views_count: 1210,
-    likes_count: 310,
-    comments_count: 12,
-    created_at: '2026-08-01',
-    comments: [
-      {
-        id: 'c7',
-        user_name: 'Liam Wilson',
-        avatar: null,
-        comment: 'Nature taking over history — felt like being in Indiana Jones or Tomb Raider!',
-        created_at: '2026-08-14T10:05:00Z'
-      }
-    ]
-  },
-  {
-    id: 6,
-    title: 'Koh Rong Island Ocean Waves Video',
-    description: 'Relaxing 4K clear turquoise crystal waves washing over pure white sandy shores.',
-    media_url: 'https://assets.mixkit.co/videos/preview/mixkit-waves-coming-to-the-beach-5016-large.mp4',
-    thumbnail_url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
-    media_type: 'video',
-    duration: '0:28',
-    category: 'Video Highlights',
-    location: 'Koh Rong Sanloem',
-    province: 'Preah Sihanouk',
-    place_id: 5,
-    place_name: 'Koh Rong Island',
-    author: 'Island Life Films',
-    views_count: 1950,
-    likes_count: 460,
-    comments_count: 19,
-    created_at: '2026-08-10',
-    comments: [
-      {
-        id: 'c8',
-        user_name: 'Chloe Bennett',
-        avatar: null,
-        comment: 'The clearest sea water I have ever seen. Paradise on earth.',
-        created_at: '2026-08-19T13:45:00Z'
-      }
-    ]
+    comments: []
   }
 ];
 
@@ -211,14 +76,14 @@ export const galleryService = {
   async getGalleries(params = {}) {
     try {
       const res = await api.get('/galleries', { params });
-      if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
-        return res;
+      const list = res?.data?.data || res?.data;
+      if (Array.isArray(list) && list.length > 0) {
+        return { data: list };
       }
-    } catch {
-      // Fallback
+    } catch (err) {
+      console.warn('Backend API galleries call failed, using fallback galleries', err);
     }
 
-    // Merge with any local user-posted comments
     const merged = fallbackGalleries.map((item) => {
       const localComments = getStoredComments(item.id);
       const allComments = [...localComments, ...(item.comments || [])];
@@ -233,6 +98,16 @@ export const galleryService = {
   },
 
   async getGalleryById(id) {
+    try {
+      const res = await api.get(`/galleries/${id}`);
+      const itemData = res?.data?.data || res?.data;
+      if (itemData) {
+        return { data: itemData };
+      }
+    } catch (err) {
+      console.warn(`Backend API getGalleryById(${id}) failed, using fallback`, err);
+    }
+
     const item = fallbackGalleries.find((g) => String(g.id) === String(id)) || fallbackGalleries[0];
     const localComments = getStoredComments(item.id);
     return {
@@ -244,16 +119,90 @@ export const galleryService = {
     };
   },
 
+  async getComments(mediaId) {
+    try {
+      const res = await api.get(`/galleries/${mediaId}/comments`);
+      const list = res?.data?.data || res?.data;
+      if (Array.isArray(list)) {
+        return list;
+      }
+    } catch (err) {
+      console.warn(`Backend API getComments(${mediaId}) failed`, err);
+    }
+    return getStoredComments(mediaId);
+  },
+
   async addComment(mediaId, commentData) {
+    const payload = typeof commentData === 'string' 
+      ? { comment: commentData }
+      : {
+          comment: commentData.comment || commentData.text || '',
+          parent_id: commentData.parent_id || null,
+        };
+
+    try {
+      const res = await api.post(`/galleries/${mediaId}/comments`, payload);
+      const created = res?.data?.data || res?.data;
+      if (created) {
+        return created;
+      }
+    } catch (err) {
+      console.warn('Backend API addComment failed, saving locally', err);
+    }
+
     const newComment = {
       id: `user-${Date.now()}`,
       user_name: commentData.user_name || 'Traveler',
       avatar: commentData.avatar || null,
-      comment: commentData.comment,
+      comment: payload.comment,
       created_at: new Date().toISOString()
     };
     saveStoredComment(mediaId, newComment);
-    return { data: newComment };
+    return newComment;
+  },
+
+  async toggleLike(mediaId) {
+    try {
+      const res = await api.post(`/galleries/${mediaId}/like`);
+      const data = res?.data?.data || res?.data;
+      if (data) {
+        return data;
+      }
+    } catch (err) {
+      console.warn(`Backend API toggleLike(${mediaId}) failed`, err);
+    }
+    return null;
+  },
+
+  async recordView(mediaId) {
+    try {
+      const res = await api.post(`/galleries/${mediaId}/view`);
+      const data = res?.data?.data || res?.data;
+      if (data) {
+        return data.views_count ?? data.view_count ?? data.views ?? null;
+      }
+    } catch (err) {
+      console.warn(`Backend API recordView(${mediaId}) failed`, err);
+    }
+    return null;
+  },
+
+  subscribeToStream(mediaId, onUpdate) {
+    try {
+      const eventSource = new EventSource(`http://localhost:8000/api/travel/galleries/${mediaId}/stream`);
+      eventSource.addEventListener('gallery_update', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (onUpdate) onUpdate(data);
+        } catch (err) {
+          console.error('Failed to parse SSE data', err);
+        }
+      });
+      return eventSource;
+    } catch (err) {
+      console.warn('EventSource SSE subscription failed', err);
+      return null;
+    }
   }
 };
 

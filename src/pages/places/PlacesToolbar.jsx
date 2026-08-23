@@ -92,7 +92,7 @@ export default function PlacesToolbar({
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-zinc-800 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100 dark:border-zinc-800 text-xs">
         {hasFilters ? (
           <button
             onClick={onClear}
@@ -106,7 +106,7 @@ export default function PlacesToolbar({
 
         <button
           onClick={onApply}
-          className="px-3.5 py-1.5 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white font-semibold rounded-md shadow-xs transition-colors cursor-pointer"
+          className="px-3.5 py-1.5 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white font-semibold rounded-md shadow-xs transition-colors cursor-pointer ml-auto sm:ml-0"
         >
           Apply Filters
         </button>

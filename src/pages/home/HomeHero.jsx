@@ -36,9 +36,9 @@ export default function HomeHero() {
         </p>
 
         {/* Search Bar */}
-        <div className="bg-white dark:bg-zinc-900 rounded-lg p-2.5 max-w-3xl mx-auto shadow-md border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white text-left transition-colors">
-          <form onSubmit={handleHeroSearch} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
-            <div className="sm:col-span-5 relative">
+        <div className="bg-white dark:bg-zinc-900 rounded-lg p-2.5 sm:p-3 max-w-3xl mx-auto shadow-md border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white text-left transition-colors">
+          <form onSubmit={handleHeroSearch} className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-2.5 items-center">
+            <div className="sm:col-span-4 relative">
               <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
@@ -64,11 +64,11 @@ export default function HomeHero() {
               </select>
             </div>
 
-            <div className="sm:col-span-4 flex gap-2">
+            <div className="sm:col-span-3">
               <select
                 value={selectedCategoryId}
                 onChange={(e) => setSelectedCategoryId(e.target.value)}
-                className="flex-1 px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-200 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+                className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-200 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
               >
                 <option value="">All Categories</option>
                 {categories.map((cat) => (
@@ -77,10 +77,12 @@ export default function HomeHero() {
                   </option>
                 ))}
               </select>
+            </div>
 
+            <div className="sm:col-span-2">
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md transition-colors shrink-0 cursor-pointer"
+                className="w-full py-1.5 px-4 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md transition-colors cursor-pointer text-center"
               >
                 Search
               </button>
@@ -89,8 +91,8 @@ export default function HomeHero() {
         </div>
 
         {/* Quick Links */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1 text-xs">
-          <span className="text-blue-200 mr-1">Popular:</span>
+        <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1 text-xs max-w-full px-2">
+          <span className="text-blue-200 mr-1 shrink-0">Popular:</span>
           {categories.slice(0, 5).map((cat) => (
             <Link
               key={cat.id}

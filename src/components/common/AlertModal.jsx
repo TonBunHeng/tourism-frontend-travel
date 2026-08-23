@@ -117,7 +117,7 @@ export default function AlertModal({
       aria-labelledby="alert-modal-title"
     >
       <div
-        className="bg-white dark:bg-zinc-900 rounded-lg shadow-2xl max-w-md w-full mx-4 p-6 relative animate-in fade-in zoom-in duration-200 border border-gray-100 dark:border-zinc-800"
+        className="bg-white dark:bg-zinc-900 rounded-lg shadow-2xl max-w-md w-full mx-4 p-5 sm:p-6 relative animate-in fade-in zoom-in duration-200 border border-gray-100 dark:border-zinc-800 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
