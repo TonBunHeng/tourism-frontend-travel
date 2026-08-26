@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 // Layout
 import Main from '../layouts/Main';
 
+// Route Guards
+import ProtectedRoute from './ProtectedRoute';
+
 // Pages
 import Home from '../pages/home/Home';
 import Places from '../pages/places/Places';
@@ -25,6 +28,7 @@ export default function AppRoutes() {
       <Routes>
         {/* Main Application Layout with Navigation & Footer */}
         <Route element={<Main />}>
+          {/* Public Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/places" element={<Places />} />
           <Route path="/places/:id" element={<PlaceDetails />} />
@@ -33,14 +37,18 @@ export default function AppRoutes() {
           <Route path="/events" element={<Events />} />
           <Route path="/events/:id" element={<Events />} />
           <Route path="/gallery" element={<Galleries />} />
-          <Route path="/wishlist" element={<Favorites />} />
           <Route path="/achievements" element={<Achievements />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/deletion-request" element={<DeletionRequests />} />
-          <Route path="/delete" element={<DeletionRequests />} />
-          <Route path="/settings" element={<Settings />} />
           <Route path="/login" element={<Login />} />
+
+          {/* Protected Pages (Strictly Requires Tourist Authentication) */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/wishlist" element={<Favorites />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/deletion-request" element={<DeletionRequests />} />
+            <Route path="/delete" element={<DeletionRequests />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
         </Route>
 
         {/* Fallback */}
