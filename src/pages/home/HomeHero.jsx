@@ -22,7 +22,7 @@ export default function HomeHero() {
   return (
     <section className="bg-[#003E83] dark:bg-[#00244d] text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-[#002e62] dark:border-zinc-800 transition-colors">
       <div className="max-w-5xl mx-auto text-center space-y-5">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-white/10 text-white text-xs font-semibold backdrop-blur-xs">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-white/10 text-white text-xs font-semibold">
           <Compass className="w-3.5 h-3.5" />
           Kingdom of Cambodia • AngkorVerses
         </div>

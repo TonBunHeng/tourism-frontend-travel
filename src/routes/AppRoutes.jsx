@@ -21,6 +21,8 @@ import Notifications from '../pages/notifications/Notifications';
 import DeletionRequests from '../pages/delete/DeletionRequests';
 import Settings from '../pages/settings/Settings';
 import Login from '../pages/auth/Login';
+import Trips from '../pages/trips/Trips';
+import TripDetails from '../pages/trips/TripDetails';
 
 export default function AppRoutes() {
   return (
@@ -42,7 +44,10 @@ export default function AppRoutes() {
 
           {/* Protected Pages (Strictly Requires Tourist Authentication) */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/trips" element={<Trips />} />
+            <Route path="/trips/:id" element={<TripDetails />} />
             <Route path="/wishlist" element={<Favorites />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/deletion-request" element={<DeletionRequests />} />

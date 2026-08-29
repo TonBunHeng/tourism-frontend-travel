@@ -51,11 +51,11 @@ export default function ReviewModal({ isOpen, onClose, place, onReviewSubmitted 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 fade-in"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-2xl border border-gray-200 dark:border-zinc-800 overflow-hidden zoom-in p-6 space-y-4 transition-colors"
+        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-800 overflow-hidden zoom-in p-6 space-y-4 transition-colors"
         onClick={(e) => e.stopPropagation()}
       >
         <button

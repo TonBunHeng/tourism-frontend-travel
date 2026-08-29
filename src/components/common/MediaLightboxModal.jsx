@@ -212,19 +212,19 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
   const safeComments = Array.isArray(comments) ? comments : [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 sm:p-6 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 sm:p-6 animate-in fade-in duration-200">
       {/* Close Button */}
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 z-50 p-2 rounded-full bg-zinc-900/80 hover:bg-zinc-800 text-white/90 hover:text-white transition-colors cursor-pointer border border-zinc-700/60"
+        className="absolute top-4 right-4 z-50 p-2 rounded-full bg-zinc-900/80 hover:bg-zinc-800 text-white transition-colors cursor-pointer border border-zinc-700"
         title="Close Lightbox (Esc)"
       >
         <X className="w-5 h-5" />
       </button>
 
       {/* Main Container */}
-      <div className="relative w-full max-w-5xl max-h-[90vh] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-gray-200 dark:border-zinc-800">
+      <div className="relative w-full max-w-5xl max-h-[90vh] bg-white dark:bg-zinc-900 rounded-lg shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-200 dark:border-zinc-800">
         {/* Left Side: Media Player / Viewer */}
         <div className="relative flex-1 bg-black flex items-center justify-center min-h-[320px] md:min-h-[480px] select-none">
           {isVideo ? (
@@ -238,7 +238,7 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
             <button
               type="button"
               onClick={() => onNavigate && onNavigate('prev')}
-              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white transition-all cursor-pointer backdrop-blur-xs border border-white/10"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white transition-all cursor-pointer border border-white/20"
               title="Previous item"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -248,7 +248,7 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
             <button
               type="button"
               onClick={() => onNavigate && onNavigate('next')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white transition-all cursor-pointer backdrop-blur-xs border border-white/10"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white transition-all cursor-pointer border border-white/20"
               title="Next item"
             >
               <ChevronRight className="w-5 h-5" />
@@ -256,32 +256,32 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
           )}
 
           {/* Media Badge */}
-          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md text-[11px] font-semibold text-white border border-white/10">
+          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 text-[11px] font-semibold text-white border border-white/20">
             {item.category || item.tag || 'Gallery'}
           </div>
         </div>
 
         {/* Right Side: Details & Comments Panel */}
-        <div className="w-full md:w-96 flex flex-col justify-between p-4 md:p-5 bg-gray-50/70 dark:bg-zinc-900/90 border-t md:border-t-0 md:border-l border-gray-200 dark:border-zinc-800 overflow-y-auto">
+        <div className="w-full md:w-96 flex flex-col justify-between p-4 md:p-5 bg-gray-50 dark:bg-zinc-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-zinc-800 overflow-y-auto">
           {/* Header Info */}
           <div className="space-y-4">
             <div>
               <h3 className="text-base font-bold text-gray-900 dark:text-zinc-100 leading-snug">{item.title}</h3>
               {item.place && (
-                <p className="text-xs text-[#003E83] dark:text-blue-400 font-semibold mt-0.5">{item.place}</p>
+                <p className="text-xs text-[#003E83] dark:text-[#60a5fa] font-semibold mt-0.5">{item.place}</p>
               )}
             </div>
 
             {/* Interaction Bar */}
-            <div className="flex items-center justify-between py-2.5 px-3 bg-white dark:bg-zinc-800/80 rounded-xl border border-gray-200/80 dark:border-zinc-700/60 shadow-2xs">
+            <div className="flex items-center justify-between py-2.5 px-3 bg-white dark:bg-zinc-800 rounded-lg border border-gray-200 dark:border-zinc-700 shadow-xs">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={handleLike}
-                  className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                     isLiked
                       ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900'
-                      : 'bg-gray-100 dark:bg-zinc-700/60 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700'
+                      : 'bg-gray-100 dark:bg-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-600'
                   }`}
                   title={isAuthenticated ? "Toggle Like" : "Login required to like"}
                 >

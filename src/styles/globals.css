@@ -250,44 +250,36 @@ input[type="date"]:invalid:not(:focus)::-webkit-datetime-edit {
 @keyframes alertPulseGlow {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
   }
   50% {
-    transform: scale(1.04);
-    box-shadow: 0 0 0 12px rgba(16, 185, 129, 0);
+    transform: scale(1.05);
   }
 }
 
 @keyframes alertPulseDanger {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
   }
   50% {
-    transform: scale(1.04);
-    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+    transform: scale(1.05);
   }
 }
 
 @keyframes alertPulseWarning {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45);
   }
   50% {
-    transform: scale(1.04);
-    box-shadow: 0 0 0 12px rgba(245, 158, 11, 0);
+    transform: scale(1.05);
   }
 }
 
 @keyframes alertPulseInfo {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.45);
   }
   50% {
-    transform: scale(1.04);
-    box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
+    transform: scale(1.05);
   }
 }
 

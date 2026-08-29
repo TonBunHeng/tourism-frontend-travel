@@ -18,11 +18,11 @@ export default function EventDetailsModal({ isOpen, event, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs fade-in overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 fade-in overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg bg-white dark:bg-zinc-900 rounded-lg shadow-2xl border border-gray-200 dark:border-zinc-800 overflow-hidden my-8 zoom-in transition-colors"
+        className="relative w-full max-w-lg bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-800 overflow-hidden my-8 zoom-in transition-colors"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Bar */}
@@ -45,7 +45,7 @@ export default function EventDetailsModal({ isOpen, event, onClose }) {
           <div className="relative aspect-16/9 w-full rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-800">
             <img src={imageUrl} alt={event.title} className="w-full h-full object-cover" />
             <div className="absolute top-2.5 right-2.5">
-              <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border backdrop-blur-md shadow-xs ${statusColor}`}>
+              <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border shadow-xs ${statusColor}`}>
                 {status}
               </span>
             </div>

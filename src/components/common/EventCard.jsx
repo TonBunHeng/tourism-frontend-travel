@@ -37,7 +37,7 @@ export default function EventCard({ event, onViewDetails }) {
             </span>
           </div>
 
-          <div className="absolute bottom-2 left-2 z-10 px-2 py-0.5 rounded bg-gray-900/80 text-white text-[11px] font-medium flex items-center gap-1 backdrop-blur-xs">
+          <div className="absolute bottom-2 left-2 z-10 px-2 py-0.5 rounded bg-gray-900/80 text-white text-[11px] font-medium flex items-center gap-1">
             <Calendar className="w-3 h-3" />
             <span>{event.start_date || '2026'}</span>
           </div>

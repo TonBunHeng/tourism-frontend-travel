@@ -68,9 +68,9 @@ export default function GalleriesGrid({ mediaList, loading }) {
               )}
 
               {/* Overlay Ribbon */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2.5 text-white">
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2.5 text-white">
                 <div className="self-end">
-                  <span className="p-1 rounded bg-black/40 backdrop-blur-xs flex items-center gap-1 text-[10px] font-semibold">
+                  <span className="p-1 rounded bg-black/60 flex items-center gap-1 text-[10px] font-semibold">
                     {isVideo ? <Video className="w-3 h-3 text-red-400" /> : <Eye className="w-3 h-3" />}
                     {isVideo ? 'Video' : 'View'}
                   </span>
@@ -93,11 +93,11 @@ export default function GalleriesGrid({ mediaList, loading }) {
       {/* Lightbox / Video Player Modal */}
       {selectedMedia && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 fade-in"
           onClick={() => setSelectedMedia(null)}
         >
           <div
-            className="relative max-w-4xl w-full bg-white dark:bg-zinc-900 rounded-lg overflow-hidden shadow-2xl border border-gray-200 dark:border-zinc-800 zoom-in transition-colors"
+            className="relative max-w-4xl w-full bg-white dark:bg-zinc-900 rounded-lg overflow-hidden shadow-xl border border-gray-200 dark:border-zinc-800 zoom-in transition-colors"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/60">

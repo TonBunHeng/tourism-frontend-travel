@@ -216,7 +216,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-gray-200/80 dark:border-zinc-800/80 transition-colors shadow-xs">
+    <header className="sticky top-0 z-40 w-full bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 transition-colors shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-3">
           
@@ -340,8 +340,8 @@ export default function Header() {
               </button>
 
               {notifDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-88 bg-white dark:bg-zinc-900 rounded-xl shadow-2xl border border-gray-200 dark:border-zinc-800 overflow-hidden z-50 animate-smooth-pop">
-                  <div className="px-4 py-3 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between bg-gray-50/50 dark:bg-zinc-800/40">
+                <div className="absolute right-0 mt-2 w-80 sm:w-88 bg-white dark:bg-zinc-900 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-800 overflow-hidden z-50 animate-smooth-pop">
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between bg-gray-50 dark:bg-zinc-800/40">
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold text-xs uppercase tracking-wide text-gray-900 dark:text-white">Notifications</h3>
                       {unreadCount > 0 && (
@@ -440,7 +440,7 @@ export default function Header() {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-zinc-900 rounded-xl shadow-2xl border border-gray-200 dark:border-zinc-800 py-1.5 z-50 animate-smooth-pop text-xs">
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-zinc-900 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-800 py-1.5 z-50 animate-smooth-pop text-xs">
                     <div className="px-3.5 py-2.5 border-b border-gray-100 dark:border-zinc-800/80">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Account</span>
@@ -537,7 +537,7 @@ export default function Header() {
       {menuOpen && (
         <div 
           ref={mobileMenuRef}
-          className="md:hidden border-t border-gray-200 dark:border-zinc-800 bg-white/98 dark:bg-zinc-900/98 backdrop-blur-lg px-4 py-4 pb-24 space-y-3 animate-smooth-pop text-xs shadow-xl relative z-50 max-h-[85vh] overflow-y-auto"
+          className="md:hidden border-t border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-4 pb-24 space-y-3 animate-smooth-pop text-xs shadow-md relative z-50 max-h-[85vh] overflow-y-auto"
         >
           {/* Mobile Search */}
           <form onSubmit={handleSearchSubmit} className="relative w-full">
