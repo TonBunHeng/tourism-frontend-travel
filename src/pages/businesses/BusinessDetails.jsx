@@ -75,18 +75,18 @@ export default function BusinessDetails() {
   if (loading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3">
-        <Loader2 className="w-8 h-8 text-[#003E83] dark:text-blue-400 animate-spin" />
-        <p className="text-sm font-medium text-gray-500 dark:text-zinc-400">Loading business profile...</p>
+        <Loader2 className="w-8 h-8 text-[#003E83] dark:text-[#60a5fa] animate-spin" />
+        <p className="text-xs font-medium text-gray-500 dark:text-zinc-400">Loading business profile...</p>
       </div>
     );
   }
 
   if (error || !business) {
     return (
-      <div className="max-w-3xl mx-auto my-12 p-8 bg-white dark:bg-zinc-900 rounded-3xl border border-gray-200 dark:border-zinc-800 text-center space-y-4 shadow-sm">
+      <div className="max-w-xl mx-auto my-12 p-8 bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 text-center space-y-3 transition-colors">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">Business Unavailable</h2>
-        <p className="text-sm text-gray-500 dark:text-zinc-400">{error || 'Business not found or pending approval.'}</p>
-        <Link to="/businesses" className="inline-block px-5 py-2.5 bg-[#003E83] text-white text-xs font-bold rounded-xl">
+        <p className="text-xs text-gray-500 dark:text-zinc-400">{error || 'Business not found or pending approval.'}</p>
+        <Link to="/businesses" className="inline-block px-4 py-2 bg-[#003E83] dark:bg-[#60a5fa] dark:text-zinc-950 text-white text-xs font-semibold rounded-md">
           Back to Businesses
         </Link>
       </div>
@@ -121,22 +121,22 @@ export default function BusinessDetails() {
           <div className="space-y-2 text-white">
             <div className="flex items-center gap-2 flex-wrap">
               {business.category && (
-                <span className="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold rounded-lg">
+                <span className="px-2 py-0.5 bg-white/20 backdrop-blur-md text-white text-[11px] font-semibold rounded">
                   {business.category.name || business.category}
                 </span>
               )}
               {business.verification_status === 'approved' && (
-                <span className="px-3 py-1 bg-blue-600 backdrop-blur-md text-white text-xs font-bold rounded-lg flex items-center gap-1">
-                  <CheckCircle className="w-3.5 h-3.5" /> Verified Business
+                <span className="px-2 py-0.5 bg-[#003E83] dark:bg-blue-600 backdrop-blur-md text-white text-[11px] font-semibold rounded flex items-center gap-1">
+                  <CheckCircle className="w-3 h-3" /> Verified Business
                 </span>
               )}
               {business.price_range && (
-                <span className="px-2.5 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg">
+                <span className="px-2 py-0.5 bg-emerald-600 text-white text-[11px] font-semibold rounded">
                   {business.price_range}
                 </span>
               )}
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">{business.name}</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">{business.name}</h1>
             <p className="text-xs sm:text-sm text-gray-300 flex items-center gap-1">
               <MapPin className="w-4 h-4 text-rose-400 shrink-0" />
               <span>{business.address || business.province?.name || 'Cambodia'}</span>
@@ -148,13 +148,13 @@ export default function BusinessDetails() {
               href={mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 bg-white text-gray-900 hover:bg-gray-100 text-xs font-bold rounded-xl shadow-md flex items-center gap-1.5 transition-all"
+              className="px-3.5 py-2 bg-white text-gray-900 hover:bg-gray-100 text-xs font-semibold rounded-md shadow-xs flex items-center gap-1.5 transition-all"
             >
-              <MapPin className="w-4 h-4 text-rose-500" /> Google Maps
+              <MapPin className="w-3.5 h-3.5 text-rose-500" /> Google Maps
             </a>
             <button
               onClick={() => addToWishlist(business)}
-              className="p-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white rounded-xl transition-colors cursor-pointer"
+              className="p-2 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white rounded-md transition-colors cursor-pointer"
               title="Add to Wishlist"
             >
               <Heart className="w-4 h-4 text-rose-400 fill-rose-400" />
@@ -164,7 +164,7 @@ export default function BusinessDetails() {
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-6">
         
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2 border-b border-gray-200 dark:border-zinc-800 overflow-x-auto pb-1">
@@ -172,9 +172,9 @@ export default function BusinessDetails() {
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className={`px-4 py-2.5 text-xs font-bold whitespace-nowrap rounded-t-xl transition-all border-b-2 cursor-pointer ${
+              className={`px-4 py-2 text-xs font-semibold whitespace-nowrap rounded-t-md transition-all border-b-2 cursor-pointer ${
                 activeTab === t.id
-                  ? 'border-[#003E83] dark:border-blue-400 text-[#003E83] dark:text-blue-400 bg-blue-50/50 dark:bg-zinc-900'
+                  ? 'border-[#003E83] dark:border-[#60a5fa] text-[#003E83] dark:text-[#60a5fa] bg-blue-50/50 dark:bg-zinc-800/50'
                   : 'border-transparent text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
@@ -184,34 +184,34 @@ export default function BusinessDetails() {
         </div>
 
         {/* Tab Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Main Column */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             
             {/* OVERVIEW TAB */}
             {activeTab === 'overview' && (
               <div className="space-y-6">
-                <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">About {business.name}</h3>
-                  <p className="text-sm text-gray-600 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
+                <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-3 transition-colors">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white">About {business.name}</h3>
+                  <p className="text-xs text-gray-600 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
                     {business.description || 'No description provided yet.'}
                   </p>
                 </div>
 
                 {/* Featured Services Preview */}
                 {services.length > 0 && (
-                  <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-4 shadow-xs">
-                    <div className="flex items-center justify-between">
+                  <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-4 transition-colors">
+                    <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-zinc-800">
                       <h3 className="text-base font-bold text-gray-900 dark:text-white">Services & Pricing</h3>
-                      <button onClick={() => setActiveTab('services')} className="text-xs font-bold text-[#003E83] dark:text-blue-400 hover:underline cursor-pointer">View All</button>
+                      <button onClick={() => setActiveTab('services')} className="text-xs font-semibold text-[#003E83] dark:text-[#60a5fa] hover:underline cursor-pointer">View All</button>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {services.slice(0, 4).map((s) => (
-                        <div key={s.id} className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 hover:border-[#003E83]/30 dark:hover:border-blue-500/30 transition-all shadow-xs space-y-1.5">
+                        <div key={s.id} className="p-4 bg-gray-50 dark:bg-zinc-800/60 rounded-md border border-gray-200 dark:border-zinc-700/60 space-y-1.5">
                           <div className="flex items-center justify-between gap-2">
                             <span className="font-bold text-xs text-gray-900 dark:text-white">{s.name}</span>
-                            {s.price && <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 shrink-0">${s.price}</span>}
+                            {s.price && <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 shrink-0">${s.price}</span>}
                           </div>
                           {s.description && <p className="text-[11px] text-gray-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">{s.description}</p>}
                         </div>
@@ -224,21 +224,21 @@ export default function BusinessDetails() {
 
             {/* SERVICES TAB */}
             {activeTab === 'services' && (
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-4 shadow-xs">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Available Services & Menu</h3>
+              <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-4 transition-colors">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Available Services & Menu</h3>
                 {services.length === 0 ? (
-                  <p className="text-sm text-gray-500">No services listed yet.</p>
+                  <p className="text-xs text-gray-500">No services listed yet.</p>
                 ) : (
                   <div className="space-y-3">
                     {services.map((s) => (
-                      <div key={s.id} className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 hover:border-[#003E83]/30 dark:hover:border-blue-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs transition-all">
+                      <div key={s.id} className="p-4 bg-gray-50 dark:bg-zinc-800/60 rounded-md border border-gray-200 dark:border-zinc-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all">
                         <div>
-                          <h4 className="font-bold text-sm text-gray-900 dark:text-white">{s.name}</h4>
+                          <h4 className="font-bold text-xs text-gray-900 dark:text-white">{s.name}</h4>
                           {s.description && <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1 leading-relaxed">{s.description}</p>}
                           {s.duration_minutes && <span className="text-[11px] text-gray-400 mt-1 block font-medium">Duration: {s.duration_minutes} mins</span>}
                         </div>
                         {s.price && (
-                          <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-extrabold text-sm rounded-lg border border-emerald-200 dark:border-emerald-800/60 shrink-0">
+                          <span className="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold text-xs rounded border border-emerald-200 dark:border-emerald-800/60 shrink-0">
                             ${s.price}
                           </span>
                         )}
@@ -251,10 +251,10 @@ export default function BusinessDetails() {
 
             {/* HOURS TAB */}
             {activeTab === 'hours' && (
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-4 shadow-xs">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Opening Hours</h3>
+              <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-4 transition-colors">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Opening Hours</h3>
                 {hours.length === 0 ? (
-                  <p className="text-sm text-gray-500">Hours not published yet.</p>
+                  <p className="text-xs text-gray-500">Hours not published yet.</p>
                 ) : (
                   <div className="divide-y divide-gray-100 dark:divide-zinc-800">
                     {hours.map((h) => (
@@ -274,23 +274,23 @@ export default function BusinessDetails() {
 
             {/* PROMOTIONS TAB */}
             {activeTab === 'promotions' && (
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-4 shadow-xs">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Special Offers & Discounts</h3>
+              <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-4 transition-colors">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Special Offers & Discounts</h3>
                 {promotions.length === 0 ? (
-                  <p className="text-sm text-gray-500">No active promotions available.</p>
+                  <p className="text-xs text-gray-500">No active promotions available.</p>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {promotions.map((p) => (
-                      <div key={p.id} className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-amber-200 dark:border-amber-900/60 shadow-xs space-y-2">
+                      <div key={p.id} className="p-4 bg-gray-50 dark:bg-zinc-800/60 rounded-md border border-amber-200 dark:border-amber-900/60 space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">Promotion</span>
                           {p.discount_percentage && (
-                            <span className="px-2.5 py-0.5 bg-amber-500 text-white font-extrabold text-xs rounded-full">
+                            <span className="px-2 py-0.5 bg-amber-500 text-white font-bold text-[11px] rounded">
                               {p.discount_percentage}% OFF
                             </span>
                           )}
                         </div>
-                        <h4 className="font-bold text-sm text-gray-900 dark:text-white">{p.title}</h4>
+                        <h4 className="font-bold text-xs text-gray-900 dark:text-white">{p.title}</h4>
                         {p.description && <p className="text-xs text-gray-600 dark:text-zinc-300 leading-relaxed">{p.description}</p>}
                         {p.end_date && <p className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Valid until: {p.end_date}</p>}
                       </div>
@@ -302,19 +302,19 @@ export default function BusinessDetails() {
 
             {/* EVENTS TAB */}
             {activeTab === 'events' && (
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-4 shadow-xs">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Upcoming Business Events</h3>
+              <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-4 transition-colors">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Upcoming Business Events</h3>
                 {events.length === 0 ? (
-                  <p className="text-sm text-gray-500">No upcoming events scheduled.</p>
+                  <p className="text-xs text-gray-500">No upcoming events scheduled.</p>
                 ) : (
                   <div className="space-y-4">
                     {events.map((e) => (
-                      <div key={e.id} className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 flex items-start gap-4 shadow-xs">
-                        <div className="p-3 bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/50 text-[#003E83] dark:text-blue-300 rounded-xl shrink-0">
-                          <Calendar className="w-6 h-6" />
+                      <div key={e.id} className="p-4 bg-gray-50 dark:bg-zinc-800/60 rounded-md border border-gray-200 dark:border-zinc-700/60 flex items-start gap-4">
+                        <div className="p-2.5 bg-blue-50 dark:bg-zinc-800 border border-blue-100 dark:border-zinc-700 text-[#003E83] dark:text-[#60a5fa] rounded-md shrink-0">
+                          <Calendar className="w-5 h-5" />
                         </div>
                         <div className="space-y-1">
-                          <h4 className="font-bold text-sm text-gray-900 dark:text-white">{e.title}</h4>
+                          <h4 className="font-bold text-xs text-gray-900 dark:text-white">{e.title}</h4>
                           <p className="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">{e.description}</p>
                           <p className="text-[11px] text-gray-400 font-medium">{e.start_date} | {e.location || 'At business venue'}</p>
                         </div>
@@ -327,14 +327,14 @@ export default function BusinessDetails() {
 
             {/* GALLERY TAB */}
             {activeTab === 'gallery' && (
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-4">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Photo Gallery</h3>
+              <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-4 transition-colors">
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Photo Gallery</h3>
                 {gallery.length === 0 ? (
-                  <p className="text-sm text-gray-500">No gallery photos uploaded.</p>
+                  <p className="text-xs text-gray-500">No gallery photos uploaded.</p>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {gallery.map((g, idx) => (
-                      <div key={g.id || idx} className="aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-zinc-800">
+                      <div key={g.id || idx} className="aspect-square rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700">
                         <img src={g.image_url || g} alt={g.caption || 'Business photo'} className="w-full h-full object-cover hover:scale-105 transition-transform" />
                       </div>
                     ))}
@@ -345,14 +345,14 @@ export default function BusinessDetails() {
 
             {/* REVIEWS TAB */}
             {activeTab === 'reviews' && (
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-6">
-                <div className="flex items-center justify-between">
+              <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-4 transition-colors">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-zinc-800">
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Customer Reviews</h3>
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white">Customer Reviews</h3>
                     <div className="flex items-center gap-2 mt-1">
-                      <div className="flex items-center text-amber-400">
-                        <Star className="w-4 h-4 fill-amber-400" />
-                        <span className="font-extrabold text-sm text-gray-900 dark:text-white ml-1">{Number(business.rating || 0).toFixed(1)}</span>
+                      <div className="flex items-center text-amber-500">
+                        <Star className="w-4 h-4 fill-amber-500" />
+                        <span className="font-bold text-xs text-gray-900 dark:text-white ml-1">{Number(business.rating || 0).toFixed(1)}</span>
                       </div>
                       <span className="text-xs text-gray-400">({reviews.length} reviews)</span>
                     </div>
@@ -360,13 +360,10 @@ export default function BusinessDetails() {
 
                   <button
                     onClick={() => {
-                      if (!isAuthenticated) {
-                        openAuthModal('login');
-                      } else {
-                        setIsReviewModalOpen(true);
-                      }
+                      if (!isAuthenticated) openAuthModal('login');
+                      else setIsReviewModalOpen(true);
                     }}
-                    className="px-4 py-2 bg-[#003E83] hover:bg-[#002e62] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
+                    className="px-3.5 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs transition-colors cursor-pointer"
                   >
                     Write a Review
                   </button>
@@ -374,31 +371,30 @@ export default function BusinessDetails() {
 
                 {/* Review Items */}
                 {reviews.length === 0 ? (
-                  <p className="text-sm text-gray-500 py-6 text-center">Be the first to review this business!</p>
+                  <p className="text-xs text-gray-500 py-6 text-center">Be the first to review this business!</p>
                 ) : (
-                  <div className="divide-y divide-gray-100 dark:divide-zinc-800 space-y-4">
+                  <div className="space-y-3">
                     {reviews.map((r) => (
-                      <div key={r.id} className="pt-4 space-y-2">
+                      <div key={r.id} className="p-4 rounded-md bg-gray-50 dark:bg-zinc-800/60 border border-gray-200 dark:border-zinc-700/60 space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 rounded-full bg-blue-100 text-[#003E83] font-bold text-xs flex items-center justify-center">
+                            <div className="w-6 h-6 rounded-full bg-[#003E83] dark:bg-[#60a5fa] text-white dark:text-zinc-950 font-bold text-[10px] flex items-center justify-center">
                               {r.user?.name?.charAt(0) || 'U'}
                             </div>
                             <span className="font-bold text-xs text-gray-900 dark:text-white">{r.user?.name || 'Tourist'}</span>
                           </div>
-                          <div className="flex items-center text-amber-400">
-                            {[...Array(5)].map((_, i) => (
-                              <Star key={i} className={`w-3.5 h-3.5 ${i < r.rating ? 'fill-amber-400' : 'text-gray-300 dark:text-zinc-700'}`} />
-                            ))}
+                          <div className="flex items-center gap-1 bg-white dark:bg-zinc-800 px-2 py-0.5 rounded border border-gray-200 dark:border-zinc-700 text-xs font-bold text-amber-500">
+                            <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                            <span>{r.rating}.0</span>
                           </div>
                         </div>
                         {r.title && <h5 className="font-bold text-xs text-gray-800 dark:text-zinc-200">{r.title}</h5>}
-                        <p className="text-xs text-gray-600 dark:text-zinc-300">{r.comment}</p>
+                        <p className="text-xs text-gray-600 dark:text-zinc-300 leading-relaxed">{r.comment}</p>
 
                         {/* Owner Replies */}
                         {r.replies && r.replies.length > 0 && (
-                          <div className="mt-3 pl-4 border-l-2 border-[#003E83] bg-blue-50/50 dark:bg-zinc-800/60 p-3 rounded-r-xl space-y-1">
-                            <span className="text-[10px] font-bold uppercase text-[#003E83] dark:text-blue-400">Response from Business Owner</span>
+                          <div className="mt-3 pl-3 border-l-2 border-[#003E83] dark:border-[#60a5fa] bg-white dark:bg-zinc-800 p-2.5 rounded-r-md space-y-1">
+                            <span className="text-[10px] font-bold uppercase text-[#003E83] dark:text-[#60a5fa]">Response from Business Owner</span>
                             {r.replies.map((reply) => (
                               <p key={reply.id} className="text-xs text-gray-700 dark:text-zinc-300">{reply.reply}</p>
                             ))}
@@ -413,9 +409,9 @@ export default function BusinessDetails() {
           </div>
 
           {/* Sidebar Info Card */}
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-200 dark:border-zinc-800 space-y-4 shadow-sm">
-              <h4 className="font-bold text-sm text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2">
+          <div className="space-y-4">
+            <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-4 transition-colors">
+              <h4 className="font-bold text-sm text-gray-900 dark:text-white pb-3 border-b border-gray-200 dark:border-zinc-800">
                 Business Contact & Info
               </h4>
 
@@ -436,7 +432,7 @@ export default function BusinessDetails() {
               {business.website && (
                 <div className="flex items-center gap-3 text-xs text-gray-700 dark:text-zinc-300">
                   <Globe className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <a href={business.website} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline truncate">
+                  <a href={business.website} target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline truncate">
                     {business.website}
                   </a>
                 </div>
@@ -447,9 +443,9 @@ export default function BusinessDetails() {
                   href={mapsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#003E83] hover:bg-[#002e62] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
+                  className="w-full py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md flex items-center justify-center gap-1.5 transition-colors"
                 >
-                  <MapPin className="w-4 h-4" /> Open in Google Maps
+                  <MapPin className="w-3.5 h-3.5" /> Open in Google Maps
                 </a>
               </div>
             </div>

@@ -27,10 +27,10 @@ export default function ProtectedRoute({ allowedRoles }) {
   if (allowedRoles && allowedRoles.length > 0) {
     const normAllowed = allowedRoles.map((r) => r.toLowerCase().trim().replace(/[\s/-]+/g, '_'));
 
-    const hasPermission = normAllowed.includes(normRole) || normRole === 'super_admin' || normRole === 'admin';
+    const isFullAdmin = ['super_admin', 'admin', 'superadmin', 'administrator'].includes(normRole);
+    const hasPermission = normAllowed.includes(normRole) || isFullAdmin;
 
     if (!hasPermission) {
-      // Direct user to their appropriate role home
       let redirectPath = '/';
       if (normRole === 'business_owner') redirectPath = '/business/dashboard';
       if (normRole === 'guide_editor') redirectPath = '/guide/dashboard';

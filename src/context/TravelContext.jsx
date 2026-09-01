@@ -22,6 +22,8 @@ export const TravelProvider = ({ children }) => {
     setTimeout(() => setToast(null), 3000);
   };
 
+  const [loadingGlobal, setLoadingGlobal] = useState(true);
+
   useEffect(() => {
     const fetchGlobalData = async () => {
       try {
@@ -42,6 +44,8 @@ export const TravelProvider = ({ children }) => {
         }
       } catch (err) {
         console.error('Failed to load global tourism metadata', err);
+      } finally {
+        setLoadingGlobal(false);
       }
     };
 
@@ -129,6 +133,7 @@ export const TravelProvider = ({ children }) => {
         categories,
         provinces,
         settings,
+        loadingGlobal,
         chatOpen,
         setChatOpen,
         toggleChat: () => setChatOpen((prev) => !prev),

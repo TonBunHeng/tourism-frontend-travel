@@ -111,142 +111,170 @@ export default function GuidePlaceForm() {
   if (fetching) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
-        <Loader2 className="w-8 h-8 text-[#003E83] animate-spin" />
-        <p className="text-sm font-medium text-gray-500">Loading form...</p>
+        <Loader2 className="w-8 h-8 text-[#003E83] dark:text-[#60a5fa] animate-spin" />
+        <p className="text-xs font-medium text-gray-500 dark:text-zinc-400">Loading destination data...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/50 dark:bg-zinc-950 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto space-y-6">
-        
-        <div className="flex items-center justify-between">
-          <Link to="/guide/places" className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-gray-900">
-            <ArrowLeft className="w-4 h-4" /> Back to Places
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
+        <div>
+          <Link
+            to="/guide/places"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white mb-1 transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Destinations</span>
           </Link>
-          <h1 className="text-xl font-extrabold text-gray-900 dark:text-white">
-            {isEdit ? 'Edit Destination' : 'Add New Destination'}
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+            {isEdit ? 'Edit Destination Guide' : 'Add New Destination Guide'}
           </h1>
+          <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
+            Curate heritage sites, temple descriptions, visitor opening hours, and entrance fee details.
+          </p>
+        </div>
+      </div>
+
+      {/* Form Container */}
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-6 shadow-xs transition-colors">
+        <div className="space-y-4">
+          <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider border-b border-gray-100 dark:border-zinc-800 pb-2">
+            Destination Details
+          </h3>
+
+          <div>
+            <label className="text-xs font-semibold text-gray-700 dark:text-zinc-300 block mb-1">
+              Destination Name <span className="text-rose-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="e.g. Banteay Srei Temple"
+              className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs text-gray-900 dark:text-white focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-semibold text-gray-700 dark:text-zinc-300 block mb-1">Category <span className="text-rose-500">*</span></label>
+              <select
+                name="category_id"
+                value={formData.category_id}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs text-gray-900 dark:text-white focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
+                required
+              >
+                <option value="">Select Category</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-gray-700 dark:text-zinc-300 block mb-1">Province <span className="text-rose-500">*</span></label>
+              <select
+                name="province_id"
+                value={formData.province_id}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs text-gray-900 dark:text-white focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
+                required
+              >
+                <option value="">Select Province</option>
+                {provinces.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-gray-700 dark:text-zinc-300 block mb-1">Address & Location</label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="District, Sangkat, Province location info"
+              className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs text-gray-900 dark:text-white focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-semibold text-gray-700 dark:text-zinc-300 block mb-1">Opening Hours</label>
+              <input
+                type="text"
+                name="opening_hours"
+                value={formData.opening_hours}
+                onChange={handleChange}
+                placeholder="e.g. 07:30 AM - 05:30 PM"
+                className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs text-gray-900 dark:text-white focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-gray-700 dark:text-zinc-300 block mb-1">Entrance Fee</label>
+              <input
+                type="text"
+                name="entrance_fee"
+                value={formData.entrance_fee}
+                onChange={handleChange}
+                placeholder="e.g. Included in Angkor Pass / Free Entrance"
+                className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs text-gray-900 dark:text-white focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-gray-700 dark:text-zinc-300 block mb-1">Cover Image URL</label>
+            <input
+              type="text"
+              name="cover_image_url"
+              value={formData.cover_image_url}
+              onChange={handleChange}
+              placeholder="https://example.com/banteay_srei.jpg"
+              className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs text-gray-900 dark:text-white focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-gray-700 dark:text-zinc-300 block mb-1">Description & Heritage Story</label>
+            <textarea
+              name="description"
+              rows={5}
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Historical background, architecture notes, visitor guidelines..."
+              className="w-full px-3 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs text-gray-900 dark:text-white focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none resize-none"
+            />
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-3xl border border-gray-200 dark:border-zinc-800 space-y-6 shadow-sm">
-          <div className="space-y-4">
-            <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block mb-1">
-                Destination Name <span className="text-rose-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="e.g. Banteay Srei Temple"
-                className="w-full p-2.5 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl text-xs font-semibold text-gray-900 dark:text-white"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block mb-1">Category <span className="text-rose-500">*</span></label>
-                <select
-                  name="category_id"
-                  value={formData.category_id}
-                  onChange={handleChange}
-                  className="w-full p-2.5 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl text-xs font-semibold text-gray-900 dark:text-white"
-                  required
-                >
-                  <option value="">Select Category</option>
-                  {categories.map(c => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block mb-1">Province <span className="text-rose-500">*</span></label>
-                <select
-                  name="province_id"
-                  value={formData.province_id}
-                  onChange={handleChange}
-                  className="w-full p-2.5 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl text-xs font-semibold text-gray-900 dark:text-white"
-                  required
-                >
-                  <option value="">Select Province</option>
-                  {provinces.map(p => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block mb-1">Address</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="District, Province, Location info"
-                className="w-full p-2.5 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl text-xs font-semibold text-gray-900 dark:text-white"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block mb-1">Opening Hours</label>
-                <input
-                  type="text"
-                  name="opening_hours"
-                  value={formData.opening_hours}
-                  onChange={handleChange}
-                  placeholder="e.g. 07:30 AM - 05:30 PM"
-                  className="w-full p-2.5 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl text-xs font-semibold text-gray-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block mb-1">Entrance Fee</label>
-                <input
-                  type="text"
-                  name="entrance_fee"
-                  value={formData.entrance_fee}
-                  onChange={handleChange}
-                  placeholder="e.g. Included in Angkor Pass / Free"
-                  className="w-full p-2.5 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl text-xs font-semibold text-gray-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block mb-1">Description</label>
-              <textarea
-                name="description"
-                rows={5}
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Historical background, architecture notes, visitor guidelines..."
-                className="w-full p-2.5 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl text-xs font-semibold text-gray-900 dark:text-white"
-              />
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-end gap-3">
-            <Link to="/guide/places" className="px-5 py-2.5 bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 font-bold text-xs rounded-xl">
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2.5 bg-[#003E83] text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              <span>{isEdit ? 'Update Destination' : 'Create Destination'}</span>
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="pt-4 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-end gap-3">
+          <Link
+            to="/guide/places"
+            className="px-4 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-700 text-xs font-semibold rounded-md transition-colors"
+          >
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-4 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50 transition-colors"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            <span>{isEdit ? 'Update Destination' : 'Create Destination'}</span>
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

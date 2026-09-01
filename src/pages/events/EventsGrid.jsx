@@ -1,13 +1,12 @@
 import EventCard from '../../components/common/EventCard';
-import { Calendar } from 'lucide-react';
+import { Calendar, Loader2 } from 'lucide-react';
 
 export default function EventsGrid({ events, loading, onViewDetails }) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-64 bg-gray-200 dark:bg-zinc-800 rounded-lg"></div>
-        ))}
+      <div className="min-h-[40vh] flex flex-col items-center justify-center gap-3">
+        <Loader2 className="w-8 h-8 text-[#003E83] dark:text-[#60a5fa] animate-spin" />
+        <p className="text-xs font-medium text-gray-500 dark:text-zinc-400">Fetching events & festival calendar...</p>
       </div>
     );
   }

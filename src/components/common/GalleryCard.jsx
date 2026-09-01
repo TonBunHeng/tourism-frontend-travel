@@ -37,7 +37,7 @@ export default function GalleryCard({ item, onPreview }) {
   return (
     <div
       onClick={handleClick}
-      className="group bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between cursor-pointer"
+      className="group bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg overflow-hidden shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between cursor-pointer"
     >
       <div>
         {/* Cover Photo or Video Thumbnail */}

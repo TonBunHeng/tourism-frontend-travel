@@ -62,7 +62,7 @@ export default function DeletionRequests() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <DeletionHeader />
 
       <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-5 shadow-xs transition-colors">
@@ -118,14 +118,16 @@ export default function DeletionRequests() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-md shadow-xs transition-colors cursor-pointer flex items-center gap-2"
-          >
-            <ShieldAlert className="w-4 h-4" />
-            {loading ? 'Submitting Request...' : 'Submit Deletion Request'}
-          </button>
+          <div className="flex justify-end pt-1">
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-md shadow-xs transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+            >
+              <ShieldAlert className="w-3.5 h-3.5" />
+              {loading ? 'Submitting Request...' : 'Submit Deletion Request'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

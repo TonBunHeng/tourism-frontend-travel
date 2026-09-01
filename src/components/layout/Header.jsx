@@ -237,7 +237,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 transition-colors shadow-xs">
-      <div className="max-w-[1536px] mx-auto px-3 sm:px-5 lg:px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-2 xl:gap-3">
           
           {/* Brand Logo */}
@@ -305,24 +305,7 @@ export default function Header() {
               )}
             </form>
 
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={handleToggleTheme}
-              className="p-2 text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
-              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-            </button>
 
-            {/* AI Assistant Floating Launcher */}
-            <button
-              onClick={toggleChat}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg shadow-xs transition-all cursor-pointer active:scale-98"
-              title="Open Angkor Verse AI"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-              <span className="hidden xl:inline">AI Assistant</span>
-            </button>
 
             {/* Wishlist Icon */}
             <Link
@@ -359,7 +342,7 @@ export default function Header() {
                 </button>
 
                 {notifDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-zinc-900 rounded-xl shadow-xl border border-gray-200 dark:border-zinc-800 py-2 z-50 animate-smooth-pop text-xs">
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-zinc-900 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-800 py-2 z-50 animate-smooth-pop text-xs">
                     <div className="px-4 py-2 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-gray-900 dark:text-white">Notifications</span>
@@ -438,17 +421,6 @@ export default function Header() {
               </div>
             )}
 
-            {/* Quick Role Dashboard Link if Owner/Guide */}
-            {isAuthenticated && (isBusinessOwner || isGuideEditor) && (
-              <Link
-                to={getDashboardPath()}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-amber-900 bg-amber-100 hover:bg-amber-200 dark:bg-amber-950/80 dark:text-amber-300 dark:hover:bg-amber-900/90 rounded-lg shadow-xs transition-colors shrink-0"
-              >
-                <LayoutDashboard className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                <span>Dashboard</span>
-              </Link>
-            )}
-
             {/* User Profile or Sign In / Register */}
             {isAuthenticated ? (
               <div className="relative shrink-0" ref={dropdownRef}>
@@ -495,19 +467,44 @@ export default function Header() {
                       {(isBusinessOwner || isGuideEditor) && (
                         <Link
                           to={getDashboardPath()}
-                          className="flex items-center gap-2.5 px-3.5 py-2 text-[#003E83] dark:text-[#60a5fa] bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 font-bold transition-colors"
+                          className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                            isLinkActive(getDashboardPath()) || location.pathname.startsWith('/business/') || location.pathname.startsWith('/guide/')
+                              ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                              : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                          }`}
                         >
-                          <LayoutDashboard className="w-3.5 h-3.5" /> 
-                          {isBusinessOwner ? 'Business Dashboard' : 'Guide Dashboard'}
+                          <LayoutDashboard className={`w-3.5 h-3.5 ${
+                            isLinkActive(getDashboardPath()) || location.pathname.startsWith('/business/') || location.pathname.startsWith('/guide/')
+                              ? 'text-[#003E83] dark:text-[#60a5fa]'
+                              : 'text-gray-400 dark:text-zinc-500'
+                          }`} /> 
+                          <span>{isBusinessOwner ? 'Business Dashboard' : 'Guide Dashboard'}</span>
                         </Link>
                       )}
 
-                      <Link to="/profile" className="flex items-center gap-2.5 px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium transition-colors">
-                        <User className="w-3.5 h-3.5 text-gray-400" /> My Profile
+                      <Link
+                        to="/profile"
+                        className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                          isLinkActive('/profile')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
+                        <User className={`w-3.5 h-3.5 ${isLinkActive('/profile') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                        <span>My Profile</span>
                       </Link>
-                      <Link to="/notifications" className="flex items-center justify-between px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium transition-colors">
+
+                      <Link
+                        to="/notifications"
+                        className={`flex items-center justify-between px-3.5 py-2 transition-colors ${
+                          isLinkActive('/notifications')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
                         <div className="flex items-center gap-2.5">
-                          <Bell className="w-3.5 h-3.5 text-gray-400" /> Notifications
+                          <Bell className={`w-3.5 h-3.5 ${isLinkActive('/notifications') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                          <span>Notifications</span>
                         </div>
                         {unreadCount > 0 && (
                           <span className="px-1.5 py-0.2 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 rounded-full font-bold text-[10px]">
@@ -515,31 +512,86 @@ export default function Header() {
                           </span>
                         )}
                       </Link>
-                      <Link to="/wishlist" className="flex items-center justify-between px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium transition-colors">
+
+                      <Link
+                        to="/wishlist"
+                        className={`flex items-center justify-between px-3.5 py-2 transition-colors ${
+                          isLinkActive('/wishlist') || isLinkActive('/favorites')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
                         <div className="flex items-center gap-2.5">
-                          <Heart className="w-3.5 h-3.5 text-gray-400" /> Saved Wishlist
+                          <Heart className={`w-3.5 h-3.5 ${isLinkActive('/wishlist') || isLinkActive('/favorites') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                          <span>Saved Wishlist</span>
                         </div>
                         {wishlistCount > 0 && (
                           <span className="text-gray-400 text-[11px] font-semibold">{wishlistCount}</span>
                         )}
                       </Link>
-                      <Link to="/achievements" className="flex items-center gap-2.5 px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium transition-colors">
-                        <Award className="w-3.5 h-3.5 text-gray-400" /> Badges & Points
+
+                      <Link
+                        to="/achievements"
+                        className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                          isLinkActive('/achievements')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
+                        <Award className={`w-3.5 h-3.5 ${isLinkActive('/achievements') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                        <span>Badges & Points</span>
                       </Link>
+
                       <button 
                         onClick={() => { setDropdownOpen(false); toggleChat(); }} 
                         className="w-full flex items-center gap-2.5 px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] text-left font-medium transition-colors cursor-pointer"
                       >
-                        <MessageSquare className="w-3.5 h-3.5 text-gray-400" /> AI Support Chat
+                        <MessageSquare className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500" />
+                        <span>AI Support Chat</span>
                       </button>
                     </div>
 
                     <div className="border-t border-gray-100 dark:border-zinc-800/80 py-1">
-                      <Link to="/settings" className="flex items-center gap-2.5 px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium transition-colors">
-                        <Settings className="w-3.5 h-3.5 text-gray-400" /> Emergency & Help
+                      <button
+                        type="button"
+                        onClick={handleToggleTheme}
+                        className="w-full flex items-center justify-between px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] text-left font-medium transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          {isDarkMode ? (
+                            <Sun className="w-3.5 h-3.5 text-amber-400" />
+                          ) : (
+                            <Moon className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500" />
+                          )}
+                          <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+                        </div>
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400">
+                          {isDarkMode ? 'Dark' : 'Light'}
+                        </span>
+                      </button>
+
+                      <Link
+                        to="/settings"
+                        className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                          isLinkActive('/settings')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
+                        <Settings className={`w-3.5 h-3.5 ${isLinkActive('/settings') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                        <span>Emergency & Help</span>
                       </Link>
-                      <Link to="/deletion-request" className="flex items-center gap-2.5 px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium transition-colors">
-                        <ShieldAlert className="w-3.5 h-3.5 text-gray-400" /> Privacy & Data
+
+                      <Link
+                        to="/deletion-request"
+                        className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                          isLinkActive('/deletion-request') || isLinkActive('/delete')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
+                        <ShieldAlert className={`w-3.5 h-3.5 ${isLinkActive('/deletion-request') || isLinkActive('/delete') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                        <span>Privacy & Data</span>
                       </Link>
                     </div>
 

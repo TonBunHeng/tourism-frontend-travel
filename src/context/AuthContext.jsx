@@ -127,22 +127,26 @@ export const AuthProvider = ({ children }) => {
     setAuthModal({ isOpen: false, mode: 'login' });
   };
 
-  const role = user?.role || 'user';
-  const isBusinessOwner = role === 'business_owner' || role === 'Business Owner';
-  const isGuideEditor = role === 'guide_editor' || role === 'Guide / Editor';
-  const isTourist = role === 'user' || role === 'User' || role === 'tourist';
-  const isAdmin = role === 'admin' || role === 'super_admin' || role === 'Admin' || role === 'Super Admin';
+  const rawRole = user?.role || 'user';
+  const normRole = String(rawRole).toLowerCase().trim().replace(/[\s/-]+/g, '_');
+
+  const isSuperAdmin = normRole === 'super_admin' || normRole === 'superadmin';
+  const isAdmin = normRole === 'admin' || normRole === 'super_admin' || normRole === 'superadmin' || normRole === 'administrator';
+  const isBusinessOwner = normRole === 'business_owner' || normRole === 'business' || isAdmin;
+  const isGuideEditor = normRole === 'guide_editor' || normRole === 'guide' || normRole === 'editor' || isAdmin;
+  const isTourist = normRole === 'user' || normRole === 'tourist' || normRole === 'member';
 
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
-        role,
+        role: rawRole,
+        isSuperAdmin,
+        isAdmin,
         isBusinessOwner,
         isGuideEditor,
         isTourist,
-        isAdmin,
         isAuthenticated: !!user && !!token,
         loading,
         login,

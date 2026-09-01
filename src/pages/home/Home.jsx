@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, Camera, Briefcase } from 'lucide-react';
+import { ArrowRight, Award, Camera, Briefcase, Loader2 } from 'lucide-react';
 import { placeService } from '../../services/placeService';
 import { eventService } from '../../services/eventService';
 import { galleryService } from '../../services/galleryService';
@@ -81,6 +81,15 @@ export default function Home() {
       setSelectedMedia(featuredGalleries[currentIndex - 1]);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
+        <Loader2 className="w-8 h-8 text-[#003E83] dark:text-[#60a5fa] animate-spin" />
+        <p className="text-xs font-medium text-gray-500 dark:text-zinc-400">Loading AngkorVerses travel platform...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-10 pb-12">
