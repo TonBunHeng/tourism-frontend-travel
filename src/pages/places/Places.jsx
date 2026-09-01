@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { placeService } from '../../services/placeService';
@@ -21,6 +21,7 @@ export default function Places() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearch(searchParams.get('search') || '');
     setProvinceId(searchParams.get('province_id') || '');
     setCategoryId(searchParams.get('category_id') || '');

@@ -1,4 +1,3 @@
-import React from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AppRoutes from './routes/AppRoutes';
 import './styles/globals.css';

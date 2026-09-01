@@ -1,4 +1,3 @@
-import React from 'react';
 import ProvinceCard from '../../components/common/ProvinceCard';
 import { Compass } from 'lucide-react';
 

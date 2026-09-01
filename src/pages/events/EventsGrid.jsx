@@ -1,4 +1,3 @@
-import React from 'react';
 import EventCard from '../../components/common/EventCard';
 import { Calendar } from 'lucide-react';
 

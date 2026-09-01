@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Camera } from 'lucide-react';
 import { galleryService } from '../../services/galleryService';
 import GalleriesHeader from './GalleriesHeader';

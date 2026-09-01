@@ -5,9 +5,8 @@ import {
   AlertCircle, 
   AlertTriangle, 
   Info, 
-  Trash2, 
-  X,
-  Sparkles
+  Trash2,
+  X
 } from 'lucide-react';
 
 export default function AlertModal({

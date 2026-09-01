@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { X, Star, AlertCircle } from 'lucide-react';
 import { reviewService } from '../../services/reviewService';
-import { useTravel } from '../../context/TravelContext';
 import { useAlert } from '../../context/AlertContext';
 
 export default function ReviewModal({ isOpen, onClose, place, onReviewSubmitted }) {
-  const { showToast } = useTravel();
   const { showSuccess, showError } = useAlert();
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { categoryService } from '../services/categoryService';
 import { provinceService } from '../services/provinceService';
 import { favoriteService } from '../services/favoriteService';
@@ -54,8 +55,8 @@ export const TravelProvider = ({ children }) => {
         if (res?.data && Array.isArray(res.data)) {
           setFavorites(res.data);
         }
-      } catch (e) {
-        console.error('Failed to fetch favorites', e);
+      } catch (err) {
+        console.error('Failed to fetch favorites', err);
       }
     } else {
       setFavorites([]);
@@ -63,8 +64,19 @@ export const TravelProvider = ({ children }) => {
   }, [isAuthenticated]);
 
   useEffect(() => {
-    fetchFavorites();
-  }, [fetchFavorites]);
+    if (isAuthenticated) {
+      favoriteService.getFavorites().then((res) => {
+        if (res?.data && Array.isArray(res.data)) {
+          setFavorites(res.data);
+        }
+      }).catch((err) => {
+        console.error('Failed to fetch favorites', err);
+      });
+    } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFavorites([]);
+    }
+  }, [isAuthenticated]);
 
   const isFavorite = (placeId) => {
     if (!placeId) return false;
@@ -90,7 +102,7 @@ export const TravelProvider = ({ children }) => {
         await favoriteService.removeFavorite(targetId);
         setFavorites((prev) => prev.filter((f) => Number(f.place_id) !== targetId && Number(f.place?.id) !== targetId));
         showToast(`Removed "${place.name || 'destination'}" from wishlist`, 'info');
-      } catch (e) {
+      } catch {
         showToast('Failed to remove favorite', 'error');
       }
     } else {
@@ -100,7 +112,7 @@ export const TravelProvider = ({ children }) => {
           setFavorites((prev) => [res.data, ...prev.filter((f) => Number(f.place_id) !== targetId)]);
           showToast(`Added "${place.name || 'destination'}" to wishlist!`, 'success');
         }
-      } catch (e) {
+      } catch {
         showToast('Failed to add favorite', 'error');
       }
     }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, ArrowRight, Landmark, Trees, Waves, Castle, Utensils } from 'lucide-react';
 

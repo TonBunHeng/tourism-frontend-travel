@@ -1,4 +1,3 @@
-import React from 'react';
 import { Award, Lock, CheckCircle2 } from 'lucide-react';
 
 export default function AchievementsGrid({ achievements, loading }) {

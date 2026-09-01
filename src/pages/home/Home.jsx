@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, Camera, Image as ImageIcon } from 'lucide-react';
+import { ArrowRight, Award, Camera, Briefcase } from 'lucide-react';
 import { placeService } from '../../services/placeService';
 import { eventService } from '../../services/eventService';
 import { galleryService } from '../../services/galleryService';
+import businessService from '../../services/businessService';
 import { useTravel } from '../../context/TravelContext';
 import HomeHero from './HomeHero';
 import PlaceCard from '../../components/common/PlaceCard';
+import BusinessCard from '../../components/common/BusinessCard';
 import EventCard from '../../components/common/EventCard';
 import ProvinceCard from '../../components/common/ProvinceCard';
 import GalleryCard from '../../components/common/GalleryCard';
@@ -16,6 +18,7 @@ import MediaLightboxModal from '../../components/common/MediaLightboxModal';
 export default function Home() {
   const { provinces } = useTravel();
   const [featuredPlaces, setFeaturedPlaces] = useState([]);
+  const [featuredBusinesses, setFeaturedBusinesses] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [featuredGalleries, setFeaturedGalleries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,14 +32,19 @@ export default function Home() {
   useEffect(() => {
     const loadHomeData = async () => {
       try {
-        const [placesRes, eventsRes, galleryRes] = await Promise.allSettled([
+        const [placesRes, bizRes, eventsRes, galleryRes] = await Promise.allSettled([
           placeService.getPlaces({ per_page: 6, sort_by: 'popular' }),
+          businessService.getBusinesses({ per_page: 3, sort: 'rating' }),
           eventService.getEvents({ per_page: 3, status: 'Upcoming' }),
           galleryService.getGalleries({ per_page: 3 })
         ]);
 
         if (placesRes.status === 'fulfilled' && placesRes.value?.data) {
           setFeaturedPlaces(placesRes.value.data);
+        }
+        if (bizRes.status === 'fulfilled') {
+          const list = bizRes.value?.data?.businesses || bizRes.value?.data || bizRes.value || [];
+          setFeaturedBusinesses(Array.isArray(list) ? list.slice(0, 3) : []);
         }
         if (eventsRes.status === 'fulfilled' && eventsRes.value?.data) {
           setUpcomingEvents(eventsRes.value.data);
@@ -110,6 +118,36 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      {/* Verified Tourism Businesses */}
+      {featuredBusinesses.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2 mb-4 pb-2 border-b border-gray-200 dark:border-zinc-800">
+            <div>
+              <div className="flex items-center gap-1.5">
+                <Briefcase className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                  Verified Local Hospitality & Businesses
+                </h2>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-zinc-400">Top-rated hotels, Khmer dining, and tour operators</p>
+            </div>
+            <Link
+              to="/businesses"
+              className="flex items-center gap-1 text-xs font-semibold text-[#003E83] dark:text-[#60a5fa] hover:underline"
+            >
+              Explore All Businesses
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredBusinesses.map((biz) => (
+              <BusinessCard key={biz.id} business={biz} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Photo & Media Gallery */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -254,4 +292,3 @@ export default function Home() {
     </div>
   );
 }
-

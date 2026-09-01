@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Image as ImageIcon, Video, Eye, X, Play } from 'lucide-react';
 
 const isVideoItem = (item) => {

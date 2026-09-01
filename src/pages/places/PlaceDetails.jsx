@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   MapPin, 
   Star, 
   Heart, 
-  Clock, 
   ArrowLeft, 
   ExternalLink,
   Share2,
@@ -26,7 +25,7 @@ export default function PlaceDetails() {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const fetchPlaceDetail = async () => {
+  const fetchPlaceDetail = useCallback(async () => {
     try {
       setLoading(true);
       const res = await placeService.getPlaceById(id);
@@ -39,12 +38,13 @@ export default function PlaceDetails() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPlaceDetail();
     window.scrollTo(0, 0);
-  }, [id]);
+  }, [id, fetchPlaceDetail]);
 
   if (loading) {
     return (

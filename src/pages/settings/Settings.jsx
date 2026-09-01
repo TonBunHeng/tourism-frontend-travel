@@ -1,24 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Phone, ShieldAlert, FileText, Globe } from 'lucide-react';
+import { useEffect } from 'react';
+import { ShieldAlert, FileText } from 'lucide-react';
 import { settingService } from '../../services/settingService';
 import SettingsHeader from './SettingsHeader';
 
 export default function Settings() {
-  const [settings, setSettings] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const res = await settingService.getSettings();
-        if (res?.data) setSettings(res.data);
-      } catch (err) {
-        console.error('Failed to load settings', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSettings();
+    settingService.getSettings().catch((err) => {
+      console.error('Failed to load settings', err);
+    });
   }, []);
 
   return (

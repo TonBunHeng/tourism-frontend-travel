@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 
 const AuthContext = createContext(null);
@@ -11,6 +12,12 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('auth_token') || localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
   const [authModal, setAuthModal] = useState({ isOpen: false, mode: 'login' });
+
+  const logout = async () => {
+    await authService.logout();
+    setUser(null);
+    setToken(null);
+  };
 
   useEffect(() => {
     const initAuth = async () => {
@@ -80,12 +87,6 @@ export const AuthProvider = ({ children }) => {
     throw new Error(res?.message || 'Facebook login failed');
   };
 
-  const logout = async () => {
-    await authService.logout();
-    setUser(null);
-    setToken(null);
-  };
-
   const updateProfile = async (data) => {
     const res = await authService.updateProfile(data);
     if (res?.data) {
@@ -126,11 +127,22 @@ export const AuthProvider = ({ children }) => {
     setAuthModal({ isOpen: false, mode: 'login' });
   };
 
+  const role = user?.role || 'user';
+  const isBusinessOwner = role === 'business_owner' || role === 'Business Owner';
+  const isGuideEditor = role === 'guide_editor' || role === 'Guide / Editor';
+  const isTourist = role === 'user' || role === 'User' || role === 'tourist';
+  const isAdmin = role === 'admin' || role === 'super_admin' || role === 'Admin' || role === 'Super Admin';
+
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
+        role,
+        isBusinessOwner,
+        isGuideEditor,
+        isTourist,
+        isAdmin,
         isAuthenticated: !!user && !!token,
         loading,
         login,

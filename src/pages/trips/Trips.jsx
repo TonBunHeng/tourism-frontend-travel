@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   MapPin, Calendar, Users, DollarSign, Plus, Copy, Trash2,
-  Compass, ArrowRight, CheckCircle2, Clock, Eye, AlertCircle
+  Compass, ArrowRight, CheckCircle2, Clock, AlertCircle
 } from 'lucide-react';
 import tripService from '../../services/tripService';
 import { useAlert } from '../../context/AlertContext';
@@ -31,7 +31,7 @@ export default function Trips() {
     is_public: false,
   });
 
-  const fetchTrips = async () => {
+  const fetchTrips = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -44,11 +44,12 @@ export default function Trips() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTrips();
-  }, [filterStatus]);
+  }, [fetchTrips]);
 
   const handleCreateTrip = async (e) => {
     e.preventDefault();
@@ -86,10 +87,10 @@ export default function Trips() {
     e.preventDefault();
     e.stopPropagation();
     try {
-      const res = await tripService.duplicateTrip(tripId);
+      await tripService.duplicateTrip(tripId);
       showAlert('success', 'Trip Duplicated', 'A copy of the trip was created.');
       fetchTrips();
-    } catch (err) {
+    } catch {
       showAlert('error', 'Failed', 'Could not duplicate trip.');
     }
   };
@@ -103,7 +104,7 @@ export default function Trips() {
       await tripService.deleteTrip(tripId);
       showAlert('success', 'Deleted', 'Trip was removed successfully.');
       setTrips(prev => prev.filter(t => t.id !== tripId));
-    } catch (err) {
+    } catch {
       showAlert('error', 'Failed', 'Could not delete trip.');
     }
   };

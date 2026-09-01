@@ -1,18 +1,35 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, X, Send, Bot, User, Trash2, Sparkles, Plus, ArrowUp } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { MessageSquare, X, User, Trash2, Plus, ArrowUp } from 'lucide-react';
 import { chatService } from '../../services/chatService';
 import { useTravel } from '../../context/TravelContext';
 import logoImg from '../../assets/tourism_logo.png';
 
 export default function ChatWidget() {
-  const { chatOpen, setChatOpen, toggleChat } = useTravel();
+  const { chatOpen, toggleChat } = useTravel();
   const [messages, setMessages] = useState(() => {
     try {
       const saved = sessionStorage.getItem('angkor_travel_chat_msgs');
-      return saved ? JSON.parse(saved) : [];
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
     } catch {
-      return [];
+      // fallback
     }
+    return [
+      {
+        id: 'welcome',
+        sender: 'assistant',
+        message: '🙏 **Choum Reap Sour!** Welcome to AngkorVerses AI Guide.\n\nI can help you explore Angkor temples, plan day-by-day itineraries, check live weather, convert currency, and recommend top local spots.',
+        suggestions: [
+          '🏛️ Top temples in Angkor',
+          '☀️ Siem Reap weather',
+          '🗓️ 3-day travel plan',
+          '💱 100 USD to KHR',
+        ],
+        created_at: new Date().toISOString(),
+      },
+    ];
   });
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -43,26 +60,6 @@ export default function ChatWidget() {
     }
   };
 
-  // Initialize welcome message if empty
-  useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([
-        {
-          id: 'welcome',
-          sender: 'assistant',
-          message: '🙏 **Choum Reap Sour!** Welcome to AngkorVerses AI Guide.\n\nI can help you explore Angkor temples, plan day-by-day itineraries, check live weather, convert currency, and recommend top local spots.',
-          suggestions: [
-            '🏛️ Top temples in Angkor',
-            '☀️ Siem Reap weather',
-            '🗓️ 3-day travel plan',
-            '💱 100 USD to KHR',
-          ],
-          created_at: new Date().toISOString(),
-        },
-      ]);
-    }
-  }, []);
-
   // Save to session storage
   useEffect(() => {
     if (messages.length > 0) {
@@ -74,20 +71,14 @@ export default function ChatWidget() {
     }
   }, [messages]);
 
-  // Refresh single welcome message timestamp to real current time when opening chat
+  // Focus and scroll when chat opens
   useEffect(() => {
     if (chatOpen) {
-      setMessages((prev) => {
-        if (prev.length === 1 && prev[0].sender === 'assistant') {
-          return [{ ...prev[0], created_at: new Date().toISOString() }];
-        }
-        return prev;
-      });
-
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         inputRef.current?.focus();
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 150);
+      return () => clearTimeout(timer);
     }
   }, [chatOpen]);
 
@@ -100,12 +91,12 @@ export default function ChatWidget() {
     if (!text || loading) return;
 
     setInputMessage('');
-
+    const nowISO = new Date().toISOString();
     const userMsg = {
-      id: `usr_${Date.now()}`,
+      id: `usr_${crypto.randomUUID()}`,
       sender: 'user',
       message: text,
-      created_at: new Date().toISOString(),
+      created_at: nowISO,
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -115,24 +106,26 @@ export default function ChatWidget() {
       const res = await chatService.sendAiMessage(text, sessionId);
       const answer = res?.data?.answer || res?.data?.data?.answer || res?.message || 'Thank you! Let me know what else you would like to know about Cambodia.';
       const suggestions = res?.data?.suggestions || res?.data?.data?.suggestions || [];
+      const respISO = new Date().toISOString();
 
       const botMsg = {
-        id: `bot_${Date.now()}`,
+        id: `bot_${crypto.randomUUID()}`,
         sender: 'assistant',
         message: answer,
         suggestions: Array.isArray(suggestions) ? suggestions : [],
-        created_at: new Date().toISOString(),
+        created_at: respISO,
       };
 
       setMessages((prev) => [...prev, botMsg]);
-    } catch (err) {
+    } catch {
+      const errISO = new Date().toISOString();
       setMessages((prev) => [
         ...prev,
         {
-          id: `err_${Date.now()}`,
+          id: `err_${crypto.randomUUID()}`,
           sender: 'assistant',
           message: '⚠️ Angkor Verse AI is currently syncing. You can explore destinations, temples, and festival guides in the menu above!',
-          created_at: new Date().toISOString(),
+          created_at: errISO,
         },
       ]);
     } finally {
@@ -194,7 +187,7 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Floating Action Button (Matches Screenshot) */}
+      {/* Floating Action Button */}
       <button
         onClick={toggleChat}
         className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-[#003E83] hover:bg-[#002e62] text-white shadow-md flex items-center justify-center transition-all duration-200 cursor-pointer"

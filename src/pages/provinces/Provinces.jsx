@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTravel } from '../../context/TravelContext';
 import ProvincesHeader from './ProvincesHeader';
 import ProvincesGrid from './ProvincesGrid';

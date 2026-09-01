@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   X,
   Heart,
@@ -37,15 +37,19 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
   const [likesCount, setLikesCount] = useState(0);
   const [viewsCount, setViewsCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeItemId, setActiveItemId] = useState(null);
 
   const commentsEndRef = useRef(null);
 
+  if (isOpen && item && item.id !== activeItemId) {
+    setActiveItemId(item.id);
+    setIsLiked(Boolean(item.is_liked || item.isLiked || item.liked));
+    setLikesCount(item.likes_count ?? item.like_count ?? item.likes ?? 0);
+    setViewsCount(item.views_count ?? item.view_count ?? item.views ?? 0);
+  }
+
   useEffect(() => {
     if (isOpen && item) {
-      setIsLiked(Boolean(item.is_liked || item.isLiked || item.liked));
-      setLikesCount(item.likes_count ?? item.like_count ?? item.likes ?? 0);
-      setViewsCount(item.views_count ?? item.view_count ?? item.views ?? 0);
-
       galleryService.recordView(item.id).then((newViews) => {
         if (newViews !== null) setViewsCount(newViews);
       });
@@ -58,37 +62,19 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
         if (event.type === 'comment' && event.comment) {
           setComments((prev) => {
             const commentsList = Array.isArray(prev) ? prev : [];
-            if (event.comment.parent_id) {
-              return commentsList.map((c) => {
-                if (c.id === event.comment.parent_id) {
-                  const existingReplies = c.replies || [];
-                  if (existingReplies.some((r) => r.id === event.comment.id)) return c;
-                  return { ...c, replies: [...existingReplies, event.comment] };
-                }
-                return c;
-              });
-            }
             if (commentsList.some((c) => c.id === event.comment.id)) return commentsList;
-            return [event.comment, ...commentsList];
+            return [...commentsList, event.comment];
           });
-        }
-
-        if (event.type === 'like' && event.likes_count !== undefined) {
-          setLikesCount(event.likes_count);
-        }
-
-        if (event.type === 'view' && event.views_count !== undefined) {
-          setViewsCount(event.views_count);
         }
       });
 
       return () => {
-        if (eventSource) {
+        if (eventSource && typeof eventSource.close === 'function') {
           eventSource.close();
         }
       };
     }
-  }, [item, isOpen]);
+  }, [isOpen, item]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -128,7 +114,7 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
         setLikesCount(res.likes_count ?? res.like_count ?? res.likes ?? likesCount);
         showToast(res.is_liked ? 'Liked media!' : 'Unliked media', 'success');
       }
-    } catch (e) {
+    } catch {
       showToast('Failed to toggle like', 'error');
     }
   };
@@ -174,7 +160,7 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
         setReplyingTo(null);
         showToast('Comment posted successfully!', 'success');
       }
-    } catch (err) {
+    } catch {
       showToast('Failed to post comment', 'error');
     } finally {
       setIsSubmitting(false);
@@ -339,8 +325,8 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
 
               <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
                 {safeComments.length > 0 ? (
-                  safeComments.map((c) => (
-                    <div key={c.id || `comment-${Math.random()}`} className="p-2.5 rounded-lg bg-white dark:bg-zinc-800/60 border border-gray-200/80 dark:border-zinc-700/50 space-y-1.5 shadow-2xs">
+                  safeComments.map((c, cIdx) => (
+                    <div key={c.id || `comment-${cIdx}`} className="p-2.5 rounded-lg bg-white dark:bg-zinc-800/60 border border-gray-200/80 dark:border-zinc-700/50 space-y-1.5 shadow-2xs">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
                           {c.avatar ? (

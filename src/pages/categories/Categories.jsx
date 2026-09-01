@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTravel } from '../../context/TravelContext';
 import CategoriesHeader from './CategoriesHeader';
 import CategoriesGrid from './CategoriesGrid';

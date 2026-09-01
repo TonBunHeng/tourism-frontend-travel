@@ -1,4 +1,3 @@
-import React from 'react';
 import PlaceCard from '../../components/common/PlaceCard';
 import { Compass } from 'lucide-react';
 

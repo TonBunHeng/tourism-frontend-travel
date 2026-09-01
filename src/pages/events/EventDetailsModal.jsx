@@ -1,4 +1,3 @@
-import React from 'react';
 import { X, Calendar, Clock, MapPin, Users, Building, ExternalLink } from 'lucide-react';
 
 export default function EventDetailsModal({ isOpen, event, onClose }) {

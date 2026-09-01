@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useCallback, useRef } from 'react';
 import AlertModal from '../components/common/AlertModal';
 
 const AlertContext = createContext(null);

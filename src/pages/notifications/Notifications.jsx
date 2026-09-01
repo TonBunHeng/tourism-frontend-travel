@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Bell,
   CheckCheck,
@@ -7,13 +7,11 @@ import {
   UserX,
   MessageCircle,
   ShieldAlert,
-  Clock,
-  ChevronRight,
   Calendar,
-  Sparkles,
-  Info,
   RefreshCw,
   Loader2,
+  Clock,
+  ChevronRight,
   Compass
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -131,6 +129,7 @@ export default function Notifications() {
   }, [isAuthenticated, filterCategory, showUnreadOnly]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchNotifications();
   }, [fetchNotifications]);
 

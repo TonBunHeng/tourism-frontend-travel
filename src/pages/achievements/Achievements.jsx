@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { achievementService } from '../../services/achievementService';
 import { useAuth } from '../../context/AuthContext';
 import AchievementsHeader from './AchievementsHeader';
@@ -7,11 +7,9 @@ import AchievementsGrid from './AchievementsGrid';
 export default function Achievements() {
   const { isAuthenticated, openAuthModal } = useAuth();
   const [achievements, setAchievements] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBadges = async () => {
-      setLoading(true);
       try {
         if (isAuthenticated) {
           const res = await achievementService.getMyAchievements();
@@ -26,8 +24,6 @@ export default function Achievements() {
         }
       } catch (err) {
         console.error('Failed to load achievements', err);
-      } finally {
-        setLoading(false);
       }
     };
 

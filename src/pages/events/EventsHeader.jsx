@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search } from 'lucide-react';
 
 export default function EventsHeader({ statusFilter, setStatusFilter, search, setSearch }) {

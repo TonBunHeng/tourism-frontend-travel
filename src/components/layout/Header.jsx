@@ -21,7 +21,9 @@ import {
   Moon,
   Bell,
   CheckCheck,
-  ArrowRight
+  ArrowRight,
+  Briefcase,
+  LayoutDashboard
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
@@ -31,7 +33,7 @@ import notificationService from '../../services/notificationService';
 import logoImg from '../../assets/tourism_logo.png';
 
 export default function Header() {
-  const { user, isAuthenticated, logout, openAuthModal } = useAuth();
+  const { user, isAuthenticated, logout, openAuthModal, isBusinessOwner, isGuideEditor } = useAuth();
   const { showConfirm } = useAlert();
   const { wishlistCount, toggleChat } = useTravel();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -88,7 +90,7 @@ export default function Header() {
         setUnreadCount(notifs.filter(n => !n.read).length);
       }
     } catch {
-      // Gracefully ignore network errors on header poll
+      // Gracefully ignore network errors
     }
   }, [isAuthenticated]);
 
@@ -123,6 +125,7 @@ export default function Header() {
       setDropdownOpen(false);
       setNotifDropdownOpen(false);
       setMenuOpen(false);
+      navigate('/', { replace: true });
     }
   };
 
@@ -142,6 +145,30 @@ export default function Header() {
     applyTheme(nextMode ? 'dark' : 'light');
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+      if (notifDropdownRef.current && !notifDropdownRef.current.contains(event.target)) {
+        setNotifDropdownOpen(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMenuOpen(false);
+    setDropdownOpen(false);
+    setNotifDropdownOpen(false);
+  }, [location.pathname]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (navSearch.trim()) {
@@ -151,35 +178,22 @@ export default function Header() {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-      if (notifDropdownRef.current && !notifDropdownRef.current.contains(event.target)) {
-        setNotifDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const markSingleRead = async (id, e) => {
+    if (e) e.stopPropagation();
+    try {
+      await notificationService.markAsRead(id);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMenuOpen(false);
-      setDropdownOpen(false);
-      setNotifDropdownOpen(false);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
-
-  const handleMarkAllRead = async (e) => {
-    e?.stopPropagation();
+  const markAllRead = async () => {
     try {
       await notificationService.markAllRead();
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
       setUnreadCount(0);
-      window.dispatchEvent(new CustomEvent('travel-notifications-updated'));
     } catch (err) {
       console.error(err);
     }
@@ -192,7 +206,6 @@ export default function Header() {
         await notificationService.markAsRead(notif.id);
         setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
         setUnreadCount(prev => Math.max(0, prev - 1));
-        window.dispatchEvent(new CustomEvent('travel-notifications-updated'));
       } catch (err) {
         console.error(err);
       }
@@ -204,6 +217,7 @@ export default function Header() {
 
   const navLinks = [
     { name: 'Destinations', path: '/places', icon: Compass },
+    { name: 'Businesses', path: '/businesses', icon: Briefcase },
     { name: 'Provinces', path: '/provinces', icon: MapPin },
     { name: 'Categories', path: '/categories', icon: Sparkles },
     { name: 'Events', path: '/events', icon: Calendar },
@@ -215,13 +229,19 @@ export default function Header() {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
 
+  const getDashboardPath = () => {
+    if (isBusinessOwner) return '/business/dashboard';
+    if (isGuideEditor) return '/guide/dashboard';
+    return '/profile';
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 transition-colors shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-3">
+      <div className="max-w-[1536px] mx-auto px-3 sm:px-5 lg:px-6">
+        <div className="flex items-center justify-between h-16 gap-2 xl:gap-3">
           
           {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+          <Link to="/" className="flex items-center gap-2 shrink-0 group">
             <div className="w-9 h-9 rounded-lg overflow-hidden bg-[#003E83]/10 dark:bg-blue-900/30 flex items-center justify-center p-1 border border-gray-200/60 dark:border-zinc-700/60 group-hover:scale-105 transition-transform">
               <img
                 src={logoImg}
@@ -240,176 +260,194 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-1.5 shrink-0">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 shrink-0">
             {navLinks.map((link) => {
-              const Icon = link.icon;
               const active = isLinkActive(link.path);
+              const Icon = link.icon;
               return (
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-lg text-xs lg:text-sm font-medium transition-all duration-150 ${
+                  className={`flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                     active
-                      ? 'bg-blue-50/90 dark:bg-blue-950/60 text-[#003E83] dark:text-[#60a5fa] font-semibold shadow-2xs border border-blue-100/80 dark:border-blue-800/40'
-                      : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100/70 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-white border border-transparent'
+                      ? 'bg-blue-50 dark:bg-blue-950/60 text-[#003E83] dark:text-[#60a5fa]'
+                      : 'text-gray-700 dark:text-zinc-300 hover:text-[#003E83] dark:hover:text-[#60a5fa] hover:bg-gray-50 dark:hover:bg-zinc-800'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${active ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-400'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${active ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
                   <span>{link.name}</span>
                 </Link>
               );
             })}
           </nav>
 
-          {/* Search Bar (Desktop / Tablet) */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center relative min-w-[150px] max-w-[200px] lg:max-w-[250px] xl:max-w-xs w-full transition-all">
-            <input
-              type="text"
-              placeholder="Search destinations..."
-              value={navSearch}
-              onChange={(e) => setNavSearch(e.target.value)}
-              className="w-full pl-8.5 pr-8 py-1.5 text-xs bg-gray-100/80 dark:bg-zinc-800/80 border border-gray-200/80 dark:border-zinc-700/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003E83]/20 dark:focus:ring-blue-400/20 focus:border-[#003E83] dark:focus:border-blue-400 focus:bg-white dark:focus:bg-zinc-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-400 truncate transition-all"
-            />
-            <Search className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-            {navSearch && (
-              <button
-                type="button"
-                onClick={() => setNavSearch('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-zinc-200 p-0.5"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            )}
-          </form>
+          {/* Search Bar & Action Utilities */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Theme Toggle */}
+            {/* Desktop Search Bar */}
+            <form onSubmit={handleSearchSubmit} className="hidden xl:flex items-center relative w-36 2xl:w-48 transition-all">
+              <input
+                type="text"
+                placeholder="Search places..."
+                value={navSearch}
+                onChange={(e) => setNavSearch(e.target.value)}
+                className="w-full pl-8 pr-7 py-1.5 text-xs bg-gray-100 dark:bg-zinc-800/80 border border-gray-200 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003E83] text-gray-900 dark:text-white placeholder-gray-400"
+              />
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+              {navSearch && (
+                <button
+                  type="button"
+                  onClick={() => setNavSearch('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </form>
+
+            {/* Dark Mode Toggle */}
             <button
               onClick={handleToggleTheme}
-              className="p-2 rounded-lg text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="p-2 text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
               title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              aria-label="Toggle Theme"
             >
-              {isDarkMode ? <Moon className="w-4 h-4 text-blue-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            {/* Wishlist Link */}
+            {/* AI Assistant Floating Launcher */}
+            <button
+              onClick={toggleChat}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg shadow-xs transition-all cursor-pointer active:scale-98"
+              title="Open Angkor Verse AI"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+              <span className="hidden xl:inline">AI Assistant</span>
+            </button>
+
+            {/* Wishlist Icon */}
             <Link
               to="/wishlist"
-              className={`relative p-2 rounded-lg transition-colors ${
-                isLinkActive('/wishlist')
-                  ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400'
-                  : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
-              }`}
+              className="relative p-2 text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors shrink-0"
               title="Saved Wishlist"
-              aria-label="Wishlist"
             >
-              <Heart className="w-4 h-4" />
+              <Heart className="w-4 h-4 text-rose-500" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] px-1 bg-rose-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-zinc-900 shadow-xs">
-                  {wishlistCount > 99 ? '99+' : wishlistCount}
+                <span className="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white rounded-full text-[9px] font-extrabold flex items-center justify-center shadow-xs">
+                  {wishlistCount}
                 </span>
               )}
             </Link>
 
-            {/* Notifications Dropdown (Bell) */}
-            <div className="relative" ref={notifDropdownRef}>
-              <button
-                onClick={() => {
-                  if (!isAuthenticated) {
-                    openAuthModal('login');
-                  } else {
-                    setNotifDropdownOpen(!notifDropdownOpen);
-                  }
-                }}
-                className={`relative p-2 rounded-lg transition-colors cursor-pointer ${
-                  notifDropdownOpen
-                    ? 'bg-blue-50 dark:bg-zinc-800 text-[#003E83] dark:text-[#60a5fa]'
-                    : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
-                }`}
-                title="Notifications"
-                aria-label="Notifications"
-              >
-                <Bell className="w-4 h-4" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] px-1 bg-red-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-zinc-900 shadow-xs">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </button>
+            {/* Notifications Dropdown */}
+            {isAuthenticated && (
+              <div className="relative shrink-0" ref={notifDropdownRef}>
+                <button
+                  onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
+                  className={`relative p-2 rounded-lg transition-colors cursor-pointer ${
+                    notifDropdownOpen
+                      ? 'bg-blue-50 dark:bg-zinc-800 text-[#003E83] dark:text-blue-400'
+                      : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
+                  }`}
+                  title="Notifications"
+                >
+                  <Bell className="w-4 h-4" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-extrabold flex items-center justify-center shadow-xs animate-pulse">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
 
-              {notifDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-88 bg-white dark:bg-zinc-900 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-800 overflow-hidden z-50 animate-smooth-pop">
-                  <div className="px-4 py-3 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between bg-gray-50 dark:bg-zinc-800/40">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-xs uppercase tracking-wide text-gray-900 dark:text-white">Notifications</h3>
+                {notifDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-zinc-900 rounded-xl shadow-xl border border-gray-200 dark:border-zinc-800 py-2 z-50 animate-smooth-pop text-xs">
+                    <div className="px-4 py-2 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-gray-900 dark:text-white">Notifications</span>
+                        {unreadCount > 0 && (
+                          <span className="px-2 py-0.5 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 rounded-full font-bold text-[10px]">
+                            {unreadCount} new
+                          </span>
+                        )}
+                      </div>
                       {unreadCount > 0 && (
-                        <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#003E83]/10 text-[#003E83] dark:bg-blue-950/80 dark:text-blue-400 rounded-full">
-                          {unreadCount} new
-                        </span>
+                        <button
+                          onClick={markAllRead}
+                          className="text-[11px] text-[#003E83] dark:text-[#60a5fa] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                        >
+                          <CheckCheck className="w-3.5 h-3.5" />
+                          Mark all as read
+                        </button>
                       )}
                     </div>
-                    {unreadCount > 0 && (
-                      <button
-                        type="button"
-                        onClick={handleMarkAllRead}
-                        className="text-[11px] text-[#003E83] dark:text-[#60a5fa] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
-                      >
-                        <CheckCheck className="w-3.5 h-3.5" />
-                        Mark all read
-                      </button>
-                    )}
-                  </div>
 
-                  <div className="max-h-80 overflow-y-auto divide-y divide-gray-100 dark:divide-zinc-800/60">
-                    {notifications.length > 0 ? (
-                      notifications.map((notification) => (
-                        <div
-                          key={notification.id}
-                          onClick={() => handleNotificationClick(notification)}
-                          className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-zinc-800/60 cursor-pointer transition-colors ${
-                            !notification.read ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="text-xs font-bold text-gray-900 dark:text-white line-clamp-1">
-                              {notification.title}
-                            </p>
-                            {!notification.read && (
-                              <span className="w-2 h-2 rounded-full bg-[#003E83] dark:bg-blue-400 shrink-0 mt-1" />
+                    <div className="max-h-80 overflow-y-auto divide-y divide-gray-100 dark:divide-zinc-800/60">
+                      {notifications.length > 0 ? (
+                        notifications.map((n) => (
+                          <div
+                            key={n.id}
+                            onClick={() => handleNotificationClick(n)}
+                            className={`p-3 transition-colors cursor-pointer flex items-start gap-3 ${
+                              !n.read 
+                                ? 'bg-blue-50/50 dark:bg-blue-950/20' 
+                                : 'hover:bg-gray-50 dark:hover:bg-zinc-800/50'
+                            }`}
+                          >
+                            <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${!n.read ? 'bg-[#003E83] dark:bg-blue-400' : 'bg-transparent'}`} />
+                            <div className="flex-1 min-w-0">
+                              <p className={`font-semibold truncate ${!n.read ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-zinc-400'}`}>
+                                {n.title || n.data?.title || 'Notification'}
+                              </p>
+                              <p className="text-gray-500 dark:text-zinc-400 text-[11px] line-clamp-2 mt-0.5">
+                                {n.description || n.data?.description || n.message || ''}
+                              </p>
+                              <span className="text-[10px] text-gray-400 dark:text-zinc-500 mt-1 block">
+                                {formatTimeAgo(n.created_at)}
+                              </span>
+                            </div>
+                            {!n.read && (
+                              <button
+                                onClick={(e) => markSingleRead(n.id, e)}
+                                className="text-gray-400 hover:text-[#003E83] p-1 cursor-pointer"
+                                title="Mark as read"
+                              >
+                                <CheckCheck className="w-3.5 h-3.5" />
+                              </button>
                             )}
                           </div>
-                          <p className="text-[11px] text-gray-600 dark:text-zinc-300 line-clamp-2 mt-0.5">
-                            {notification.description}
-                          </p>
-                          <span className="text-[10px] text-gray-400 dark:text-zinc-500 block mt-1.5">
-                            {formatTimeAgo(notification.created_at)}
-                          </span>
+                        ))
+                      ) : (
+                        <div className="py-8 text-center text-gray-500 dark:text-zinc-400">
+                          <Bell className="w-8 h-8 mx-auto text-gray-300 dark:text-zinc-600 mb-2 opacity-50" />
+                          <p className="text-xs font-medium">No notifications yet</p>
                         </div>
-                      ))
-                    ) : (
-                      <div className="py-8 text-center px-4">
-                        <Bell className="w-8 h-8 text-gray-300 dark:text-zinc-600 mx-auto mb-2 opacity-50" />
-                        <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">No notifications yet</p>
-                        <p className="text-[11px] text-gray-400 dark:text-zinc-500 mt-0.5">You're all caught up with Angkor news & updates</p>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
 
-                  <div className="p-2.5 border-t border-gray-100 dark:border-zinc-800 text-center bg-gray-50/80 dark:bg-zinc-900">
-                    <Link
-                      to="/notifications"
-                      onClick={() => setNotifDropdownOpen(false)}
-                      className="text-xs text-[#003E83] dark:text-[#60a5fa] hover:underline font-bold flex items-center justify-center gap-1"
-                    >
-                      <span>View all in Notifications Center</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
+                    <div className="px-4 py-2 border-t border-gray-100 dark:border-zinc-800 text-center">
+                      <Link
+                        to="/notifications"
+                        onClick={() => setNotifDropdownOpen(false)}
+                        className="text-xs text-[#003E83] dark:text-[#60a5fa] hover:underline font-bold flex items-center justify-center gap-1"
+                      >
+                        <span>View all in Notifications Center</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
+
+            {/* Quick Role Dashboard Link if Owner/Guide */}
+            {isAuthenticated && (isBusinessOwner || isGuideEditor) && (
+              <Link
+                to={getDashboardPath()}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-amber-900 bg-amber-100 hover:bg-amber-200 dark:bg-amber-950/80 dark:text-amber-300 dark:hover:bg-amber-900/90 rounded-lg shadow-xs transition-colors shrink-0"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <span>Dashboard</span>
+              </Link>
+            )}
 
             {/* User Profile or Sign In / Register */}
             {isAuthenticated ? (
@@ -442,15 +480,28 @@ export default function Header() {
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-zinc-900 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-800 py-1.5 z-50 animate-smooth-pop text-xs">
                     <div className="px-3.5 py-2.5 border-b border-gray-100 dark:border-zinc-800/80">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-1">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Account</span>
-                        <span className="text-[10px] font-semibold px-1.5 py-0.2 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded">Active</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded capitalize bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300">
+                          {(user?.role || 'tourist').replace('_', ' ')}
+                        </span>
                       </div>
                       <p className="font-bold text-gray-900 dark:text-white truncate text-xs mt-0.5">{user?.name}</p>
                       <p className="text-gray-500 dark:text-zinc-400 truncate text-[11px]">{user?.email}</p>
                     </div>
 
                     <div className="py-1">
+                      {/* Role Dashboard Link inside dropdown */}
+                      {(isBusinessOwner || isGuideEditor) && (
+                        <Link
+                          to={getDashboardPath()}
+                          className="flex items-center gap-2.5 px-3.5 py-2 text-[#003E83] dark:text-[#60a5fa] bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 font-bold transition-colors"
+                        >
+                          <LayoutDashboard className="w-3.5 h-3.5" /> 
+                          {isBusinessOwner ? 'Business Dashboard' : 'Guide Dashboard'}
+                        </Link>
+                      )}
+
                       <Link to="/profile" className="flex items-center gap-2.5 px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium transition-colors">
                         <User className="w-3.5 h-3.5 text-gray-400" /> My Profile
                       </Link>
@@ -523,7 +574,7 @@ export default function Header() {
             {/* Mobile Menu Toggle Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="p-2 rounded-lg text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 md:hidden transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 lg:hidden transition-colors cursor-pointer"
               aria-label="Toggle mobile menu"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -537,7 +588,7 @@ export default function Header() {
       {menuOpen && (
         <div 
           ref={mobileMenuRef}
-          className="md:hidden border-t border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-4 pb-24 space-y-3 animate-smooth-pop text-xs shadow-md relative z-50 max-h-[85vh] overflow-y-auto"
+          className="lg:hidden border-t border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-4 pb-24 space-y-3 animate-smooth-pop text-xs shadow-md relative z-50 max-h-[85vh] overflow-y-auto"
         >
           {/* Mobile Search */}
           <form onSubmit={handleSearchSubmit} className="relative w-full">
@@ -584,6 +635,16 @@ export default function Header() {
 
           {/* Quick Access Badges/Links */}
           <div className="border-t border-gray-100 dark:border-zinc-800 pt-2 space-y-1">
+            {(isBusinessOwner || isGuideEditor) && (
+              <Link
+                to={getDashboardPath()}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg font-bold text-[#003E83] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
+              >
+                <LayoutDashboard className="w-4 h-4 text-[#003E83] dark:text-blue-400" />
+                <span>{isBusinessOwner ? 'Business Owner Dashboard' : 'Guide / Editor Dashboard'}</span>
+              </Link>
+            )}
+
             <Link
               to="/wishlist"
               className="flex items-center justify-between px-3 py-2 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
@@ -678,4 +739,3 @@ export default function Header() {
     </header>
   );
 }
-

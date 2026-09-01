@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
 import { useAuth } from '../../context/AuthContext';

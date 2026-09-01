@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Search, Compass } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';

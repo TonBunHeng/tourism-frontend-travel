@@ -98,7 +98,7 @@ export const authService = {
   async logout() {
     try {
       await api.post('/auth/logout');
-    } catch (e) {
+    } catch {
       // ignore
     } finally {
       localStorage.removeItem('auth_token');

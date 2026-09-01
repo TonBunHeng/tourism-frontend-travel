@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ShieldAlert, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react';
 import { deletionRequestService } from '../../services/deletionRequestService';
 import { useAuth } from '../../context/AuthContext';
@@ -18,6 +18,7 @@ export default function DeletionRequests() {
 
   useEffect(() => {
     if (user?.email && !email) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEmail(user.email);
     }
   }, [user, email]);

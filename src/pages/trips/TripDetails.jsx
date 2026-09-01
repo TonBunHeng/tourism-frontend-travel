@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import {
-  Calendar, MapPin, Users, DollarSign, Clock, Plus, Trash2,
-  ArrowLeft, CheckCircle2, Circle, Edit3, Compass, Sparkles,
-  Share2, Save, AlertCircle
+  Calendar, MapPin, Plus, Trash2,
+  ArrowLeft, Compass, Sparkles, AlertCircle
 } from 'lucide-react';
 import tripService from '../../services/tripService';
 import placeService from '../../services/placeService';
@@ -12,7 +11,6 @@ import { useAlert } from '../../context/AlertContext';
 
 export default function TripDetails() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { showAlert } = useAlert();
 
   const [trip, setTrip] = useState(null);
@@ -38,7 +36,7 @@ export default function TripDetails() {
   // AI Itinerary Auto-Generator State
   const [generatingAi, setGeneratingAi] = useState(false);
 
-  const fetchTripDetails = async () => {
+  const fetchTripDetails = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -50,21 +48,22 @@ export default function TripDetails() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const fetchPlaces = async () => {
+  const fetchPlaces = useCallback(async () => {
     try {
       const res = await placeService.getPlaces({ per_page: 50 });
       setPlaces(res.data || []);
     } catch (err) {
       console.error('Places fetch error:', err);
     }
-  };
+  }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTripDetails();
     fetchPlaces();
-  }, [id]);
+  }, [id, fetchTripDetails, fetchPlaces]);
 
   const handleAddItem = async (e) => {
     e.preventDefault();
@@ -72,18 +71,10 @@ export default function TripDetails() {
       showAlert('error', 'Activity Required', 'Please enter what you plan to do.');
       return;
     }
-
+    setAddingItem(true);
     try {
-      setAddingItem(true);
-      const payload = {
-        ...newItem,
-        place_id: newItem.place_id ? parseInt(newItem.place_id) : null,
-        estimated_cost: parseFloat(newItem.estimated_cost) || 0,
-        day_number: parseInt(newItem.day_number) || 1,
-      };
-
-      await tripService.addItinerary(id, payload);
-      showAlert('success', 'Added', 'Activity added to your itinerary!');
+      await tripService.addItinerary(id, newItem);
+      showAlert('success', 'Activity Added', 'New item added to itinerary.');
       setShowAddModal(false);
       setNewItem({
         day_number: 1,
@@ -96,8 +87,7 @@ export default function TripDetails() {
       });
       fetchTripDetails();
     } catch (err) {
-      console.error('Add item error:', err);
-      showAlert('error', 'Error', err.response?.data?.message || 'Could not add activity.');
+      showAlert('error', 'Failed to Add', err.response?.data?.message || 'Could not add itinerary item.');
     } finally {
       setAddingItem(false);
     }
@@ -109,7 +99,7 @@ export default function TripDetails() {
       await tripService.deleteItinerary(id, itineraryId);
       showAlert('success', 'Removed', 'Activity removed.');
       fetchTripDetails();
-    } catch (err) {
+    } catch {
       showAlert('error', 'Error', 'Could not delete item.');
     }
   };

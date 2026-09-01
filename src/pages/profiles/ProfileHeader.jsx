@@ -1,5 +1,4 @@
-import React from 'react';
-import { LogOut, User } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
 export default function ProfileHeader({ onLogout }) {
   return (

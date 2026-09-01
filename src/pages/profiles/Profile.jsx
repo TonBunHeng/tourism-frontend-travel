@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   User, 
@@ -9,12 +9,7 @@ import {
   Lock, 
   Trash2, 
   Upload, 
-  Loader2, 
-  Sparkles,
-  MapPin,
-  Phone,
-  Mail,
-  ShieldCheck
+  Loader2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
@@ -47,6 +42,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName(user.name || '');
       setPhone(user.phone || '');
       setLocation(user.location || '');
@@ -266,7 +262,7 @@ export default function Profile() {
 
           <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-zinc-800 w-full justify-center">
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#003E83] dark:bg-zinc-800 dark:text-[#60a5fa] uppercase tracking-wider">
-              {user?.role || 'Traveler'}
+              {(user?.role || 'Traveler').replace('_', ' ')}
             </span>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 uppercase tracking-wider">
               {user?.status || 'Active'}

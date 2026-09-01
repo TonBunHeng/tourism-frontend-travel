@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, ShieldAlert } from 'lucide-react';
 import logoImg from '../../assets/tourism_logo.png';
