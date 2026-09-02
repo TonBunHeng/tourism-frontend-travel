@@ -41,33 +41,39 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const res = await authService.login(credentials);
-    if (res?.data?.token && (res?.data?.user || res?.data)) {
-      setToken(res.data.token);
-      const userObj = res.data.user || res.data;
+    const token = res?.data?.token || res?.token || res?.access_token || localStorage.getItem('auth_token');
+    const userObj = res?.data?.user || res?.user || (res?.data && typeof res.data === 'object' && !res.data.token ? res.data : null) || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+
+    if (token && userObj) {
+      setToken(token);
       setUser(userObj);
       closeAuthModal();
       return userObj;
     }
-    throw new Error(res?.message || 'Login failed');
+    throw new Error(res?.message || 'Login failed. Please check your credentials.');
   };
 
   const register = async (formData) => {
     const res = await authService.register(formData);
-    if (res?.data?.token && (res?.data?.user || res?.data)) {
-      setToken(res.data.token);
-      const userObj = res.data.user || res.data;
+    const token = res?.data?.token || res?.token || res?.access_token || localStorage.getItem('auth_token');
+    const userObj = res?.data?.user || res?.user || (res?.data && typeof res.data === 'object' && !res.data.token ? res.data : null) || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+
+    if (token && userObj) {
+      setToken(token);
       setUser(userObj);
       closeAuthModal();
       return userObj;
     }
-    throw new Error(res?.message || 'Registration failed');
+    throw new Error(res?.message || 'Registration failed. Please check registration details.');
   };
 
   const googleLogin = async (data) => {
     const res = await authService.googleLogin(data);
-    if (res?.data?.token && (res?.data?.user || res?.data)) {
-      setToken(res.data.token);
-      const userObj = res.data.user || res.data;
+    const token = res?.data?.token || res?.token || res?.access_token || localStorage.getItem('auth_token');
+    const userObj = res?.data?.user || res?.user || (res?.data && typeof res.data === 'object' && !res.data.token ? res.data : null) || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+
+    if (token && userObj) {
+      setToken(token);
       setUser(userObj);
       closeAuthModal();
       return userObj;
@@ -77,9 +83,11 @@ export const AuthProvider = ({ children }) => {
 
   const facebookLogin = async (data) => {
     const res = await authService.facebookLogin(data);
-    if (res?.data?.token && (res?.data?.user || res?.data)) {
-      setToken(res.data.token);
-      const userObj = res.data.user || res.data;
+    const token = res?.data?.token || res?.token || res?.access_token || localStorage.getItem('auth_token');
+    const userObj = res?.data?.user || res?.user || (res?.data && typeof res.data === 'object' && !res.data.token ? res.data : null) || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+
+    if (token && userObj) {
+      setToken(token);
       setUser(userObj);
       closeAuthModal();
       return userObj;

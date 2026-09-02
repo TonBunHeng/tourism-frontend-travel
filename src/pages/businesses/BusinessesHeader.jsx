@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export default function BusinessesHeader({ totalCount }) {
+  const { isBusinessOwner } = useAuth();
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
       <div>
@@ -18,13 +21,15 @@ export default function BusinessesHeader({ totalCount }) {
           Total: {totalCount} businesses
         </span>
 
-        <Link
-          to="/business/businesses/new"
-          className="px-3.5 py-1.5 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Register New Business</span>
-        </Link>
+        {isBusinessOwner && (
+          <Link
+            to="/business/businesses/new"
+            className="px-3.5 py-1.5 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Register New Business</span>
+          </Link>
+        )}
       </div>
     </div>
   );

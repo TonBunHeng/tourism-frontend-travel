@@ -3,6 +3,7 @@ import { X, Eye, EyeOff, AlertCircle, Compass, Building2, Sparkles, Check, UserC
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
 import GoogleLoginButton from './GoogleLoginButton';
+import FacebookLoginButton from './FacebookLoginButton';
 import logoImg from '../../assets/tourism_logo.png';
 
 const ROLES = [
@@ -70,16 +71,32 @@ export default function AuthModal() {
     e.preventDefault();
     setErrorMessage('');
     setErrors({});
+
+    if (!isLogin) {
+      if (!name.trim()) {
+        setErrorMessage('Please enter your full name or business name.');
+        return;
+      }
+      if (password !== passwordConfirmation) {
+        setErrorMessage('Password and Confirm Password do not match.');
+        return;
+      }
+      if (password.length < 6) {
+        setErrorMessage('Password must be at least 6 characters long.');
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
       if (isLogin) {
-        await login({ email, password });
+        await login({ email: email.trim(), password });
         showToast('Signed in successfully!', 'success');
       } else {
         await register({
-          name,
-          email,
+          name: name.trim(),
+          email: email.trim(),
           password,
           password_confirmation: passwordConfirmation,
           role: selectedRole,
@@ -127,10 +144,13 @@ export default function AuthModal() {
           </p>
         </div>
 
-        {/* Google Real Account Sign In (Tourist) */}
+        {/* Social Sign In (Google & Facebook) */}
         {isLogin && (
-          <div className="pt-1">
-            <GoogleLoginButton onSuccess={handleClose} />
+          <div className="pt-1 space-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <GoogleLoginButton onSuccess={handleClose} />
+              <FacebookLoginButton onSuccess={handleClose} />
+            </div>
             <div className="relative flex py-2 items-center">
               <div className="flex-grow border-t border-gray-200 dark:border-zinc-800"></div>
               <span className="shrink-0 mx-3 text-[10px] text-gray-400 uppercase font-semibold">Or with credentials</span>
@@ -161,7 +181,7 @@ export default function AuthModal() {
                 : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-white'
             }`}
           >
-            Create Account (Choose Role)
+            Create Account
           </button>
         </div>
 
@@ -175,41 +195,19 @@ export default function AuthModal() {
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           {/* Role selection when creating account */}
           {!isLogin && (
-            <div className="space-y-1.5">
-              <label className="block font-semibold text-gray-700 dark:text-zinc-300">
-                Select Your Role / Account Type *
+            <div>
+              <label className="block font-semibold text-gray-700 dark:text-zinc-300 mb-1">
+                Account Type / Role *
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {ROLES.map((role) => {
-                  const Icon = role.icon;
-                  const isSelected = selectedRole === role.id;
-                  return (
-                    <button
-                      key={role.id}
-                      type="button"
-                      onClick={() => setSelectedRole(role.id)}
-                      className={`p-2.5 rounded-lg border text-left flex flex-col justify-between transition-all cursor-pointer ${
-                        isSelected
-                          ? `border-2 ${role.color} ring-1 ring-blue-500 shadow-xs`
-                          : 'border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-800/40 hover:border-gray-300 dark:hover:border-zinc-700'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <Icon className="w-4 h-4" />
-                        {isSelected && <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />}
-                      </div>
-                      <div>
-                        <p className="font-bold text-[11px] text-gray-900 dark:text-white leading-tight">
-                          {role.name}
-                        </p>
-                        <p className="text-[10px] text-gray-500 dark:text-zinc-400 leading-tight mt-0.5 line-clamp-2">
-                          {role.subtitle}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+              <select
+                value={selectedRole}
+                onChange={(e) => setSelectedRole(e.target.value)}
+                className="w-full px-3 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white rounded-md border border-gray-300 dark:border-zinc-700 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
+              >
+                <option value="user">Tourist / Traveler</option>
+                <option value="business_owner">Business Owner</option>
+                <option value="guide_editor">Guide / Editor</option>
+              </select>
             </div>
           )}
 
@@ -279,7 +277,7 @@ export default function AuthModal() {
             disabled={loading}
             className="w-full py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white font-semibold rounded-md shadow-xs transition-colors cursor-pointer"
           >
-            {loading ? 'Processing...' : isLogin ? 'Sign In' : `Create ${ROLES.find(r => r.id === selectedRole)?.name || ''} Account`}
+            {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
           </button>
         </form>
 

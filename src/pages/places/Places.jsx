@@ -34,7 +34,7 @@ export default function Places() {
     const fetchPlaces = async () => {
       setLoading(true);
       try {
-        const params = { per_page: 12, page, sort_by: sortBy };
+        const params = { per_page: 4, page, sort_by: sortBy };
         if (search.trim()) params.search = search.trim();
         if (provinceId) params.province_id = provinceId;
         if (categoryId) params.category_id = categoryId;
@@ -109,12 +109,12 @@ export default function Places() {
               setSearchParams(p);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="p-1.5 rounded-md bg-white border border-gray-200 text-gray-700 disabled:opacity-30 hover:bg-gray-50"
+            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <span className="text-xs font-semibold text-gray-700 px-3 py-1 bg-white rounded-md border border-gray-200">
+          <span className="text-xs font-semibold text-gray-700 dark:text-zinc-300 px-3 py-1 bg-white dark:bg-zinc-800 rounded-md border border-gray-200 dark:border-zinc-700">
             {pagination.current_page} / {pagination.last_page}
           </span>
 
@@ -128,7 +128,7 @@ export default function Places() {
               setSearchParams(p);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="p-1.5 rounded-md bg-white border border-gray-200 text-gray-700 disabled:opacity-30 hover:bg-gray-50"
+            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

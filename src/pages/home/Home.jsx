@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, Camera, Briefcase, Loader2 } from 'lucide-react';
+import { ArrowRight, Award, Loader2 } from 'lucide-react';
 import { placeService } from '../../services/placeService';
 import { eventService } from '../../services/eventService';
 import { galleryService } from '../../services/galleryService';
@@ -100,7 +100,7 @@ export default function Home() {
         <div className="flex items-center justify-between gap-2 mb-4 pb-2 border-b border-gray-200 dark:border-zinc-800">
           <div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
-              Featured Destinations
+              Discover Heritage Sites & Attractions
             </h2>
             <p className="text-xs text-gray-500 dark:text-zinc-400">Popular tourist attractions</p>
           </div>
@@ -133,12 +133,9 @@ export default function Home() {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-2 mb-4 pb-2 border-b border-gray-200 dark:border-zinc-800">
             <div>
-              <div className="flex items-center gap-1.5">
-                <Briefcase className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
-                  Verified Local Hospitality & Businesses
-                </h2>
-              </div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                Verified Local Hospitality & Businesses
+              </h2>
               <p className="text-xs text-gray-500 dark:text-zinc-400">Top-rated hotels, Khmer dining, and tour operators</p>
             </div>
             <Link
@@ -162,12 +159,9 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-2 mb-4 pb-2 border-b border-gray-200 dark:border-zinc-800">
           <div>
-            <div className="flex items-center gap-1.5">
-              <Camera className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
-                Photo & Media Gallery
-              </h2>
-            </div>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+              Photo & Media Gallery
+            </h2>
             <p className="text-xs text-gray-500 dark:text-zinc-400">Captivating photography of Angkor and Cambodian landscapes</p>
           </div>
           <Link

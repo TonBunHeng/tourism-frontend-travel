@@ -1,25 +1,38 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Search, Briefcase, Loader2, Plus } from 'lucide-react';
+import { Search, Briefcase, Loader2, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import businessService from '../../services/businessService';
 import provinceService from '../../services/provinceService';
 import categoryService from '../../services/categoryService';
 import BusinessCard from '../../components/common/BusinessCard';
 import BusinessesHeader from './BusinessesHeader';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Businesses() {
+  const { isBusinessOwner } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [businesses, setBusinesses] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState(null);
 
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [selectedProvince, setSelectedProvince] = useState(searchParams.get('province_id') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category_id') || '');
   const [selectedPrice, setSelectedPrice] = useState(searchParams.get('price_range') || '');
-  const [sort, setSort] = useState('latest');
+  const [sort, setSort] = useState(searchParams.get('sort') || 'latest');
+  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+
+  useEffect(() => {
+    setSearch(searchParams.get('search') || '');
+    setSelectedProvince(searchParams.get('province_id') || '');
+    setSelectedCategory(searchParams.get('category_id') || '');
+    setSelectedPrice(searchParams.get('price_range') || '');
+    setSort(searchParams.get('sort') || 'latest');
+    setPage(Number(searchParams.get('page')) || 1);
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -41,7 +54,7 @@ export default function Businesses() {
     setLoading(true);
     setError(null);
     try {
-      const params = {};
+      const params = { per_page: 4, page };
       if (search) params.search = search;
       if (selectedProvince) params.province_id = selectedProvince;
       if (selectedCategory) params.category_id = selectedCategory;
@@ -50,22 +63,35 @@ export default function Businesses() {
 
       const res = await businessService.getBusinesses(params);
       const list = res?.data?.businesses || res?.data || res || [];
+      const meta = res?.meta || res?.data?.meta || null;
       setBusinesses(Array.isArray(list) ? list : []);
+      setPagination(meta);
     } catch (err) {
       setError(err?.message || 'Failed to load tourism businesses.');
     } finally {
       setLoading(false);
     }
-  }, [search, selectedProvince, selectedCategory, selectedPrice, sort]);
+  }, [search, selectedProvince, selectedCategory, selectedPrice, sort, page]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchBusinesses();
   }, [fetchBusinesses]);
 
+  const updateParam = (key, val) => {
+    const params = new URLSearchParams(searchParams);
+    if (val) {
+      params.set(key, val);
+    } else {
+      params.delete(key);
+    }
+    params.set('page', '1');
+    setSearchParams(params);
+  };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    fetchBusinesses();
+    updateParam('search', search);
   };
 
   const handleResetFilters = () => {
@@ -74,12 +100,29 @@ export default function Businesses() {
     setSelectedCategory('');
     setSelectedPrice('');
     setSort('latest');
+    setPage(1);
     setSearchParams({});
+  };
+
+  const isServerPaginated = Boolean(pagination && pagination.last_page);
+  const totalPages = isServerPaginated ? pagination.last_page : (Math.ceil(businesses.length / 4) || 1);
+  const currentPage = isServerPaginated ? (pagination.current_page || page) : Math.min(Math.max(1, page), totalPages);
+
+  const displayedBusinesses = isServerPaginated
+    ? businesses
+    : businesses.slice((currentPage - 1) * 4, currentPage * 4);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    const p = new URLSearchParams(searchParams);
+    p.set('page', String(newPage));
+    setSearchParams(p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      <BusinessesHeader totalCount={businesses.length} />
+      <BusinessesHeader totalCount={pagination?.total ?? businesses.length} />
 
       {/* Simple Filter Toolbar */}
       <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-3.5 shadow-xs space-y-3 transition-colors">
@@ -99,7 +142,10 @@ export default function Businesses() {
           <div>
             <select
               value={selectedProvince}
-              onChange={(e) => setSelectedProvince(e.target.value)}
+              onChange={(e) => {
+                setSelectedProvince(e.target.value);
+                updateParam('province_id', e.target.value);
+              }}
               className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Provinces</option>
@@ -112,7 +158,10 @@ export default function Businesses() {
           <div>
             <select
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                updateParam('category_id', e.target.value);
+              }}
               className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Categories</option>
@@ -125,7 +174,10 @@ export default function Businesses() {
           <div>
             <select
               value={selectedPrice}
-              onChange={(e) => setSelectedPrice(e.target.value)}
+              onChange={(e) => {
+                setSelectedPrice(e.target.value);
+                updateParam('price_range', e.target.value);
+              }}
               className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Price Ranges</option>
@@ -139,7 +191,10 @@ export default function Businesses() {
           <div>
             <select
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => {
+                setSort(e.target.value);
+                updateParam('sort', e.target.value);
+              }}
               className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="latest">Recently Added</option>
@@ -167,7 +222,7 @@ export default function Businesses() {
             Retry
           </button>
         </div>
-      ) : businesses.length === 0 ? (
+      ) : displayedBusinesses.length === 0 ? (
         <div className="bg-white dark:bg-zinc-900 p-12 rounded-lg border border-gray-200 dark:border-zinc-800 text-center space-y-3">
           <Briefcase className="w-12 h-12 text-gray-300 dark:text-zinc-600 mx-auto" />
           <h3 className="text-base font-bold text-gray-900 dark:text-white">No Businesses Found</h3>
@@ -182,36 +237,63 @@ export default function Businesses() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {businesses.map((biz) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {displayedBusinesses.map((biz) => (
             <BusinessCard key={biz.id} business={biz} />
           ))}
         </div>
       )}
 
-      {/* Register New Business Promo Banner */}
-      <section className="bg-blue-50 dark:bg-zinc-900 border border-blue-200 dark:border-zinc-800 rounded-lg p-5 flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-md bg-[#003E83] dark:bg-[#60a5fa] text-white dark:text-zinc-950 flex items-center justify-center shrink-0">
-            <Briefcase className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white">
-              Own a Tourism Business in Cambodia?
-            </h3>
-            <p className="text-xs text-gray-600 dark:text-zinc-400 mt-0.5">
-              Register your hotel, restaurant, tour agency, or activity to get verified and reach travelers worldwide.
-            </p>
-          </div>
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-4">
+          <button
+            disabled={currentPage <= 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          <span className="text-xs font-semibold text-gray-700 dark:text-zinc-300 px-3 py-1 bg-white dark:bg-zinc-800 rounded-md border border-gray-200 dark:border-zinc-700">
+            {currentPage} / {totalPages}
+          </span>
+
+          <button
+            disabled={currentPage >= totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
-        <Link
-          to="/business/businesses/new"
-          className="px-3.5 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs whitespace-nowrap transition-colors flex items-center gap-1.5"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Register New Business</span>
-        </Link>
-      </section>
+      )}
+
+      {/* Register New Business Promo Banner */}
+      {isBusinessOwner && (
+        <section className="bg-blue-50 dark:bg-zinc-900 border border-blue-200 dark:border-zinc-800 rounded-lg p-5 flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-md bg-[#003E83] dark:bg-[#60a5fa] text-white dark:text-zinc-950 flex items-center justify-center shrink-0">
+              <Briefcase className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                Own a Tourism Business in Cambodia?
+              </h3>
+              <p className="text-xs text-gray-600 dark:text-zinc-400 mt-0.5">
+                Register your hotel, restaurant, tour agency, or activity to get verified and reach travelers worldwide.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/business/businesses/new"
+            className="px-3.5 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs whitespace-nowrap transition-colors flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Register New Business</span>
+          </Link>
+        </section>
+      )}
     </div>
   );
 }
