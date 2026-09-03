@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, ArrowLeft, ChevronRight, Loader2, Building2 } from 'lucide-react';
 import businessService from '../../services/businessService';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function BusinessList() {
   const [businesses, setBusinesses] = useState([]);
@@ -33,13 +34,15 @@ export default function BusinessList() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      
+      <Breadcrumb
+        items={[
+          { label: 'Business Portal', to: '/business/dashboard' },
+          { label: 'My Businesses' }
+        ]}
+      />
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
         <div>
-          <Link to="/business/dashboard" className="text-xs font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 mb-1">
-            <ArrowLeft className="w-3.5 h-3.5" /> Dashboard
-          </Link>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">My Registered Businesses</h1>
         </div>
 

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { ShieldAlert, FileText } from 'lucide-react';
 import { settingService } from '../../services/settingService';
 import SettingsHeader from './SettingsHeader';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Settings() {
   useEffect(() => {
@@ -12,6 +13,7 @@ export default function Settings() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <Breadcrumb items={[{ label: 'Emergency & Guidelines' }]} />
       <SettingsHeader />
 
       <div className="space-y-6">

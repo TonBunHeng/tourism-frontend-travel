@@ -4,6 +4,7 @@ import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
 import ProvincesHeader from './ProvincesHeader';
 import ProvincesGrid from './ProvincesGrid';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Provinces() {
   const { provinces, loadingGlobal } = useTravel();
@@ -62,6 +63,7 @@ export default function Provinces() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <Breadcrumb items={[{ label: 'Provinces' }]} />
       <ProvincesHeader search={search} setSearch={handleSearchChange} />
       <ProvincesGrid provinces={paginatedProvinces} />
 

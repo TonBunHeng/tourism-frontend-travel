@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import businessService from '../../services/businessService';
 import { useAlert } from '../../context/AlertContext';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function BusinessManage() {
   const { id } = useParams();
@@ -260,15 +261,17 @@ export default function BusinessManage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      
+      <Breadcrumb
+        items={[
+          { label: 'Business Portal', to: '/business/dashboard' },
+          { label: 'My Businesses', to: '/business/businesses' },
+          { label: business.name }
+        ]}
+      />
       {/* Top Header Card */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white dark:bg-zinc-900 p-6 rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs transition-colors">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Link to="/business/dashboard" className="text-xs font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center gap-1">
-              <ArrowLeft className="w-3.5 h-3.5" /> Dashboard
-            </Link>
-            <span className="text-gray-300 dark:text-zinc-700">/</span>
             <span className="text-xs font-bold text-[#003E83] dark:text-[#60a5fa] capitalize">{business.verification_status}</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{business.name}</h1>

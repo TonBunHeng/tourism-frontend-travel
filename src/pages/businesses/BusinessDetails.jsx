@@ -15,6 +15,7 @@ import businessService from '../../services/businessService';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
 import ReviewModal from '../../components/reviews/ReviewModal';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function BusinessDetails() {
   const { id } = useParams();
@@ -111,6 +112,14 @@ export default function BusinessDetails() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 dark:bg-zinc-950 pb-16 transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+        <Breadcrumb
+          items={[
+            { label: 'Businesses', to: '/businesses' },
+            { label: business.name }
+          ]}
+        />
+      </div>
       
       {/* Hero Cover Banner */}
       <div className="relative h-72 sm:h-96 w-full bg-gray-900 overflow-hidden">

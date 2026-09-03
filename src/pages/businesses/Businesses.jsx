@@ -6,6 +6,7 @@ import provinceService from '../../services/provinceService';
 import categoryService from '../../services/categoryService';
 import BusinessCard from '../../components/common/BusinessCard';
 import BusinessesHeader from './BusinessesHeader';
+import Breadcrumb from '../../components/common/Breadcrumb';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Businesses() {
@@ -122,6 +123,7 @@ export default function Businesses() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <Breadcrumb items={[{ label: 'Businesses' }]} />
       <BusinessesHeader totalCount={pagination?.total ?? businesses.length} />
 
       {/* Simple Filter Toolbar */}

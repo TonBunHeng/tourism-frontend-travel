@@ -5,6 +5,7 @@ import { placeService } from '../../services/placeService';
 import PlacesHeader from './PlacesHeader';
 import PlacesToolbar from './PlacesToolbar';
 import PlacesGrid from './PlacesGrid';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Places() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -77,6 +78,7 @@ export default function Places() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <Breadcrumb items={[{ label: 'Destinations' }]} />
       <PlacesHeader totalCount={pagination?.total ?? places.length} />
 
       <PlacesToolbar

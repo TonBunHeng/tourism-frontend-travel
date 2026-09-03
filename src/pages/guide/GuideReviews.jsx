@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Star, Loader2, MessageSquare, Send } from 'lucide-react';
 import guideService from '../../services/guideService';
 import { useAlert } from '../../context/AlertContext';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function GuideReviews() {
   const { showAlert } = useAlert();
@@ -48,17 +49,15 @@ export default function GuideReviews() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      
+      <Breadcrumb
+        items={[
+          { label: 'Guide Portal', to: '/guide/dashboard' },
+          { label: 'Review Moderation' }
+        ]}
+      />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
         <div>
-          <Link
-            to="/guide/dashboard"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white mb-1 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Guide Dashboard</span>
-          </Link>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
             Community Reviews Feed
           </h1>

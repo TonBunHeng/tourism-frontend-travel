@@ -16,6 +16,7 @@ import { useTravel } from '../../context/TravelContext';
 import { useAlert } from '../../context/AlertContext';
 import { authService } from '../../services/authService';
 import ProfileHeader from './ProfileHeader';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -182,6 +183,7 @@ export default function Profile() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <Breadcrumb items={[{ label: 'My Profile' }]} />
       <ProfileHeader onLogout={handleLogout} />
 
       {/* Hidden file input for avatar upload */}

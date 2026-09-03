@@ -4,6 +4,7 @@ import { deletionRequestService } from '../../services/deletionRequestService';
 import { useAuth } from '../../context/AuthContext';
 import { useAlert } from '../../context/AlertContext';
 import DeletionHeader from './DeletionHeader';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function DeletionRequests() {
   const { user } = useAuth();
@@ -63,6 +64,7 @@ export default function DeletionRequests() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <Breadcrumb items={[{ label: 'Data Privacy' }]} />
       <DeletionHeader />
 
       <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-5 shadow-xs transition-colors">

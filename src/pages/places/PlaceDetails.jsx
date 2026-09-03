@@ -13,6 +13,7 @@ import { placeService } from '../../services/placeService';
 import { useTravel } from '../../context/TravelContext';
 import { useAuth } from '../../context/AuthContext';
 import ReviewModal from '../../components/reviews/ReviewModal';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function PlaceDetails() {
   const { id } = useParams();
@@ -73,10 +74,35 @@ export default function PlaceDetails() {
   }
 
   const favorited = isFavorite(place.id);
-  const images = [
+  // Normalize and deduplicate images by base path (stripping resolution query params like w=800 vs w=1200)
+  const getBaseImageUrl = (url) => {
+    if (!url || typeof url !== 'string') return '';
+    try {
+      return url.split('?')[0].trim().toLowerCase();
+    } catch {
+      return url.trim().toLowerCase();
+    }
+  };
+
+  const rawImages = [
     place.image_url || place.image,
-    ...(place.gallery ? place.gallery.map((g) => g.url || g.media_url) : []),
+    ...(Array.isArray(place.gallery) ? place.gallery.map((g) => (typeof g === 'string' ? g : g?.url || g?.media_url || g?.image_url)) : []),
+    ...(Array.isArray(place.images) ? place.images.map((img) => (typeof img === 'string' ? img : img?.url || img?.image_url)) : []),
   ].filter(Boolean);
+
+  const seenBases = new Set();
+  const images = [];
+  for (const img of rawImages) {
+    const base = getBaseImageUrl(img);
+    if (base && !seenBases.has(base)) {
+      seenBases.add(base);
+      images.push(img);
+    }
+  }
+
+  if (images.length === 0) {
+    images.push('https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80');
+  }
 
   const mapQuery = encodeURIComponent(place.address || place.name || 'Cambodia');
   const googleMapsUrl = place.coordinates
@@ -100,13 +126,12 @@ export default function PlaceDetails() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      <nav className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-zinc-400 font-medium">
-        <Link to="/" className="hover:text-[#003E83] dark:hover:text-[#60a5fa]">Home</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <Link to="/places" className="hover:text-[#003E83] dark:hover:text-[#60a5fa]">Destinations</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-gray-900 dark:text-white font-bold truncate max-w-xs">{place.name}</span>
-      </nav>
+      <Breadcrumb
+        items={[
+          { label: 'Destinations', to: '/places' },
+          { label: place.name }
+        ]}
+      />
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
         <div>

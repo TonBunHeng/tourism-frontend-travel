@@ -4,6 +4,7 @@ import { Save, ArrowLeft, Loader2 } from 'lucide-react';
 import guideService from '../../services/guideService';
 import provinceService from '../../services/provinceService';
 import { useAlert } from '../../context/AlertContext';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function GuideEventForm() {
   const { id } = useParams();
@@ -107,17 +108,16 @@ export default function GuideEventForm() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      
+      <Breadcrumb
+        items={[
+          { label: 'Guide Portal', to: '/guide/dashboard' },
+          { label: 'Events & Festivals', to: '/guide/events' },
+          { label: isEdit ? 'Edit Event' : 'Schedule Event' }
+        ]}
+      />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
         <div>
-          <Link
-            to="/guide/events"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white mb-1 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Events</span>
-          </Link>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
             {isEdit ? 'Edit Cultural Event' : 'Schedule Cultural Event'}
           </h1>

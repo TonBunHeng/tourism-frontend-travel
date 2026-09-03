@@ -5,6 +5,7 @@ import { galleryService } from '../../services/galleryService';
 import GalleriesHeader from './GalleriesHeader';
 import GalleryCard from '../../components/common/GalleryCard';
 import MediaLightboxModal from '../../components/common/MediaLightboxModal';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 const isVideoItem = (item) => {
   if (!item) return false;
@@ -140,6 +141,7 @@ export default function Galleries() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <Breadcrumb items={[{ label: 'Media Gallery' }]} />
       <GalleriesHeader
         filter={filter}
         setFilter={handleFilterChange}

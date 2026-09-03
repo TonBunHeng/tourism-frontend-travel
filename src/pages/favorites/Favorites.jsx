@@ -4,6 +4,7 @@ import { useTravel } from '../../context/TravelContext';
 import { useAuth } from '../../context/AuthContext';
 import FavoritesHeader from './FavoritesHeader';
 import FavoritesGrid from './FavoritesGrid';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Favorites() {
   const { favorites, fetchFavorites } = useTravel();
@@ -33,6 +34,7 @@ export default function Favorites() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <Breadcrumb items={[{ label: 'Saved Wishlist' }]} />
       <FavoritesHeader totalCount={favorites.length} visitedCount={visitedCount} />
       <FavoritesGrid favorites={favorites} />
     </div>

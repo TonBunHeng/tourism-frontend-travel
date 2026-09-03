@@ -7,7 +7,7 @@ const ProvinceCard = ({ province }) => {
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
   return (
-    <div className="group bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg overflow-hidden shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between">
+    <div className="group bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg overflow-hidden shadow-xs hover:shadow-md hover:border-gray-300 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between h-full">
       <div>
         {/* Google Map Embedded Frame */}
         <div className="relative aspect-16/10 w-full overflow-hidden bg-gray-100 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-800">

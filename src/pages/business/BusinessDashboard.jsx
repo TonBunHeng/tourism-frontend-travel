@@ -12,6 +12,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import businessService from '../../services/businessService';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function BusinessDashboard() {
   const [profileData, setProfileData] = useState(null);
@@ -56,7 +57,7 @@ export default function BusinessDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      
+      <Breadcrumb items={[{ label: 'Business Portal' }]} />
       {/* Simple Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
         <div>

@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 @theme {
   /* Color for Login */
   --color-primary: #003E83;
@@ -151,6 +155,71 @@
 .animate-smooth-pop {
   animation: smoothPop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: top right;
+}
+
+/* Chatbot Slide In from Right (50% screen panel) */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0.85;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Genie Mascot Bot Animations */
+@keyframes genieFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3.5px);
+  }
+}
+
+@keyframes genieBlink {
+  0%, 46%, 54%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.12);
+  }
+}
+
+@keyframes geniePulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px 0 rgba(30, 88, 200, 0.4);
+  }
+  50% {
+    box-shadow: 0 6px 22px 4px rgba(59, 130, 246, 0.55);
+  }
+}
+
+.animate-genie-float {
+  animation: genieFloat 2.8s ease-in-out infinite;
+}
+
+.animate-genie-blink {
+  animation: genieBlink 3.8s ease-in-out infinite;
+}
+
+.animate-genie-pulse {
+  animation: geniePulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Hide scrollbars on carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Toast notification animations */

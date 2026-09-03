@@ -1,14 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, HelpCircle } from 'lucide-react';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function GuideInquiries() {
   return (
     <div className="min-h-screen bg-gray-50/50 dark:bg-zinc-950 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
+        <Breadcrumb
+          items={[
+            { label: 'Guide Portal', to: '/guide/dashboard' },
+            { label: 'Tourist Inquiries' }
+          ]}
+        />
         <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-gray-200 dark:border-zinc-800 shadow-sm space-y-2">
-          <Link to="/guide/dashboard" className="text-xs font-bold text-gray-500 hover:text-gray-900 flex items-center gap-1">
-            <ArrowLeft className="w-3.5 h-3.5" /> Guide Dashboard
-          </Link>
           <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Tourist Inquiries & Assistance</h1>
           <p className="text-xs text-gray-500">Answer traveler questions and provide verified destination insights.</p>
         </div>

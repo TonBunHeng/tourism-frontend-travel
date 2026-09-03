@@ -14,6 +14,7 @@ import ProvinceCard from '../../components/common/ProvinceCard';
 import GalleryCard from '../../components/common/GalleryCard';
 import EventDetailsModal from '../events/EventDetailsModal';
 import MediaLightboxModal from '../../components/common/MediaLightboxModal';
+import CarouselSlider from '../../components/common/CarouselSlider';
 
 export default function Home() {
   const { provinces } = useTravel();
@@ -33,10 +34,10 @@ export default function Home() {
     const loadHomeData = async () => {
       try {
         const [placesRes, bizRes, eventsRes, galleryRes] = await Promise.allSettled([
-          placeService.getPlaces({ per_page: 6, sort_by: 'popular' }),
-          businessService.getBusinesses({ per_page: 3, sort: 'rating' }),
-          eventService.getEvents({ per_page: 3, status: 'Upcoming' }),
-          galleryService.getGalleries({ per_page: 3 })
+          placeService.getPlaces({ per_page: 12, sort_by: 'popular' }),
+          businessService.getBusinesses({ per_page: 10, sort: 'rating' }),
+          eventService.getEvents({ per_page: 6, status: 'Upcoming' }),
+          galleryService.getGalleries({ per_page: 10 })
         ]);
 
         if (placesRes.status === 'fulfilled' && placesRes.value?.data) {
@@ -44,13 +45,13 @@ export default function Home() {
         }
         if (bizRes.status === 'fulfilled') {
           const list = bizRes.value?.data?.businesses || bizRes.value?.data || bizRes.value || [];
-          setFeaturedBusinesses(Array.isArray(list) ? list.slice(0, 3) : []);
+          setFeaturedBusinesses(Array.isArray(list) ? list : []);
         }
         if (eventsRes.status === 'fulfilled' && eventsRes.value?.data) {
           setUpcomingEvents(eventsRes.value.data);
         }
         if (galleryRes.status === 'fulfilled' && galleryRes.value?.data) {
-          setFeaturedGalleries(galleryRes.value.data.slice(0, 3));
+          setFeaturedGalleries(galleryRes.value.data);
         }
       } catch (err) {
         console.error('Failed to load homepage data', err);
@@ -115,16 +116,16 @@ export default function Home() {
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="h-64 bg-gray-200 dark:bg-zinc-800 rounded-lg"></div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <CarouselSlider itemClassName="w-[85vw] sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-11px)] shrink-0 snap-start flex flex-col">
             {featuredPlaces.map((place) => (
               <PlaceCard key={place.id} place={place} />
             ))}
-          </div>
+          </CarouselSlider>
         )}
       </section>
 
@@ -147,11 +148,11 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <CarouselSlider itemClassName="w-[85vw] sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-11px)] shrink-0 snap-start flex flex-col">
             {featuredBusinesses.map((biz) => (
               <BusinessCard key={biz.id} business={biz} />
             ))}
-          </div>
+          </CarouselSlider>
         </section>
       )}
 
@@ -210,11 +211,11 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {provinces.slice(0, 4).map((province) => (
+        <CarouselSlider itemClassName="w-[75vw] sm:w-[calc(50%-10px)] md:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] shrink-0 snap-start flex flex-col">
+          {provinces.map((province) => (
             <ProvinceCard key={province.id} province={province} />
           ))}
-        </div>
+        </CarouselSlider>
       </section>
 
       {/* Upcoming Events */}

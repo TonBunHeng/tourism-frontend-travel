@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import tripService from '../../services/tripService';
 import { useAlert } from '../../context/AlertContext';
+import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Trips() {
   const navigate = useNavigate();
@@ -123,7 +124,8 @@ export default function Trips() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6">
+      <Breadcrumb items={[{ label: 'My Trips' }]} />
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-gray-200 dark:border-zinc-800">
         <div>
