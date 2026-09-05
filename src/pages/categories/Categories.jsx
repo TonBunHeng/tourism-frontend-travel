@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
@@ -9,11 +8,7 @@ import Breadcrumb from '../../components/common/Breadcrumb';
 export default function Categories() {
   const { categories, loadingGlobal } = useTravel();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
-
-  useEffect(() => {
-    setPage(Number(searchParams.get('page')) || 1);
-  }, [searchParams]);
+  const page = Number(searchParams.get('page')) || 1;
 
   if (loadingGlobal) {
     return (
@@ -34,7 +29,6 @@ export default function Categories() {
   );
 
   const handlePageChange = (newPage) => {
-    setPage(newPage);
     const params = new URLSearchParams(searchParams);
     params.set('page', String(newPage));
     setSearchParams(params);

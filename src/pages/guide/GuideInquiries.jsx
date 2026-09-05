@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { ArrowLeft, HelpCircle } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function GuideInquiries() {

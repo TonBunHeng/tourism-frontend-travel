@@ -1,34 +1,10 @@
 import { useState } from 'react';
-import { X, Eye, EyeOff, AlertCircle, Compass, Building2, Sparkles, Check, UserCheck } from 'lucide-react';
+import { X, Eye, EyeOff, AlertCircle, UserCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
 import GoogleLoginButton from './GoogleLoginButton';
 import FacebookLoginButton from './FacebookLoginButton';
 import logoImg from '../../assets/tourism_logo.png';
-
-const ROLES = [
-  {
-    id: 'user',
-    name: 'Tourist / Traveler',
-    subtitle: 'Explore places, save favorites & reviews',
-    icon: Compass,
-    color: 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/30 text-[#003E83] dark:text-[#60a5fa]',
-  },
-  {
-    id: 'business_owner',
-    name: 'Business Owner',
-    subtitle: 'Manage hotel, dining, tours & services',
-    icon: Building2,
-    color: 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400',
-  },
-  {
-    id: 'guide_editor',
-    name: 'Guide / Editor',
-    subtitle: 'Publish attractions, events & stories',
-    icon: Sparkles,
-    color: 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400',
-  },
-];
 
 const DEMO_ACCOUNTS = [
   { role: 'Tourist', email: 'vit.vong@example.com', pass: 'password123' },

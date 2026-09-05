@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, ArrowLeft, Search, Edit3, Loader2 } from 'lucide-react';
+import { Plus, Search, Edit3, Loader2 } from 'lucide-react';
 import guideService from '../../services/guideService';
 import Breadcrumb from '../../components/common/Breadcrumb';
 

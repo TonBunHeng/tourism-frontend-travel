@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Star, Loader2, MessageSquare, Send } from 'lucide-react';
+import { Star, Loader2, MessageSquare, Send } from 'lucide-react';
 import guideService from '../../services/guideService';
 import { useAlert } from '../../context/AlertContext';
 import Breadcrumb from '../../components/common/Breadcrumb';

@@ -14,19 +14,13 @@ export default function Events() {
 
   const [events, setEvents] = useState([]);
   const [pagination, setPagination] = useState(null);
-  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'All');
-  const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+  const statusFilter = searchParams.get('status') || 'All';
+  const search = searchParams.get('search') || '';
+  const page = Number(searchParams.get('page')) || 1;
   const [loading, setLoading] = useState(true);
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-
-  useEffect(() => {
-    setStatusFilter(searchParams.get('status') || 'All');
-    setSearch(searchParams.get('search') || '');
-    setPage(Number(searchParams.get('page')) || 1);
-  }, [searchParams]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -72,8 +66,6 @@ export default function Events() {
   }, [statusFilter, search, page, id]);
 
   const handleStatusFilterChange = (newStatus) => {
-    setStatusFilter(newStatus);
-    setPage(1);
     const params = new URLSearchParams(searchParams);
     if (newStatus !== 'All') {
       params.set('status', newStatus);
@@ -85,8 +77,6 @@ export default function Events() {
   };
 
   const handleSearchChange = (val) => {
-    setSearch(val);
-    setPage(1);
     const params = new URLSearchParams(searchParams);
     if (val.trim()) {
       params.set('search', val.trim());
@@ -106,7 +96,6 @@ export default function Events() {
     : events.slice((currentPage - 1) * 4, currentPage * 4);
 
   const handlePageChange = (newPage) => {
-    setPage(newPage);
     const p = new URLSearchParams(searchParams);
     p.set('page', String(newPage));
     setSearchParams(p);

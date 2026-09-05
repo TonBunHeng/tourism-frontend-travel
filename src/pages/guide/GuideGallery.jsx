@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { 
-  ArrowLeft, 
   Trash2, 
   Loader2, 
   Upload, 

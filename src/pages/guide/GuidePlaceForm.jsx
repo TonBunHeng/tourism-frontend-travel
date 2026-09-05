@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { 
   Save, 
-  ArrowLeft, 
   Loader2, 
   Upload, 
   Copy, 

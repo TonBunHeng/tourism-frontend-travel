@@ -6,8 +6,7 @@ import {
   Heart, 
   ArrowLeft, 
   ExternalLink,
-  Share2,
-  ChevronRight
+  Share2
 } from 'lucide-react';
 import { placeService } from '../../services/placeService';
 import { useTravel } from '../../context/TravelContext';

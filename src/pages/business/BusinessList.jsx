@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, ArrowLeft, ChevronRight, Loader2, Building2 } from 'lucide-react';
+import { Plus, ChevronRight, Loader2, Building2 } from 'lucide-react';
 import businessService from '../../services/businessService';
 import Breadcrumb from '../../components/common/Breadcrumb';
 

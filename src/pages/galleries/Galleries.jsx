@@ -19,19 +19,13 @@ export default function Galleries() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [galleries, setGalleries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [filter, setFilter] = useState(searchParams.get('filter') || 'All');
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+  const search = searchParams.get('search') || '';
+  const filter = searchParams.get('filter') || 'All';
+  const page = Number(searchParams.get('page')) || 1;
 
   // Lightbox Modal state
   const [activeMedia, setActiveMedia] = useState(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-
-  useEffect(() => {
-    setSearch(searchParams.get('search') || '');
-    setFilter(searchParams.get('filter') || 'All');
-    setPage(Number(searchParams.get('page')) || 1);
-  }, [searchParams]);
 
   useEffect(() => {
     const fetchGalleries = async () => {
@@ -84,8 +78,6 @@ export default function Galleries() {
   }, [filteredGalleries, currentPage]);
 
   const handleFilterChange = (newFilter) => {
-    setFilter(newFilter);
-    setPage(1);
     const params = new URLSearchParams(searchParams);
     if (newFilter !== 'All') {
       params.set('filter', newFilter);
@@ -97,8 +89,6 @@ export default function Galleries() {
   };
 
   const handleSearchChange = (val) => {
-    setSearch(val);
-    setPage(1);
     const params = new URLSearchParams(searchParams);
     if (val.trim()) {
       params.set('search', val.trim());
@@ -110,7 +100,6 @@ export default function Galleries() {
   };
 
   const handlePageChange = (newPage) => {
-    setPage(newPage);
     const params = new URLSearchParams(searchParams);
     params.set('page', String(newPage));
     setSearchParams(params);
@@ -133,9 +122,6 @@ export default function Galleries() {
   };
 
   const handleClearFilters = () => {
-    setSearch('');
-    setFilter('All');
-    setPage(1);
     setSearchParams({});
   };
 

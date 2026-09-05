@@ -4,7 +4,6 @@ import {
   Trash2, 
   Edit3, 
   CheckCircle, 
-  ArrowLeft, 
   Loader2, 
   Save, 
   Star,

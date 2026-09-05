@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
@@ -9,13 +8,8 @@ import Breadcrumb from '../../components/common/Breadcrumb';
 export default function Provinces() {
   const { provinces, loadingGlobal } = useTravel();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
-
-  useEffect(() => {
-    setSearch(searchParams.get('search') || '');
-    setPage(Number(searchParams.get('page')) || 1);
-  }, [searchParams]);
+  const search = searchParams.get('search') || '';
+  const page = Number(searchParams.get('page')) || 1;
 
   if (loadingGlobal) {
     return (
@@ -41,8 +35,6 @@ export default function Provinces() {
   );
 
   const handleSearchChange = (val) => {
-    setSearch(val);
-    setPage(1);
     const params = new URLSearchParams(searchParams);
     if (val) {
       params.set('search', val);
@@ -54,7 +46,6 @@ export default function Provinces() {
   };
 
   const handlePageChange = (newPage) => {
-    setPage(newPage);
     const params = new URLSearchParams(searchParams);
     params.set('page', String(newPage));
     setSearchParams(params);

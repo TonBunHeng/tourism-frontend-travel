@@ -19,21 +19,20 @@ export default function Businesses() {
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState(null);
 
-  const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [selectedProvince, setSelectedProvince] = useState(searchParams.get('province_id') || '');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category_id') || '');
-  const [selectedPrice, setSelectedPrice] = useState(searchParams.get('price_range') || '');
-  const [sort, setSort] = useState(searchParams.get('sort') || 'latest');
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+  const searchParam = searchParams.get('search') || '';
+  const [search, setSearch] = useState(searchParam);
+  const [prevSearchParam, setPrevSearchParam] = useState(searchParam);
 
-  useEffect(() => {
-    setSearch(searchParams.get('search') || '');
-    setSelectedProvince(searchParams.get('province_id') || '');
-    setSelectedCategory(searchParams.get('category_id') || '');
-    setSelectedPrice(searchParams.get('price_range') || '');
-    setSort(searchParams.get('sort') || 'latest');
-    setPage(Number(searchParams.get('page')) || 1);
-  }, [searchParams]);
+  if (searchParam !== prevSearchParam) {
+    setPrevSearchParam(searchParam);
+    setSearch(searchParam);
+  }
+
+  const selectedProvince = searchParams.get('province_id') || '';
+  const selectedCategory = searchParams.get('category_id') || '';
+  const selectedPrice = searchParams.get('price_range') || '';
+  const sort = searchParams.get('sort') || 'latest';
+  const page = Number(searchParams.get('page')) || 1;
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -97,11 +96,6 @@ export default function Businesses() {
 
   const handleResetFilters = () => {
     setSearch('');
-    setSelectedProvince('');
-    setSelectedCategory('');
-    setSelectedPrice('');
-    setSort('latest');
-    setPage(1);
     setSearchParams({});
   };
 
@@ -114,7 +108,6 @@ export default function Businesses() {
     : businesses.slice((currentPage - 1) * 4, currentPage * 4);
 
   const handlePageChange = (newPage) => {
-    setPage(newPage);
     const p = new URLSearchParams(searchParams);
     p.set('page', String(newPage));
     setSearchParams(p);
@@ -144,10 +137,7 @@ export default function Businesses() {
           <div>
             <select
               value={selectedProvince}
-              onChange={(e) => {
-                setSelectedProvince(e.target.value);
-                updateParam('province_id', e.target.value);
-              }}
+              onChange={(e) => updateParam('province_id', e.target.value)}
               className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Provinces</option>
@@ -160,10 +150,7 @@ export default function Businesses() {
           <div>
             <select
               value={selectedCategory}
-              onChange={(e) => {
-                setSelectedCategory(e.target.value);
-                updateParam('category_id', e.target.value);
-              }}
+              onChange={(e) => updateParam('category_id', e.target.value)}
               className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Categories</option>
@@ -176,10 +163,7 @@ export default function Businesses() {
           <div>
             <select
               value={selectedPrice}
-              onChange={(e) => {
-                setSelectedPrice(e.target.value);
-                updateParam('price_range', e.target.value);
-              }}
+              onChange={(e) => updateParam('price_range', e.target.value)}
               className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Price Ranges</option>
@@ -193,10 +177,7 @@ export default function Businesses() {
           <div>
             <select
               value={sort}
-              onChange={(e) => {
-                setSort(e.target.value);
-                updateParam('sort', e.target.value);
-              }}
+              onChange={(e) => updateParam('sort', e.target.value)}
               className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="latest">Recently Added</option>

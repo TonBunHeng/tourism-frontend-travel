@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { BarChart3, Star, TrendingUp, ArrowLeft, Loader2 } from 'lucide-react';
+import { BarChart3, Star, TrendingUp, Loader2 } from 'lucide-react';
 import businessService from '../../services/businessService';
 import Breadcrumb from '../../components/common/Breadcrumb';
 

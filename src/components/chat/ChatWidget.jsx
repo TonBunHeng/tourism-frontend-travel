@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
-  MessageSquare,
   X,
   User,
   Trash2,
@@ -13,7 +12,6 @@ import {
 } from 'lucide-react';
 import { chatService } from '../../services/chatService';
 import { useTravel } from '../../context/TravelContext';
-import logoImg from '../../assets/tourism_logo.png';
 import GenieBotIcon from './GenieBotIcon';
 
 // Comprehensive pool of Cambodia & Angkor travel questions (clean text without emojis)
@@ -159,6 +157,7 @@ export default function ChatWidget() {
     if (chatOpen && setChatOpen) {
       setChatOpen(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   // Prevent background page from scrolling when chat is open (allow scroll only inside chat)
@@ -187,11 +186,10 @@ export default function ChatWidget() {
   const handleRefreshQuestions = () => {
     setIsRefreshing(true);
     setTimeout(() => {
-      setBatchIndex((prevIdx) => {
-        const nextIdx = (prevIdx + 1) % Math.ceil(QUESTION_BANK.length / QUESTIONS_PER_BATCH);
-        setCurrentQuestions(getBatchQuestions(nextIdx));
-        return nextIdx;
-      });
+      const totalBatches = Math.ceil(QUESTION_BANK.length / QUESTIONS_PER_BATCH);
+      const nextIdx = (batchIndex + 1) % totalBatches;
+      setBatchIndex(nextIdx);
+      setCurrentQuestions(getBatchQuestions(nextIdx));
       setIsRefreshing(false);
     }, 280);
   };
