@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapPin, Heart, ArrowRight, Camera, Play, MessageSquare } from 'lucide-react';
+import { MapPin, Heart, ArrowRight, Camera, Play } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
 
 const isVideoItem = (item) => {
@@ -131,26 +131,8 @@ export default function GalleryCard({ item, onPreview }) {
         </div>
       </div>
 
-      {/* Card Footer with Like & Comment actions */}
-      <div className="px-4 py-3 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-between text-xs">
-        <div className="flex items-center gap-3 text-gray-500 dark:text-zinc-400 text-xs">
-          <button
-            type="button"
-            onClick={handleLike}
-            className={`flex items-center gap-1 font-semibold transition-colors cursor-pointer ${
-              isLiked ? 'text-rose-500' : 'hover:text-rose-500'
-            }`}
-          >
-            <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-current' : ''}`} />
-            <span>{likesCount}</span>
-          </button>
-
-          <div className="flex items-center gap-1">
-            <MessageSquare className="w-3.5 h-3.5 text-gray-400" />
-            <span>{item.comments?.length || item.comments_count || 0}</span>
-          </div>
-        </div>
-
+      {/* Card Footer */}
+      <div className="px-4 py-3 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-end text-xs">
         <button
           type="button"
           onClick={handleClick}
