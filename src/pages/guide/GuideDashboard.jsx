@@ -46,7 +46,7 @@ export default function GuideDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            Guide & Editor Dashboard
+            Tourism Content Editor Dashboard
           </h1>
           <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
             Curate Cambodian destinations, heritage stories, events, and tourist reviews.
@@ -134,10 +134,10 @@ export default function GuideDashboard() {
 
         <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-4 shadow-xs transition-colors">
           <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider border-b border-gray-100 dark:border-zinc-800 pb-2">
-            Guide Role & Scope
+            Tourism Content Editor Role & Scope
           </h3>
           <p className="text-xs text-gray-600 dark:text-zinc-400 leading-relaxed">
-            As a Guide / Editor, you curate destination information, entrance fees, opening hours, cultural heritage descriptions, and provide verified advice to tourists.
+            As a Tourism Content Editor, you curate destination information, entrance fees, opening hours, cultural heritage descriptions, and provide verified advice to tourists.
           </p>
           <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/60 rounded-md text-amber-800 dark:text-amber-300 text-xs">
             Administrative functions (User management, security settings, system logs) remain restricted to Super Admin & Admin.

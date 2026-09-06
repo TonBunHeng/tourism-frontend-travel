@@ -47,6 +47,7 @@ export default function DeletionRequests() {
 
     try {
       await deletionRequestService.createDeletionRequest({
+        request_type: "account",
         email: email.trim(),
         reason: reason.trim(),
       });

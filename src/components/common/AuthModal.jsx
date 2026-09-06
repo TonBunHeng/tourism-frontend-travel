@@ -9,7 +9,6 @@ import logoImg from '../../assets/tourism_logo.png';
 const DEMO_ACCOUNTS = [
   { role: 'Tourist', email: 'vit.vong@example.com', pass: 'password123' },
   { role: 'Business Owner', email: 'owner@angkor-restaurant.com', pass: 'password123' },
-  { role: 'Guide', email: 'sopheaktra@tourism.gov.kh', pass: 'password123' },
 ];
 
 export default function AuthModal() {
@@ -182,7 +181,6 @@ export default function AuthModal() {
               >
                 <option value="user">Tourist / Traveler</option>
                 <option value="business_owner">Business Owner</option>
-                <option value="guide_editor">Guide / Editor</option>
               </select>
             </div>
           )}

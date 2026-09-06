@@ -33,7 +33,7 @@ import notificationService from '../../services/notificationService';
 import logoImg from '../../assets/tourism_logo.png';
 
 export default function Header() {
-  const { user, isAuthenticated, logout, openAuthModal, isBusinessOwner, isGuideEditor } = useAuth();
+  const { user, isAuthenticated, logout, openAuthModal, isBusinessOwner } = useAuth();
   const { showConfirm } = useAlert();
   const { wishlistCount, toggleChat } = useTravel();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -231,7 +231,6 @@ export default function Header() {
 
   const getDashboardPath = () => {
     if (isBusinessOwner) return '/business/dashboard';
-    if (isGuideEditor) return '/guide/dashboard';
     return '/profile';
   };
 
@@ -464,7 +463,7 @@ export default function Header() {
 
                     <div className="py-1">
                       {/* Role Dashboard Link inside dropdown */}
-                      {(isBusinessOwner || isGuideEditor) && (
+                      {(isBusinessOwner) && (
                         <Link
                           to={getDashboardPath()}
                           className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
@@ -478,7 +477,7 @@ export default function Header() {
                               ? 'text-[#003E83] dark:text-[#60a5fa]'
                               : 'text-gray-400 dark:text-zinc-500'
                           }`} /> 
-                          <span>{isBusinessOwner ? 'Business Dashboard' : 'Guide Dashboard'}</span>
+                          <span>Business Dashboard</span>
                         </Link>
                       )}
 
@@ -687,13 +686,13 @@ export default function Header() {
 
           {/* Quick Access Badges/Links */}
           <div className="border-t border-gray-100 dark:border-zinc-800 pt-2 space-y-1">
-            {(isBusinessOwner || isGuideEditor) && (
+            {(isBusinessOwner) && (
               <Link
                 to={getDashboardPath()}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg font-bold text-[#003E83] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
               >
                 <LayoutDashboard className="w-4 h-4 text-[#003E83] dark:text-blue-400" />
-                <span>{isBusinessOwner ? 'Business Owner Dashboard' : 'Guide / Editor Dashboard'}</span>
+                <span>Business Owner Dashboard</span>
               </Link>
             )}
 

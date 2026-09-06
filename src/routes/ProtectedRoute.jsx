@@ -33,7 +33,7 @@ export default function ProtectedRoute({ allowedRoles }) {
     if (!hasPermission) {
       let redirectPath = '/';
       if (normRole === 'business_owner') redirectPath = '/business/dashboard';
-      if (normRole === 'guide_editor') redirectPath = '/guide/dashboard';
+
 
       return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">

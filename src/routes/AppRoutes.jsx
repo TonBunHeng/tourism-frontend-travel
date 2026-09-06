@@ -35,15 +35,7 @@ import BusinessForm from '../pages/business/BusinessForm';
 import BusinessManage from '../pages/business/BusinessManage';
 import BusinessAnalytics from '../pages/business/BusinessAnalytics';
 
-// Guide / Editor Portal Pages
-import GuideDashboard from '../pages/guide/GuideDashboard';
-import GuidePlaces from '../pages/guide/GuidePlaces';
-import GuidePlaceForm from '../pages/guide/GuidePlaceForm';
-import GuideEvents from '../pages/guide/GuideEvents';
-import GuideEventForm from '../pages/guide/GuideEventForm';
-import GuideGallery from '../pages/guide/GuideGallery';
-import GuideInquiries from '../pages/guide/GuideInquiries';
-import GuideReviews from '../pages/guide/GuideReviews';
+
 
 export default function AppRoutes() {
   return (
@@ -80,7 +72,7 @@ export default function AppRoutes() {
           </Route>
 
           {/* Business Owner Dedicated Portal */}
-          <Route element={<ProtectedRoute allowedRoles={['business_owner', 'admin', 'super_admin']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['business_owner']} />}>
             <Route path="/business/dashboard" element={<BusinessDashboard />} />
             <Route path="/business/businesses" element={<BusinessList />} />
             <Route path="/business/businesses/new" element={<BusinessForm />} />
@@ -89,19 +81,7 @@ export default function AppRoutes() {
             <Route path="/business/analytics" element={<BusinessAnalytics />} />
           </Route>
 
-          {/* Guide / Editor Dedicated Portal */}
-          <Route element={<ProtectedRoute allowedRoles={['guide_editor', 'admin', 'super_admin']} />}>
-            <Route path="/guide/dashboard" element={<GuideDashboard />} />
-            <Route path="/guide/places" element={<GuidePlaces />} />
-            <Route path="/guide/places/new" element={<GuidePlaceForm />} />
-            <Route path="/guide/places/:id/edit" element={<GuidePlaceForm />} />
-            <Route path="/guide/events" element={<GuideEvents />} />
-            <Route path="/guide/events/new" element={<GuideEventForm />} />
-            <Route path="/guide/events/:id/edit" element={<GuideEventForm />} />
-            <Route path="/guide/gallery" element={<GuideGallery />} />
-            <Route path="/guide/inquiries" element={<GuideInquiries />} />
-            <Route path="/guide/reviews" element={<GuideReviews />} />
-          </Route>
+
 
         </Route>
 

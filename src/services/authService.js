@@ -6,7 +6,6 @@ const ROOT_API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api
 const DEMO_FALLBACKS = {
   'vit.vong@example.com': { id: 1, name: 'Vit Vong', email: 'vit.vong@example.com', role: 'user' },
   'owner@angkor-restaurant.com': { id: 2, name: 'Angkor Restaurant Owner', email: 'owner@angkor-restaurant.com', role: 'business_owner' },
-  'sopheaktra@tourism.gov.kh': { id: 3, name: 'Sopheaktra Sophal', email: 'sopheaktra@tourism.gov.kh', role: 'guide_editor' },
 };
 
 const extractAuth = (res) => {
@@ -49,6 +48,17 @@ export const authService = {
       const res = await postWithFallback('/auth/login', ['/auth/login', '/login', '/travel/auth/login'], credentials);
       const { token, user } = extractAuth(res);
       if (token && user) {
+        const normRole = String(user.role || '').toLowerCase().trim().replace(/[\s/-]+/g, '_');
+        if (['super_admin', 'admin', 'guide_editor', 'tourism_content_editor', 'superadmin', 'administrator', 'editor', 'guide'].includes(normRole)) {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.dispatchEvent(new Event('user-profile-updated'));
+          return {
+            success: false,
+            message: 'Access restricted. Administrative accounts (Super Admin, Admin, Tourism Content Editor) must sign in via the Admin Portal.'
+          };
+        }
         localStorage.setItem('auth_token', token);
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
