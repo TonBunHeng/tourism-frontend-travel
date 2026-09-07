@@ -19,6 +19,8 @@ import {
   ChevronDown,
   Sun,
   Moon,
+  Monitor,
+  Check,
   Bell,
   CheckCheck,
   ArrowRight,
@@ -39,7 +41,9 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
+  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
   const [navSearch, setNavSearch] = useState('');
+  const [currentTheme, setCurrentTheme] = useState(() => getInitialTheme());
   const [isDarkMode, setIsDarkMode] = useState(() => isDarkTheme(getInitialTheme()));
 
   const [notifications, setNotifications] = useState([]);
@@ -47,6 +51,7 @@ export default function Header() {
 
   const dropdownRef = useRef(null);
   const notifDropdownRef = useRef(null);
+  const themeDropdownRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -131,18 +136,24 @@ export default function Header() {
 
   useEffect(() => {
     const handleThemeChange = (e) => {
-      if (e.detail && typeof e.detail.isDark === 'boolean') {
-        setIsDarkMode(e.detail.isDark);
+      if (e.detail) {
+        if (e.detail.theme) {
+          setCurrentTheme(e.detail.theme);
+        }
+        if (typeof e.detail.isDark === 'boolean') {
+          setIsDarkMode(e.detail.isDark);
+        }
       }
     };
     window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange);
     return () => window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange);
   }, []);
 
-  const handleToggleTheme = () => {
-    const nextMode = !isDarkMode;
-    setIsDarkMode(nextMode);
-    applyTheme(nextMode ? 'dark' : 'light');
+  const handleSelectTheme = (theme) => {
+    applyTheme(theme);
+    setCurrentTheme(theme);
+    setIsDarkMode(isDarkTheme(theme));
+    setThemeDropdownOpen(false);
   };
 
   useEffect(() => {
@@ -152,6 +163,9 @@ export default function Header() {
       }
       if (notifDropdownRef.current && !notifDropdownRef.current.contains(event.target)) {
         setNotifDropdownOpen(false);
+      }
+      if (themeDropdownRef.current && !themeDropdownRef.current.contains(event.target)) {
+        setThemeDropdownOpen(false);
       }
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
         setMenuOpen(false);
@@ -167,6 +181,7 @@ export default function Header() {
     setMenuOpen(false);
     setDropdownOpen(false);
     setNotifDropdownOpen(false);
+    setThemeDropdownOpen(false);
   }, [location.pathname]);
 
   const handleSearchSubmit = (e) => {
@@ -420,6 +435,85 @@ export default function Header() {
               </div>
             )}
 
+            {/* Theme Selector Dropdown (Light / Dark / Device) */}
+            <div className="relative shrink-0" ref={themeDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
+                className={`p-2 rounded-lg transition-colors shrink-0 cursor-pointer ${
+                  themeDropdownOpen
+                    ? 'bg-blue-50 dark:bg-zinc-800 text-[#003E83] dark:text-[#60a5fa]'
+                    : 'text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
+                }`}
+                title={`Theme: ${currentTheme === 'system' ? 'Device' : currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1)}`}
+                aria-label="Select color theme"
+              >
+                {currentTheme === 'light' ? (
+                  <Sun className="w-4 h-4 text-amber-500" />
+                ) : currentTheme === 'dark' ? (
+                  <Moon className="w-4 h-4 text-blue-400" />
+                ) : (
+                  <Monitor className="w-4 h-4 text-gray-600 dark:text-zinc-300" />
+                )}
+              </button>
+
+              {themeDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-zinc-900 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-800 py-1.5 z-50 animate-smooth-pop text-xs">
+                  <div className="px-3 py-1 text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+                    Theme
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSelectTheme('light')}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer ${
+                      currentTheme === 'light'
+                        ? 'bg-blue-50/80 dark:bg-blue-950/50 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                        : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Sun className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Light</span>
+                    </div>
+                    {currentTheme === 'light' && <Check className="w-3.5 h-3.5 text-[#003E83] dark:text-[#60a5fa]" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSelectTheme('dark')}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer ${
+                      currentTheme === 'dark'
+                        ? 'bg-blue-50/80 dark:bg-blue-950/50 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                        : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Moon className="w-3.5 h-3.5 text-blue-400" />
+                      <span>Dark</span>
+                    </div>
+                    {currentTheme === 'dark' && <Check className="w-3.5 h-3.5 text-[#003E83] dark:text-[#60a5fa]" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSelectTheme('system')}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer ${
+                      currentTheme === 'system'
+                        ? 'bg-blue-50/80 dark:bg-blue-950/50 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                        : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Monitor className="w-3.5 h-3.5 text-gray-500 dark:text-zinc-400" />
+                      <span>Device</span>
+                    </div>
+                    {currentTheme === 'system' && <Check className="w-3.5 h-3.5 text-[#003E83] dark:text-[#60a5fa]" />}
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* User Profile or Sign In / Register */}
             {isAuthenticated ? (
               <div className="relative shrink-0" ref={dropdownRef}>
@@ -551,24 +645,6 @@ export default function Header() {
                     </div>
 
                     <div className="border-t border-gray-100 dark:border-zinc-800/80 py-1">
-                      <button
-                        type="button"
-                        onClick={handleToggleTheme}
-                        className="w-full flex items-center justify-between px-3.5 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] text-left font-medium transition-colors cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          {isDarkMode ? (
-                            <Sun className="w-3.5 h-3.5 text-amber-400" />
-                          ) : (
-                            <Moon className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500" />
-                          )}
-                          <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
-                        </div>
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400">
-                          {isDarkMode ? 'Dark' : 'Light'}
-                        </span>
-                      </button>
-
                       <Link
                         to="/settings"
                         className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
@@ -737,6 +813,54 @@ export default function Header() {
               <ShieldAlert className="w-4 h-4 text-emerald-500" />
               <span>Emergency Guidelines</span>
             </Link>
+
+            {/* Appearance Toggle (Mobile) */}
+            <div className="px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-zinc-800/60 border border-gray-200/80 dark:border-zinc-800">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-semibold text-gray-700 dark:text-zinc-300">Theme</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#003E83] dark:text-[#60a5fa]">
+                  {currentTheme === 'system' ? 'Device' : currentTheme}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-1 bg-gray-200/70 dark:bg-zinc-900 p-1 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => handleSelectTheme('light')}
+                  className={`flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                    currentTheme === 'light'
+                      ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-xs'
+                      : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200'
+                  }`}
+                >
+                  <Sun className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Light</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectTheme('dark')}
+                  className={`flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                    currentTheme === 'dark'
+                      ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-xs'
+                      : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200'
+                  }`}
+                >
+                  <Moon className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Dark</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectTheme('system')}
+                  className={`flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                    currentTheme === 'system'
+                      ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-xs'
+                      : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200'
+                  }`}
+                >
+                  <Monitor className="w-3.5 h-3.5 text-gray-500 dark:text-zinc-400" />
+                  <span>Device</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Auth Section in Mobile Menu */}

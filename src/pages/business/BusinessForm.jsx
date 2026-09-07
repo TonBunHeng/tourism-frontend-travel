@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { 
-  Save, 
-  Loader2, 
-  Upload, 
-  Copy, 
-  Check, 
-  Trash2, 
-  Image as ImageIcon 
+import {
+  Save,
+  Loader2,
+  Upload,
+  Copy,
+  Check,
+  Trash2,
+  Image as ImageIcon
 } from 'lucide-react';
 import businessService from '../../services/businessService';
 import provinceService from '../../services/provinceService';
@@ -63,9 +63,46 @@ export default function BusinessForm() {
     if (isEdit) {
       const fetchBusiness = async () => {
         try {
-          const res = await businessService.getOwnerBusiness(id);
+          const [res, galRes, imgRes] = await Promise.all([
+            businessService.getOwnerBusiness(id),
+            businessService.getBusinessGallery(id).catch(() => ({ data: [] })),
+            businessService.getImages(id).catch(() => ({ data: [] })),
+          ]);
           const data = res?.data || res;
+          const galList = galRes?.data || galRes || [];
+          const imgList = imgRes?.data || imgRes || [];
+
           if (data) {
+            const extractUrl = (item) => {
+              if (!item) return null;
+              if (typeof item === 'string') return item;
+              return item.image_url || item.url || item.image || item.photo || null;
+            };
+
+            const rawCover =
+              data.cover_image_url ||
+              data.cover_image ||
+              data.image_url ||
+              data.image ||
+              data.photo_url ||
+              data.photo ||
+              data.cover ||
+              (Array.isArray(data.images) && data.images.length > 0 ? extractUrl(data.images[0]) : null) ||
+              (Array.isArray(data.gallery) && data.gallery.length > 0 ? extractUrl(data.gallery[0]) : null) ||
+              (Array.isArray(galList) && galList.length > 0 ? extractUrl(galList[0]) : null) ||
+              (Array.isArray(imgList) && imgList.length > 0 ? extractUrl(imgList[0]) : null) ||
+              'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80';
+
+            const formatImageUrl = (url) => {
+              if (!url || typeof url !== 'string') return '';
+              if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+              const backendOrigin = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/api.*$/, '');
+              const cleanPath = url.startsWith('/') ? url : `/${url}`;
+              return `${backendOrigin}${cleanPath}`;
+            };
+
+            const resolvedCover = formatImageUrl(rawCover);
+
             setFormData({
               name: data.name || '',
               category_id: data.category_id || '',
@@ -78,7 +115,7 @@ export default function BusinessForm() {
               website: data.website || '',
               price_range: data.price_range || '$$',
               description: data.description || '',
-              cover_image_url: data.cover_image_url || '',
+              cover_image_url: resolvedCover,
             });
           }
         } catch (err) {
@@ -153,12 +190,19 @@ export default function BusinessForm() {
 
     setLoading(true);
     try {
+      const payload = {
+        ...formData,
+        cover_image: formData.cover_image_url,
+        cover_image_url: formData.cover_image_url,
+        image_url: formData.cover_image_url,
+      };
+
       if (isEdit) {
-        await businessService.updateBusiness(id, formData);
+        await businessService.updateBusiness(id, payload);
         showAlert({ title: 'Success', message: 'Business updated successfully.', type: 'success' });
         navigate(`/business/businesses/${id}`);
       } else {
-        const res = await businessService.createBusiness(formData);
+        const res = await businessService.createBusiness(payload);
         const newId = res?.data?.id || res?.id;
         showAlert({ title: 'Success', message: 'Business created! It is now pending admin verification.', type: 'success' });
         navigate(newId ? `/business/businesses/${newId}` : '/business/dashboard');
@@ -202,7 +246,7 @@ export default function BusinessForm() {
 
       {/* Form Container */}
       <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-6 shadow-xs transition-colors">
-        
+
         <div className="space-y-4">
           <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider border-b border-gray-100 dark:border-zinc-800 pb-2">
             Basic Business Info
@@ -333,11 +377,10 @@ export default function BusinessForm() {
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              className={`p-4 rounded-md border-2 border-dashed transition-all ${
-                isDragging
+              className={`p-4 rounded-md border-2 border-dashed transition-all ${isDragging
                   ? 'border-[#003E83] bg-blue-50/50 dark:border-[#60a5fa] dark:bg-blue-950/20'
                   : 'border-gray-200 dark:border-zinc-700/80 bg-gray-50/50 dark:bg-zinc-800/40'
-              }`}
+                }`}
             >
               {formData.cover_image_url ? (
                 <div className="flex flex-col sm:flex-row items-center gap-3">
