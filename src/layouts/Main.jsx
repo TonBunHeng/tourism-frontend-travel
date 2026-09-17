@@ -13,6 +13,7 @@ export default function Main() {
       if (pathname === '/') return 'Home';
       if (pathname.startsWith('/places/')) return 'Destination Details';
       if (pathname === '/places') return 'Destinations';
+      if (pathname.startsWith('/provinces/')) return 'Explore Places';
       if (pathname === '/provinces') return 'Provinces';
       if (pathname === '/categories') return 'Categories';
       if (pathname.startsWith('/events/')) return 'Event Details';

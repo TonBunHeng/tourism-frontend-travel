@@ -5,13 +5,14 @@ import {
   AlertCircle, 
   AlertTriangle, 
   Info, 
-  Trash2,
-  X
+  Trash2, 
+  LogOut,
+  ShieldAlert 
 } from 'lucide-react';
 
 export default function AlertModal({
   isOpen,
-  type = 'info', // 'success', 'danger', 'warning', 'info', 'error'
+  type = 'info', // 'success', 'danger', 'warning', 'info', 'error', 'delete', 'logout', 'forbidden', 'restricted'
   title,
   message,
   confirmText,
@@ -47,102 +48,141 @@ export default function AlertModal({
     onClose?.();
   };
 
-  // Get icon and color scheme based on type
+  // Simple and sleek icon presentation with soft tinted circle/rounded rectangle
   const renderIcon = () => {
     if (customIcon) return customIcon;
 
+    const isLogout = type === 'logout' || 
+      (title && (title.toLowerCase().includes('logout') || title.toLowerCase().includes('sign out')));
+
+    const isForbidden = type === 'forbidden' || type === 'restricted' || type === 'access_denied' || type === 'shield' ||
+      (title && (title.toLowerCase().includes('restricted') || title.toLowerCase().includes('denied') || title.toLowerCase().includes('forbidden')));
+
     switch (type) {
+      case 'logout':
+        return (
+          <div className="w-14 h-14 rounded-md bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center">
+            <LogOut size={24} />
+          </div>
+        );
+      case 'forbidden':
+      case 'restricted':
+      case 'access_denied':
+      case 'shield':
+        return (
+          <div className="w-14 h-14 rounded-md bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center">
+            <ShieldAlert size={24} />
+          </div>
+        );
       case 'success':
         return (
-          <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center animate-pulse-glow-success">
-            <CheckCircle2 size={34} className="text-emerald-600 dark:text-emerald-400 animate-alert-pop" />
+          <div className="w-14 h-14 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <CheckCircle2 size={24} />
           </div>
         );
       case 'danger':
       case 'delete':
+        if (isLogout) {
+          return (
+            <div className="w-14 h-14 rounded-md bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center">
+              <LogOut size={24} />
+            </div>
+          );
+        }
+        if (isForbidden) {
+          return (
+            <div className="w-14 h-14 rounded-md bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center">
+              <ShieldAlert size={24} />
+            </div>
+          );
+        }
         return (
-          <div className="w-16 h-16 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center animate-pulse-glow-danger">
-            <Trash2 size={32} className="text-red-500 dark:text-red-400 animate-alert-shake" />
+          <div className="w-14 h-14 rounded-md bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center">
+            <Trash2 size={24} />
           </div>
         );
       case 'error':
+        if (isForbidden) {
+          return (
+            <div className="w-14 h-14 rounded-md bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center">
+              <ShieldAlert size={24} />
+            </div>
+          );
+        }
         return (
-          <div className="w-16 h-16 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center animate-pulse-glow-danger">
-            <AlertCircle size={34} className="text-red-500 dark:text-red-400 animate-alert-shake" />
+          <div className="w-14 h-14 rounded-md bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center">
+            <AlertCircle size={24} />
           </div>
         );
       case 'warning':
         return (
-          <div className="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center animate-pulse-glow-warning">
-            <AlertTriangle size={34} className="text-amber-500 dark:text-amber-400 animate-alert-wiggle" />
+          <div className="w-14 h-14 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+            <AlertTriangle size={24} />
           </div>
         );
       case 'info':
       default:
+        if (isLogout) {
+          return (
+            <div className="w-14 h-14 rounded-md bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center">
+              <LogOut size={24} />
+            </div>
+          );
+        }
         return (
-          <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center animate-pulse-glow-info">
-            <Info size={34} className="text-blue-600 dark:text-blue-400 animate-alert-pop" />
+          <div className="w-14 h-14 rounded-md bg-blue-500/10 text-[#003E83] dark:text-blue-400 flex items-center justify-center">
+            <Info size={24} />
           </div>
         );
     }
   };
 
-  // Default button texts based on type
   const defaultConfirmText = isConfirm 
-    ? (type === 'danger' || type === 'delete' ? 'Delete' : 'Confirm')
+    ? (type === 'danger' || type === 'delete' ? 'Delete' : (type === 'logout' ? 'Sign Out' : 'Confirm'))
     : 'OK';
 
   const finalConfirmText = confirmText || defaultConfirmText;
 
   const getConfirmButtonClass = () => {
-    if (type === 'danger' || type === 'delete' || type === 'error') {
-      return 'bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-500/20 text-white';
+    if (type === 'danger' || type === 'delete' || type === 'error' || type === 'logout') {
+      return 'bg-red-500 hover:bg-red-600 text-white';
     }
     if (type === 'success') {
-      return 'bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-500/20 text-white';
+      return 'bg-emerald-500 hover:bg-emerald-600 text-white';
     }
     if (type === 'warning') {
-      return 'bg-amber-500 hover:bg-amber-600 focus:ring-4 focus:ring-amber-500/20 text-white';
+      return 'bg-amber-500 hover:bg-amber-600 text-white';
     }
-    return 'bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 text-white';
+    return 'bg-[#003E83] hover:bg-[#002e62] text-white';
   };
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 transition-opacity p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-alert-backdrop"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="alert-modal-title"
     >
       <div
-        className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-md w-full mx-4 p-5 sm:p-6 relative animate-in fade-in zoom-in duration-200 border border-gray-200 dark:border-zinc-800 max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-[#18181b] rounded-md shadow-2xl max-w-sm w-full mx-4 p-6 relative border border-gray-200 dark:border-zinc-800 animate-alert-popup overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
-          aria-label="Close alert"
-        >
-          <X size={20} />
-        </button>
-
         {/* Icon */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-5 animate-alert-icon">
           {renderIcon()}
         </div>
 
         {/* Title */}
         {title && (
-          <h3 id="alert-modal-title" className="text-xl font-bold text-gray-800 dark:text-zinc-100 text-center mb-2">
+          <h3 id="alert-modal-title" className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2 tracking-tight">
             {title}
           </h3>
         )}
 
         {/* Message */}
         {message && (
-          <p className="text-gray-600 dark:text-zinc-400 text-center mb-6 text-sm leading-relaxed whitespace-pre-line">
+          <p className="text-sm text-gray-500 dark:text-zinc-400 text-center mb-6 leading-relaxed whitespace-pre-line px-1">
             {message}
           </p>
         )}
@@ -153,14 +193,14 @@ export default function AlertModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-zinc-800 text-gray-700 dark:text-zinc-300 font-medium rounded-md hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-sm"
+              className="flex-1 py-2.5 px-4 border border-gray-300 dark:border-zinc-800 bg-transparent hover:bg-gray-100 dark:hover:bg-zinc-800/80 text-gray-700 dark:text-zinc-300 font-medium rounded-md transition-colors cursor-pointer text-sm"
             >
               {cancelText}
             </button>
             <button
               type="button"
               onClick={handleConfirm}
-              className={`flex-1 px-4 py-2.5 font-medium rounded-md transition-all cursor-pointer text-sm shadow-sm ${getConfirmButtonClass()}`}
+              className={`flex-1 py-2.5 px-4 font-medium rounded-md transition-colors cursor-pointer text-sm ${getConfirmButtonClass()}`}
             >
               {finalConfirmText}
             </button>
@@ -170,7 +210,7 @@ export default function AlertModal({
             <button
               type="button"
               onClick={handleConfirm}
-              className={`w-full px-4 py-2.5 font-medium rounded-md transition-all cursor-pointer text-sm shadow-sm ${getConfirmButtonClass()}`}
+              className={`w-full py-2.5 px-4 font-medium rounded-md transition-colors cursor-pointer text-sm ${getConfirmButtonClass()}`}
             >
               {finalConfirmText}
             </button>

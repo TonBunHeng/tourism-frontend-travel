@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { placeService } from '../../services/placeService';
+import { useTravel } from '../../context/TravelContext';
 import PlacesHeader from './PlacesHeader';
 import PlacesToolbar from './PlacesToolbar';
 import PlacesGrid from './PlacesGrid';
@@ -9,6 +10,7 @@ import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Places() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { provinces } = useTravel();
 
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [provinceId, setProvinceId] = useState(searchParams.get('province_id') || '');
@@ -20,6 +22,8 @@ export default function Places() {
   const [places, setPlaces] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const currentProvince = provinces?.find((p) => String(p.id) === String(provinceId));
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -79,7 +83,10 @@ export default function Places() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <Breadcrumb items={[{ label: 'Destinations' }]} />
-      <PlacesHeader totalCount={pagination?.total ?? places.length} />
+      <PlacesHeader 
+        totalCount={pagination?.total ?? places.length} 
+        provinceName={currentProvince?.name}
+      />
 
       <PlacesToolbar
         search={search}

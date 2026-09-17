@@ -73,7 +73,7 @@ export default function Profile() {
       message: 'Are you sure you want to sign out of your account?',
       confirmText: 'Sign Out',
       cancelText: 'Cancel',
-      type: 'danger'
+      type: 'logout'
     });
 
     if (confirmed) {

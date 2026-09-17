@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Loader2, ShieldAlert } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import Forbidden from '../pages/error/Forbidden';
 
 export default function ProtectedRoute({ allowedRoles }) {
   const { user, token, loading, role } = useAuth();
@@ -31,28 +32,7 @@ export default function ProtectedRoute({ allowedRoles }) {
     const hasPermission = normAllowed.includes(normRole) || isFullAdmin;
 
     if (!hasPermission) {
-      let redirectPath = '/';
-      if (normRole === 'business_owner') redirectPath = '/business/dashboard';
-
-
-      return (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">
-          <div className="w-16 h-16 bg-rose-100 dark:bg-rose-950/50 rounded-2xl flex items-center justify-center text-rose-600 dark:text-rose-400 mb-4">
-            <ShieldAlert className="w-8 h-8" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Access Restricted</h2>
-          <p className="text-sm text-gray-600 dark:text-zinc-400 max-w-md mb-6">
-            You do not have permission to view this dashboard. Your current role is{' '}
-            <span className="font-semibold text-[#003E83] dark:text-blue-400 capitalize">{normRole.replace('_', ' ')}</span>.
-          </p>
-          <a
-            href={redirectPath}
-            className="px-5 py-2.5 bg-[#003E83] hover:bg-[#002e62] text-white text-sm font-semibold rounded-xl transition-all shadow-md"
-          >
-            Go to My Dashboard
-          </a>
-        </div>
-      );
+      return <Forbidden />;
     }
   }
 

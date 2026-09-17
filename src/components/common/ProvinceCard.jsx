@@ -47,9 +47,11 @@ const ProvinceCard = ({ province }) => {
             <span>Kingdom of Cambodia</span>
           </div>
 
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-[#003E83] dark:group-hover:text-[#60a5fa] transition-colors">
-            {province.name}
-          </h3>
+          <Link to={`/provinces/${province.id}`} className="block">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-[#003E83] dark:group-hover:text-[#60a5fa] transition-colors">
+              {province.name}
+            </h3>
+          </Link>
 
           {province.description && (
             <p className="text-xs text-gray-500 dark:text-zinc-400 line-clamp-2 mt-1 leading-relaxed">
@@ -79,7 +81,7 @@ const ProvinceCard = ({ province }) => {
           {province.places_count || 0} Registered Attractions
         </span>
         <Link
-          to={`/places?province_id=${province.id}`}
+          to={`/provinces/${province.id}`}
           className="flex items-center gap-1 font-semibold text-[#003E83] dark:text-[#60a5fa] hover:underline group-hover:translate-x-0.5 transition-transform"
         >
           Explore Places <ArrowRight className="w-3.5 h-3.5" />

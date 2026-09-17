@@ -123,7 +123,7 @@ export default function Header() {
       title: 'Logout Confirmation',
       message: 'Are you sure you want to log out of your account?',
       confirmText: 'Sign Out',
-      type: 'danger'
+      type: 'logout'
     });
     if (confirmed) {
       logout();

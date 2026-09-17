@@ -11,6 +11,7 @@ import Home from '../pages/home/Home';
 import Places from '../pages/places/Places';
 import PlaceDetails from '../pages/places/PlaceDetails';
 import Provinces from '../pages/provinces/Provinces';
+import ProvinceDetails from '../pages/provinces/ProvinceDetails';
 import Categories from '../pages/categories/Categories';
 import Events from '../pages/events/Events';
 import Galleries from '../pages/galleries/Galleries';
@@ -35,8 +36,6 @@ import BusinessForm from '../pages/business/BusinessForm';
 import BusinessManage from '../pages/business/BusinessManage';
 import BusinessAnalytics from '../pages/business/BusinessAnalytics';
 
-
-
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -51,6 +50,7 @@ export default function AppRoutes() {
           <Route path="/businesses" element={<Businesses />} />
           <Route path="/businesses/:id" element={<BusinessDetails />} />
           <Route path="/provinces" element={<Provinces />} />
+          <Route path="/provinces/:id" element={<ProvinceDetails />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/events" element={<Events />} />
           <Route path="/events/:id" element={<Events />} />
@@ -80,8 +80,6 @@ export default function AppRoutes() {
             <Route path="/business/businesses/:id/edit" element={<BusinessForm />} />
             <Route path="/business/analytics" element={<BusinessAnalytics />} />
           </Route>
-
-
 
         </Route>
 
