@@ -196,14 +196,20 @@ export default function Businesses() {
           <p className="text-xs font-medium text-gray-500 dark:text-zinc-400">Fetching verified businesses...</p>
         </div>
       ) : error ? (
-        <div className="bg-rose-50 dark:bg-rose-950/40 p-6 rounded-lg border border-rose-200 dark:border-rose-900 text-center">
-          <p className="text-xs font-bold text-rose-600 dark:text-rose-400">{error}</p>
-          <button
-            onClick={fetchBusinesses}
-            className="mt-3 px-4 py-1.5 bg-rose-600 text-white rounded-md text-xs font-bold cursor-pointer"
-          >
-            Retry
-          </button>
+        <div className="bg-rose-50 dark:bg-rose-950/40 p-6 rounded-lg border border-rose-200 dark:border-rose-900 text-center space-y-2">
+          <p className="text-xs font-bold text-rose-600 dark:text-rose-400">
+            {error === 'Network Error'
+              ? 'Unable to connect to the backend API server. Please ensure the backend server is running (e.g., run php artisan serve on port 8000).'
+              : error}
+          </p>
+          <div>
+            <button
+              onClick={fetchBusinesses}
+              className="mt-2 px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-md text-xs font-bold cursor-pointer transition-colors"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       ) : displayedBusinesses.length === 0 ? (
         <div className="bg-white dark:bg-zinc-900 p-12 rounded-lg border border-gray-200 dark:border-zinc-800 text-center space-y-3">

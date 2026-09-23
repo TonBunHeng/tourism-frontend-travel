@@ -189,30 +189,24 @@ export default function Home() {
       )}
 
       {/* Photo & Media Gallery */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-2 mb-4 pb-2 border-b border-gray-200 dark:border-zinc-800">
-          <div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
-              Photo & Media Gallery
-            </h2>
-            <p className="text-xs text-gray-500 dark:text-zinc-400">Captivating photography of Angkor and Cambodian landscapes</p>
+      {featuredGalleries.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2 mb-4 pb-2 border-b border-gray-200 dark:border-zinc-800">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                Photo & Media Gallery
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-zinc-400">Captivating photography of Angkor and Cambodian landscapes</p>
+            </div>
+            <Link
+              to="/gallery"
+              className="flex items-center gap-1 text-xs font-semibold text-[#003E83] dark:text-[#60a5fa] hover:underline"
+            >
+              Explore Gallery
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <Link
-            to="/gallery"
-            className="flex items-center gap-1 text-xs font-semibold text-[#003E83] dark:text-[#60a5fa] hover:underline"
-          >
-            Explore Gallery
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-80 bg-gray-200 dark:bg-zinc-800 rounded-xl"></div>
-            ))}
-          </div>
-        ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {featuredGalleries.slice(0, 6).map((item) => (
               <GalleryCard
@@ -222,8 +216,8 @@ export default function Home() {
               />
             ))}
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* Provinces Explorer */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
