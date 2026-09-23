@@ -23,7 +23,6 @@ export default function PlaceDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const fetchPlaceDetail = useCallback(async () => {
     try {
@@ -73,35 +72,7 @@ export default function PlaceDetails() {
   }
 
   const favorited = isFavorite(place.id);
-  // Normalize and deduplicate images by base path (stripping resolution query params like w=800 vs w=1200)
-  const getBaseImageUrl = (url) => {
-    if (!url || typeof url !== 'string') return '';
-    try {
-      return url.split('?')[0].trim().toLowerCase();
-    } catch {
-      return url.trim().toLowerCase();
-    }
-  };
-
-  const rawImages = [
-    place.image_url || place.image,
-    ...(Array.isArray(place.gallery) ? place.gallery.map((g) => (typeof g === 'string' ? g : g?.url || g?.media_url || g?.image_url)) : []),
-    ...(Array.isArray(place.images) ? place.images.map((img) => (typeof img === 'string' ? img : img?.url || img?.image_url)) : []),
-  ].filter(Boolean);
-
-  const seenBases = new Set();
-  const images = [];
-  for (const img of rawImages) {
-    const base = getBaseImageUrl(img);
-    if (base && !seenBases.has(base)) {
-      seenBases.add(base);
-      images.push(img);
-    }
-  }
-
-  if (images.length === 0) {
-    images.push('https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80');
-  }
+  const placeImage = place.image_url || place.image || 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80';
 
   const mapQuery = encodeURIComponent(place.address || place.name || 'Cambodia');
   const googleMapsUrl = place.coordinates
@@ -188,27 +159,11 @@ export default function PlaceDetails() {
           <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg overflow-hidden transition-colors">
             <div className="aspect-16/9 w-full bg-gray-100 dark:bg-zinc-800 relative">
               <img
-                src={images[activeImageIndex] || images[0]}
+                src={placeImage}
                 alt={place.name}
                 className="w-full h-full object-cover"
               />
             </div>
-
-            {images.length > 1 && (
-              <div className="p-3 bg-gray-50 dark:bg-zinc-800/60 border-t border-gray-200 dark:border-zinc-800 flex gap-2 overflow-x-auto">
-                {images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`w-16 h-12 rounded overflow-hidden border-2 shrink-0 transition-all ${
-                      activeImageIndex === idx ? 'border-[#003E83] dark:border-[#60a5fa] ring-1 ring-[#003E83] dark:ring-[#60a5fa]' : 'border-transparent opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

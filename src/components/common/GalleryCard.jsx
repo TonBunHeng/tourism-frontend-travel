@@ -45,7 +45,8 @@ export default function GalleryCard({ item, onPreview }) {
           {isVideo ? (
             <div className="relative w-full h-full bg-zinc-950 flex items-center justify-center">
               <video
-                src={mediaUrl}
+                src={mediaUrl ? `${mediaUrl}#t=0.5` : ''}
+                poster={item.thumbnail_url || item.thumbnail || item.poster || item.cover_image || undefined}
                 className="w-full h-full object-cover"
                 muted
                 playsInline

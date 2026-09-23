@@ -16,6 +16,14 @@ import EventDetailsModal from '../events/EventDetailsModal';
 import MediaLightboxModal from '../../components/common/MediaLightboxModal';
 import CarouselSlider from '../../components/common/CarouselSlider';
 
+const isVideoMedia = (item) => {
+  if (!item) return false;
+  const mediaType = (item.media_type || item.type || '').toLowerCase();
+  if (mediaType === 'video') return true;
+  const url = item.media_url || item.url || item.thumbnail_url || '';
+  return /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(url);
+};
+
 export default function Home() {
   const { provinces } = useTravel();
   const [featuredPlaces, setFeaturedPlaces] = useState([]);
@@ -37,7 +45,7 @@ export default function Home() {
           placeService.getPlaces({ per_page: 12, sort_by: 'popular' }),
           businessService.getBusinesses({ per_page: 10, sort: 'rating' }),
           eventService.getEvents({ per_page: 6, status: 'Upcoming' }),
-          galleryService.getGalleries({ per_page: 10 })
+          galleryService.getGalleries({ per_page: 30 })
         ]);
 
         if (placesRes.status === 'fulfilled' && placesRes.value?.data) {
@@ -51,7 +59,31 @@ export default function Home() {
           setUpcomingEvents(eventsRes.value.data);
         }
         if (galleryRes.status === 'fulfilled' && galleryRes.value?.data) {
-          setFeaturedGalleries(galleryRes.value.data);
+          const list = Array.isArray(galleryRes.value.data) ? galleryRes.value.data : [];
+          const videos = list.filter(isVideoMedia);
+          const photos = list.filter((item) => !isVideoMedia(item));
+
+          let selectedPhotos = photos.slice(0, 3);
+          let selectedVideos = videos.slice(0, 3);
+
+          if (selectedPhotos.length < 3) {
+            const extraVideos = videos.slice(3, 3 + (3 - selectedPhotos.length));
+            selectedVideos = [...selectedVideos, ...extraVideos];
+          }
+          if (selectedVideos.length < 3) {
+            const extraPhotos = photos.slice(3, 3 + (3 - selectedVideos.length));
+            selectedPhotos = [...selectedPhotos, ...extraPhotos];
+          }
+
+          // Interleave photos and videos: [Photo 1, Video 1, Photo 2, Video 2, Photo 3, Video 3]
+          const mixed = [];
+          const maxCount = Math.max(selectedPhotos.length, selectedVideos.length);
+          for (let i = 0; i < maxCount; i++) {
+            if (selectedPhotos[i]) mixed.push(selectedPhotos[i]);
+            if (selectedVideos[i]) mixed.push(selectedVideos[i]);
+          }
+
+          setFeaturedGalleries(mixed.slice(0, 6));
         }
       } catch (err) {
         console.error('Failed to load homepage data', err);
@@ -176,13 +208,13 @@ export default function Home() {
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="h-80 bg-gray-200 dark:bg-zinc-800 rounded-xl"></div>
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredGalleries.map((item) => (
+            {featuredGalleries.slice(0, 6).map((item) => (
               <GalleryCard
                 key={item.id}
                 item={item}
