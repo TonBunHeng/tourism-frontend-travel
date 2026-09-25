@@ -1,15 +1,11 @@
 import { useState } from 'react';
-import { X, Eye, EyeOff, AlertCircle, UserCheck } from 'lucide-react';
+import { X, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
 import GoogleLoginButton from './GoogleLoginButton';
 import FacebookLoginButton from './FacebookLoginButton';
 import logoImg from '../../assets/tourism_logo.png';
 
-const DEMO_ACCOUNTS = [
-  { role: 'Tourist', email: 'vit.vong@example.com', pass: 'password123' },
-  { role: 'Business Owner', email: 'owner@angkor-restaurant.com', pass: 'password123' },
-];
 
 export default function AuthModal() {
   const { authModal, closeAuthModal, login, register } = useAuth();
@@ -36,11 +32,6 @@ export default function AuthModal() {
     closeAuthModal();
   };
 
-  const handleFillDemo = (demo) => {
-    setEmail(demo.email);
-    setPassword(demo.pass);
-    setErrorMessage('');
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -119,21 +110,6 @@ export default function AuthModal() {
           </p>
         </div>
 
-        {/* Social Sign In (Google & Facebook) */}
-        {isLogin && (
-          <div className="pt-1 space-y-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <GoogleLoginButton onSuccess={handleClose} />
-              <FacebookLoginButton onSuccess={handleClose} />
-            </div>
-            <div className="relative flex py-2 items-center">
-              <div className="flex-grow border-t border-gray-200 dark:border-zinc-800"></div>
-              <span className="shrink-0 mx-3 text-[10px] text-gray-400 uppercase font-semibold">Or with credentials</span>
-              <div className="flex-grow border-t border-gray-200 dark:border-zinc-800"></div>
-            </div>
-          </div>
-        )}
-
         {/* Tab switch */}
         <div className="flex border-b border-gray-200 dark:border-zinc-800 text-xs font-semibold">
           <button
@@ -207,7 +183,7 @@ export default function AuthModal() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="user@example.com"
+              placeholder="Enter your email"
               className="w-full px-3 py-1.5 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white rounded-md border border-gray-300 dark:border-zinc-700 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
             />
             {errors.email && <p className="text-red-600 dark:text-red-400 mt-0.5">{errors.email[0]}</p>}
@@ -221,6 +197,7 @@ export default function AuthModal() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
                 className="w-full px-3 pr-8 py-1.5 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white rounded-md border border-gray-300 dark:border-zinc-700 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
               />
               <button
@@ -241,6 +218,7 @@ export default function AuthModal() {
                 required
                 value={passwordConfirmation}
                 onChange={(e) => setPasswordConfirmation(e.target.value)}
+                placeholder="Confirm your password"
                 className="w-full px-3 py-1.5 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white rounded-md border border-gray-300 dark:border-zinc-700 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
               />
             </div>
@@ -253,29 +231,25 @@ export default function AuthModal() {
           >
             {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
           </button>
+
+          {/* Social Sign In (Google & Facebook) */}
+          {isLogin && (
+            <div className="pt-2 space-y-3">
+              <div className="relative flex items-center">
+                <div className="flex-grow border-t border-gray-200 dark:border-zinc-800"></div>
+                <span className="shrink-0 mx-3 text-[10px] text-gray-400 uppercase font-semibold">
+                  Or continue with
+                </span>
+                <div className="flex-grow border-t border-gray-200 dark:border-zinc-800"></div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <GoogleLoginButton onSuccess={handleClose} />
+                <FacebookLoginButton onSuccess={handleClose} />
+              </div>
+            </div>
+          )}
         </form>
 
-        {/* Quick Demo Credentials */}
-        {isLogin && (
-          <div className="pt-2 border-t border-gray-100 dark:border-zinc-800/80">
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-center mb-1.5">
-              Quick Demo Accounts
-            </p>
-            <div className="flex flex-wrap gap-1.5 justify-center">
-              {DEMO_ACCOUNTS.map((d) => (
-                <button
-                  key={d.role}
-                  type="button"
-                  onClick={() => handleFillDemo(d)}
-                  className="px-2 py-1 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 rounded text-[11px] font-medium transition-colors cursor-pointer flex items-center gap-1"
-                >
-                  <UserCheck className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                  <span>{d.role}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
