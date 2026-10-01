@@ -15,8 +15,8 @@ import {
   Award,
 } from 'lucide-react';
 import {
-  ComposedChart,
-  Bar,
+  LineChart,
+  
   Line,
   XAxis,
   YAxis,
@@ -280,7 +280,7 @@ export default function BusinessAnalytics() {
 
                 <div className="h-72 sm:h-80 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                    <LineChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
                       <XAxis
                         dataKey="month"
@@ -302,12 +302,14 @@ export default function BusinessAnalytics() {
                         iconType="plainline"
                         wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
                       />
-                      <Bar
+                      <Line
+                        type="monotone"
                         dataKey="unitsSold"
                         name="New Traveler Engagements"
-                        fill="#4472C4"
-                        barSize={16}
-                        radius={[3, 3, 0, 0]}
+                        stroke="#4472C4"
+                        strokeWidth={3}
+                        dot={false}
+                        activeDot={{ r: 5 }}
                       />
                       <Line
                         type="monotone"
@@ -316,9 +318,9 @@ export default function BusinessAnalytics() {
                         stroke="#ED7D31"
                         strokeWidth={3}
                         dot={false}
-                        activeDot={{ r: 6 }}
+                        activeDot={{ r: 5 }}
                       />
-                    </ComposedChart>
+                    </LineChart>
                   </ResponsiveContainer>
                 </div>
               </div>
