@@ -279,7 +279,7 @@ export default function BusinessAnalytics() {
                 </div>
 
                 <div className="h-72 sm:h-80 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" className="relative z-10">
                     <LineChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
                       <XAxis
@@ -375,7 +375,7 @@ export default function BusinessAnalytics() {
                 </div>
 
                 <div className="h-56 sm:h-60 w-full relative">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" className="relative z-10">
                     <PieChart>
                       <Pie
                         data={activePieData}
@@ -390,11 +390,11 @@ export default function BusinessAnalytics() {
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip content={<CustomPieTooltip />} />
+                      <Tooltip content={<CustomPieTooltip />} wrapperStyle={{ zIndex: 50 }} />
                     </PieChart>
                   </ResponsiveContainer>
                   {/* Donut Center Summary */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
                     <span className="text-2xl font-extrabold text-gray-900 dark:text-white">
                       {pieMode === 'ratings' ? `${stats.rating}★` : '100%'}
                     </span>
