@@ -12,7 +12,6 @@ import {
   LogOut, 
   Menu, 
   X, 
-  Search, 
   MessageSquare, 
   ShieldAlert, 
   Settings,
@@ -42,7 +41,7 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
-  const [navSearch, setNavSearch] = useState('');
+
   const [currentTheme, setCurrentTheme] = useState(() => getInitialTheme());
   const [isDarkMode, setIsDarkMode] = useState(() => isDarkTheme(getInitialTheme()));
 
@@ -184,14 +183,7 @@ export default function Header() {
     setThemeDropdownOpen(false);
   }, [location.pathname]);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (navSearch.trim()) {
-      navigate(`/places?search=${encodeURIComponent(navSearch.trim())}`);
-      setNavSearch('');
-      setMenuOpen(false);
-    }
-  };
+
 
   const markSingleRead = async (id, e) => {
     if (e) e.stopPropagation();
@@ -298,26 +290,7 @@ export default function Header() {
           {/* Search Bar & Action Utilities */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
 
-            {/* Desktop Search Bar */}
-            <form onSubmit={handleSearchSubmit} className="hidden xl:flex items-center relative w-36 2xl:w-48 transition-all">
-              <input
-                type="text"
-                placeholder="Search places..."
-                value={navSearch}
-                onChange={(e) => setNavSearch(e.target.value)}
-                className="w-full pl-8 pr-7 py-1.5 text-xs bg-gray-100 dark:bg-zinc-800/80 border border-gray-200 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003E83] text-gray-900 dark:text-white placeholder-gray-400"
-              />
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-              {navSearch && (
-                <button
-                  type="button"
-                  onClick={() => setNavSearch('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </form>
+
 
 
 
@@ -717,26 +690,7 @@ export default function Header() {
           ref={mobileMenuRef}
           className="lg:hidden border-t border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-4 pb-24 space-y-3 animate-smooth-pop text-xs shadow-md relative z-50 max-h-[85vh] overflow-y-auto"
         >
-          {/* Mobile Search */}
-          <form onSubmit={handleSearchSubmit} className="relative w-full">
-            <input
-              type="text"
-              placeholder="Search destinations, temples..."
-              value={navSearch}
-              onChange={(e) => setNavSearch(e.target.value)}
-              className="w-full pl-8.5 pr-8 py-2 text-xs bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003E83] text-gray-900 dark:text-white placeholder-gray-400"
-            />
-            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-            {navSearch && (
-              <button
-                type="button"
-                onClick={() => setNavSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            )}
-          </form>
+
 
           {/* Mobile Navigation Links */}
           <div className="space-y-1 pt-1">

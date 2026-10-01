@@ -54,7 +54,7 @@ export default function Businesses() {
     setLoading(true);
     setError(null);
     try {
-      const params = { per_page: 4, page };
+      const params = { per_page: 8, page };
       if (search) params.search = search;
       if (selectedProvince) params.province_id = selectedProvince;
       if (selectedCategory) params.category_id = selectedCategory;
@@ -63,7 +63,7 @@ export default function Businesses() {
 
       const res = await businessService.getBusinesses(params);
       const list = res?.data?.businesses || res?.data || res || [];
-      const meta = res?.meta || res?.data?.meta || null;
+      const meta = res?.meta || res?.data?.meta || (res?.last_page !== undefined ? res : null);
       setBusinesses(Array.isArray(list) ? list : []);
       setPagination(meta);
     } catch (err) {
@@ -100,12 +100,12 @@ export default function Businesses() {
   };
 
   const isServerPaginated = Boolean(pagination && pagination.last_page);
-  const totalPages = isServerPaginated ? pagination.last_page : (Math.ceil(businesses.length / 4) || 1);
+  const totalPages = isServerPaginated ? pagination.last_page : (Math.ceil(businesses.length / 8) || 1);
   const currentPage = isServerPaginated ? (pagination.current_page || page) : Math.min(Math.max(1, page), totalPages);
 
   const displayedBusinesses = isServerPaginated
     ? businesses
-    : businesses.slice((currentPage - 1) * 4, currentPage * 4);
+    : businesses.slice((currentPage - 1) * 8, currentPage * 8);
 
   const handlePageChange = (newPage) => {
     const p = new URLSearchParams(searchParams);

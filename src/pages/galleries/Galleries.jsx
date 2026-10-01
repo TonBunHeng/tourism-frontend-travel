@@ -66,7 +66,7 @@ export default function Galleries() {
     });
   }, [galleries, search, filter]);
 
-  const ITEMS_PER_PAGE = 4;
+  const ITEMS_PER_PAGE = 8;
   const totalPages = Math.ceil(filteredGalleries.length / ITEMS_PER_PAGE) || 1;
   const currentPage = Math.min(Math.max(1, page), totalPages);
 

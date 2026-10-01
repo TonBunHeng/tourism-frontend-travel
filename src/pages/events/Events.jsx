@@ -26,7 +26,7 @@ export default function Events() {
     const fetchEvents = async () => {
       setLoading(true);
       try {
-        const params = { per_page: 4, page };
+        const params = { per_page: 8, page };
         if (statusFilter !== 'All') params.status = statusFilter;
         if (search.trim()) params.search = search.trim();
 
@@ -34,7 +34,7 @@ export default function Events() {
         if (res?.data) {
           const list = Array.isArray(res.data) ? res.data : res.data.data || [];
           setEvents(list);
-          setPagination(res.meta || null);
+          setPagination(res.meta || res.data?.meta || (res.last_page !== undefined ? res : null));
 
           // If URL has an event ID, find it or fetch it
           if (id) {
@@ -88,12 +88,12 @@ export default function Events() {
   };
 
   const isServerPaginated = Boolean(pagination && pagination.last_page);
-  const totalPages = isServerPaginated ? pagination.last_page : (Math.ceil(events.length / 4) || 1);
+  const totalPages = isServerPaginated ? pagination.last_page : (Math.ceil(events.length / 8) || 1);
   const currentPage = isServerPaginated ? (pagination.current_page || page) : Math.min(Math.max(1, page), totalPages);
 
   const displayedEvents = isServerPaginated
     ? events
-    : events.slice((currentPage - 1) * 4, currentPage * 4);
+    : events.slice((currentPage - 1) * 8, currentPage * 8);
 
   const handlePageChange = (newPage) => {
     const p = new URLSearchParams(searchParams);

@@ -39,7 +39,7 @@ export default function Places() {
     const fetchPlaces = async () => {
       setLoading(true);
       try {
-        const params = { per_page: 4, page, sort_by: sortBy };
+        const params = { per_page: 8, page, sort_by: sortBy };
         if (search.trim()) params.search = search.trim();
         if (provinceId) params.province_id = provinceId;
         if (categoryId) params.category_id = categoryId;

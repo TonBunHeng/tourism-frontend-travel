@@ -19,7 +19,7 @@ export default function Categories() {
     );
   }
 
-  const ITEMS_PER_PAGE = 4;
+  const ITEMS_PER_PAGE = 8;
   const totalPages = Math.ceil(categories.length / ITEMS_PER_PAGE) || 1;
   const currentPage = Math.min(Math.max(1, page), totalPages);
 
