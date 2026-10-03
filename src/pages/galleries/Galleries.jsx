@@ -44,6 +44,40 @@ export default function Galleries() {
     fetchGalleries();
   }, []);
 
+  useEffect(() => {
+    const handleLikeChanged = (e) => {
+      const { mediaId, isLiked, likesCount } = e.detail || {};
+      if (!mediaId) return;
+      setGalleries((prev) =>
+        prev.map((g) => {
+          if (String(g.id) === String(mediaId)) {
+            return {
+              ...g,
+              is_liked: isLiked,
+              isLiked: isLiked,
+              likes_count: likesCount,
+            };
+          }
+          return g;
+        })
+      );
+      setActiveMedia((prev) => {
+        if (prev && String(prev.id) === String(mediaId)) {
+          return {
+            ...prev,
+            is_liked: isLiked,
+            isLiked: isLiked,
+            likes_count: likesCount,
+          };
+        }
+        return prev;
+      });
+    };
+
+    window.addEventListener('angkor-gallery-like-changed', handleLikeChanged);
+    return () => window.removeEventListener('angkor-gallery-like-changed', handleLikeChanged);
+  }, []);
+
   const filteredGalleries = useMemo(() => {
     return galleries.filter((item) => {
       const matchSearch =

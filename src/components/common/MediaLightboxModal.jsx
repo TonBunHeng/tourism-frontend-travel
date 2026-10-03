@@ -28,7 +28,7 @@ const isVideoItem = (item) => {
 
 export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, items = [] }) {
   const { showToast } = useTravel();
-  const { isAuthenticated, openAuthModal } = useAuth();
+  const { isAuthenticated, openAuthModal, user } = useAuth();
 
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
@@ -43,10 +43,21 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
 
   if (isOpen && item && item.id !== activeItemId) {
     setActiveItemId(item.id);
-    setIsLiked(Boolean(item.is_liked || item.isLiked || item.liked));
-    setLikesCount(item.likes_count ?? item.like_count ?? item.likes ?? 0);
+    setIsLiked(galleryService.isMediaLiked(item.id, item.is_liked || item.isLiked || item.liked));
+    setLikesCount(galleryService.getMediaLikesCount(item.id, item.likes_count ?? item.like_count ?? item.likes ?? 0));
     setViewsCount(item.views_count ?? item.view_count ?? item.views ?? 0);
   }
+
+  useEffect(() => {
+    const handleLikeChanged = (e) => {
+      if (item && e.detail && String(e.detail.mediaId) === String(item.id)) {
+        setIsLiked(e.detail.isLiked);
+        setLikesCount(e.detail.likesCount);
+      }
+    };
+    window.addEventListener('angkor-gallery-like-changed', handleLikeChanged);
+    return () => window.removeEventListener('angkor-gallery-like-changed', handleLikeChanged);
+  }, [item]);
 
   useEffect(() => {
     if (isOpen && item) {
@@ -108,7 +119,10 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
     if (!requireAuth('like photos and videos')) return;
 
     try {
-      const res = await galleryService.toggleLike(item.id);
+      const res = await galleryService.toggleLike(item.id, {
+        is_liked: isLiked,
+        likes_count: likesCount,
+      });
       if (res) {
         setIsLiked(Boolean(res.is_liked ?? res.isLiked ?? res.liked));
         setLikesCount(res.likes_count ?? res.like_count ?? res.likes ?? likesCount);
@@ -136,6 +150,8 @@ export default function MediaLightboxModal({ isOpen, item, onClose, onNavigate, 
       const payload = {
         comment: commentText.trim(),
         parent_id: replyingTo ? replyingTo.id : null,
+        user_name: user?.name || user?.username || (user?.email ? user.email.split('@')[0] : 'Traveler'),
+        avatar: user?.avatar || null,
       };
 
       const newComment = await galleryService.addComment(item.id, payload);

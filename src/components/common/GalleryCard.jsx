@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapPin, Heart, ArrowRight, Camera, Play } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
+import { galleryService } from '../../services/galleryService';
 
 const isVideoItem = (item) => {
   if (!item) return false;
@@ -11,22 +12,46 @@ const isVideoItem = (item) => {
 
 export default function GalleryCard({ item, onPreview }) {
   const { showToast } = useTravel();
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(item.likes_count || 0);
+  const [isLiked, setIsLiked] = useState(() =>
+    galleryService.isMediaLiked(item.id, item.is_liked || false)
+  );
+  const [likesCount, setLikesCount] = useState(() =>
+    galleryService.getMediaLikesCount(item.id, item.likes_count || 0)
+  );
+
+  useEffect(() => {
+    setIsLiked(galleryService.isMediaLiked(item.id, item.is_liked || false));
+    setLikesCount(galleryService.getMediaLikesCount(item.id, item.likes_count || 0));
+
+    const handleLikeChanged = (e) => {
+      if (e.detail && String(e.detail.mediaId) === String(item.id)) {
+        setIsLiked(e.detail.isLiked);
+        setLikesCount(e.detail.likesCount);
+      }
+    };
+
+    window.addEventListener('angkor-gallery-like-changed', handleLikeChanged);
+    return () => window.removeEventListener('angkor-gallery-like-changed', handleLikeChanged);
+  }, [item.id, item.is_liked, item.likes_count]);
 
   const isVideo = isVideoItem(item);
   const mediaUrl = item.media_url || item.url || '';
 
-  const handleLike = (e) => {
+  const handleLike = async (e) => {
     e.stopPropagation();
     e.preventDefault();
-    if (isLiked) {
-      setLikesCount((prev) => Math.max(0, prev - 1));
-      setIsLiked(false);
-    } else {
-      setLikesCount((prev) => prev + 1);
-      setIsLiked(true);
-      showToast('Liked!', 'success');
+    try {
+      const res = await galleryService.toggleLike(item.id, {
+        is_liked: isLiked,
+        likes_count: likesCount,
+      });
+      if (res) {
+        setIsLiked(res.is_liked);
+        setLikesCount(res.likes_count);
+        showToast(res.is_liked ? 'Liked!' : 'Unliked', 'success');
+      }
+    } catch {
+      showToast('Failed to update like', 'error');
     }
   };
 

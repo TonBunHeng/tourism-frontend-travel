@@ -34,7 +34,7 @@ export default function Events() {
         if (res?.data) {
           const list = Array.isArray(res.data) ? res.data : res.data.data || [];
           setEvents(list);
-          setPagination(res.meta || res.data?.meta || (res.last_page !== undefined ? res : null));
+          setPagination(res.meta || res.data?.meta || res.data?.pagination || res.pagination || (res.last_page !== undefined ? res : null));
 
           // If URL has an event ID, find it or fetch it
           if (id) {

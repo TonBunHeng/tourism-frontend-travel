@@ -1,16 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { Search, Briefcase, Loader2, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { Search, Briefcase, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import businessService from '../../services/businessService';
 import provinceService from '../../services/provinceService';
 import categoryService from '../../services/categoryService';
 import BusinessCard from '../../components/common/BusinessCard';
 import BusinessesHeader from './BusinessesHeader';
 import Breadcrumb from '../../components/common/Breadcrumb';
-import { useAuth } from '../../context/AuthContext';
 
 export default function Businesses() {
-  const { isBusinessOwner } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [businesses, setBusinesses] = useState([]);
   const [provinces, setProvinces] = useState([]);
@@ -63,7 +61,7 @@ export default function Businesses() {
 
       const res = await businessService.getBusinesses(params);
       const list = res?.data?.businesses || res?.data || res || [];
-      const meta = res?.meta || res?.data?.meta || (res?.last_page !== undefined ? res : null);
+      const meta = res?.data?.pagination || res?.pagination || res?.meta || res?.data?.meta || (res?.last_page !== undefined ? res : null);
       setBusinesses(Array.isArray(list) ? list : []);
       setPagination(meta);
     } catch (err) {
@@ -258,31 +256,6 @@ export default function Businesses() {
         </div>
       )}
 
-      {/* Register New Business Promo Banner */}
-      {isBusinessOwner && (
-        <section className="bg-blue-50 dark:bg-zinc-900 border border-blue-200 dark:border-zinc-800 rounded-lg p-5 flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-[#003E83] dark:bg-[#60a5fa] text-white dark:text-zinc-950 flex items-center justify-center shrink-0">
-              <Briefcase className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-gray-900 dark:text-white">
-                Own a Tourism Business in Cambodia?
-              </h3>
-              <p className="text-xs text-gray-600 dark:text-zinc-400 mt-0.5">
-                Register your hotel, restaurant, tour agency, or activity to get verified and reach travelers worldwide.
-              </p>
-            </div>
-          </div>
-          <Link
-            to="/business/businesses/new"
-            className="px-3.5 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs whitespace-nowrap transition-colors flex items-center gap-1.5"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Register New Business</span>
-          </Link>
-        </section>
-      )}
     </div>
   );
 }
