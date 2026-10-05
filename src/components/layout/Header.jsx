@@ -25,7 +25,8 @@ import {
   CheckCheck,
   ArrowRight,
   Briefcase,
-  LayoutDashboard
+  LayoutDashboard,
+  FileSpreadsheet
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
@@ -564,6 +565,20 @@ export default function Header() {
                           }`} />
                           <span>Customer Bookings</span>
                         </Link>
+                        <Link
+                          to="/business/reports"
+                          onClick={() => setDropdownOpen(false)}
+                          className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                            isLinkActive('/business/reports')
+                              ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                              : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                          }`}
+                        >
+                          <FileSpreadsheet className={`w-3.5 h-3.5 ${
+                            isLinkActive('/business/reports') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'
+                          }`} />
+                          <span>Business Reports</span>
+                        </Link>
                         </>
                       )}
 
@@ -754,6 +769,16 @@ export default function Header() {
               >
                 <CalendarCheck className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
                 <span>Customer Bookings</span>
+              </Link>
+            )}
+            {(isBusinessOwner) && (
+              <Link
+                to="/business/reports"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg font-bold text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
+                <span>Business Reports</span>
               </Link>
             )}
             {isAuthenticated && (

@@ -37,6 +37,7 @@ import BusinessForm from '../pages/business/BusinessForm';
 import BusinessManage from '../pages/business/BusinessManage';
 import BusinessAnalytics from '../pages/business/BusinessAnalytics';
 import BusinessBookings from '../pages/business/BusinessBookings';
+import BusinessReports from '../pages/business/BusinessReports';
 
 export default function AppRoutes() {
   return (
@@ -83,6 +84,7 @@ export default function AppRoutes() {
             <Route path="/business/businesses/:id" element={<BusinessManage />} />
             <Route path="/business/businesses/:id/edit" element={<BusinessForm />} />
             <Route path="/business/analytics" element={<BusinessAnalytics />} />
+            <Route path="/business/reports" element={<BusinessReports />} />
           </Route>
 
         </Route>

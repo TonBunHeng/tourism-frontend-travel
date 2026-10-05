@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   BarChart3,
   Star,
@@ -15,6 +16,7 @@ import {
   CheckCircle2,
   Clock,
   Layers,
+  FileSpreadsheet
 } from 'lucide-react';
 import {
   LineChart,
@@ -190,6 +192,13 @@ export default function BusinessAnalytics() {
                 </option>
               ))}
             </select>
+            <Link
+              to="/business/reports"
+              className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors shrink-0"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Full Reports & Export</span>
+            </Link>
           </div>
         )}
       </div>

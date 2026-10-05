@@ -10,7 +10,8 @@ import {
   MessageSquare, 
   Loader2,
   ChevronRight,
-  CalendarCheck
+  CalendarCheck,
+  FileSpreadsheet
 } from 'lucide-react';
 import businessService from '../../services/businessService';
 import bookingService from '../../services/bookingService';
@@ -91,6 +92,13 @@ export default function BusinessDashboard() {
           >
             <BarChart3 className="w-3.5 h-3.5" />
             <span>Analytics</span>
+          </Link>
+          <Link
+            to="/business/reports"
+            className="px-3.5 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-200 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span>Reports & Export</span>
           </Link>
           <Link
             to="/business/businesses/new"

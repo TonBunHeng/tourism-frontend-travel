@@ -148,6 +148,37 @@ export const businessService = {
   async createEvent(id, data) {
     return await businessApi.post(`/businesses/${id}/events`, data);
   },
+
+  // Business Performance Reports & CSV/JSON Export (/api/business/reports*)
+  async getReports(params = {}) {
+    return await businessApi.get('/reports', { params });
+  },
+
+  async getBusinessReport(id, params = {}) {
+    return await businessApi.get(`/businesses/${id}/reports`, { params });
+  },
+
+  async exportReport(params = {}) {
+    const format = params.format || 'csv';
+    if (format === 'json') {
+      return await businessApi.get('/reports/export', { params });
+    }
+    return await businessApi.get('/reports/export', {
+      params,
+      responseType: 'blob',
+    });
+  },
+
+  async exportBusinessReport(id, params = {}) {
+    const format = params.format || 'csv';
+    if (format === 'json') {
+      return await businessApi.get(`/businesses/${id}/reports/export`, { params });
+    }
+    return await businessApi.get(`/businesses/${id}/reports/export`, {
+      params,
+      responseType: 'blob',
+    });
+  },
 };
 
 export default businessService;
