@@ -72,21 +72,23 @@ export default function ProvinceDetails() {
     };
   }, [id]);
 
+  const places = province?.places;
+
   // Derived categories from the places in this province
   const availableCategories = useMemo(() => {
-    if (!province?.places || !Array.isArray(province.places)) return ['All'];
+    if (!places || !Array.isArray(places)) return ['All'];
     const cats = new Set(['All']);
-    province.places.forEach((p) => {
+    places.forEach((p) => {
       if (p.category) cats.add(p.category);
     });
     return Array.from(cats);
-  }, [province?.places]);
+  }, [places]);
 
   // Filtered and sorted places in this province
   const filteredPlaces = useMemo(() => {
-    if (!province?.places || !Array.isArray(province.places)) return [];
+    if (!places || !Array.isArray(places)) return [];
 
-    return province.places
+    return places
       .filter((place) => {
         const matchesSearch =
           !searchQuery.trim() ||
@@ -111,7 +113,7 @@ export default function ProvinceDetails() {
         }
         return 0;
       });
-  }, [province?.places, searchQuery, selectedCategory, sortBy]);
+  }, [places, searchQuery, selectedCategory, sortBy]);
 
   // Other suggested provinces
   const otherProvinces = useMemo(() => {

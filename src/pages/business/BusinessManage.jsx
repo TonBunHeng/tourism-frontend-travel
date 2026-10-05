@@ -11,9 +11,13 @@ import {
   Upload,
   Copy,
   Check,
-  Image as ImageIcon
+  Image as ImageIcon,
+  CalendarCheck,
+  Phone,
+  Mail,
 } from 'lucide-react';
 import businessService from '../../services/businessService';
+import bookingService from '../../services/bookingService';
 import { useAlert } from '../../context/AlertContext';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
@@ -29,6 +33,8 @@ export default function BusinessManage() {
   const [promotions, setPromotions] = useState([]);
   const [events, setEvents] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [actionLoadingId, setActionLoadingId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState('overview');
@@ -44,10 +50,52 @@ export default function BusinessManage() {
   const [isDragging, setIsDragging] = useState(false);
   const galleryFileInputRef = useRef(null);
 
+
+  const handleConfirmBooking = async (bId) => {
+    setActionLoadingId(bId);
+    try {
+      await bookingService.confirmBooking(bId);
+      showAlert({ title: 'Success', message: 'Booking confirmed! Guest has been notified.', type: 'success' });
+      fetchBusinessData();
+    } catch (err) {
+      showAlert({ title: 'Error', message: err?.message || 'Failed to confirm booking.', type: 'danger' });
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleRejectBooking = async (bId) => {
+    const reason = window.prompt('Please provide a reason for declining this reservation (optional):', 'Fully booked on this day');
+    if (reason === null) return;
+    setActionLoadingId(bId);
+    try {
+      await bookingService.rejectBooking(bId, reason);
+      showAlert({ title: 'Booking Declined', message: 'Booking has been declined.', type: 'info' });
+      fetchBusinessData();
+    } catch (err) {
+      showAlert({ title: 'Error', message: err?.message || 'Failed to decline booking.', type: 'danger' });
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleCompleteBooking = async (bId) => {
+    setActionLoadingId(bId);
+    try {
+      await bookingService.completeBooking(bId);
+      showAlert({ title: 'Completed', message: 'Booking marked as completed.', type: 'success' });
+      fetchBusinessData();
+    } catch (err) {
+      showAlert({ title: 'Error', message: err?.message || 'Failed to complete booking.', type: 'danger' });
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
   const fetchBusinessData = useCallback(async () => {
     setLoading(true);
     try {
-      const [bizRes, srvRes, hrsRes, galRes, prmRes, evtRes, rvwRes] = await Promise.all([
+      const [bizRes, srvRes, hrsRes, galRes, prmRes, evtRes, rvwRes, bkgRes] = await Promise.all([
         businessService.getOwnerBusiness(id),
         businessService.getServices(id).catch(() => ({ data: [] })),
         businessService.getHours(id).catch(() => ({ data: [] })),
@@ -55,6 +103,7 @@ export default function BusinessManage() {
         businessService.getPromotions(id).catch(() => ({ data: [] })),
         businessService.getEvents(id).catch(() => ({ data: [] })),
         businessService.getReviews(id).catch(() => ({ data: [] })),
+        bookingService.getBusinessBookings(id).catch(() => ({ data: [] })),
       ]);
 
       const bizObj = bizRes?.data || bizRes;
@@ -75,6 +124,9 @@ export default function BusinessManage() {
 
       const rList = rvwRes?.data?.reviews || rvwRes?.data || rvwRes || [];
       setReviews(Array.isArray(rList) ? rList : []);
+
+      const bList = bkgRes?.data?.bookings || bkgRes?.data || bkgRes || [];
+      setBookings(Array.isArray(bList) ? bList : []);
     } catch (err) {
       showAlert({ title: 'Error', message: err?.message || 'Access denied or business not found.', type: 'danger' });
       navigate('/business/dashboard');
@@ -84,7 +136,6 @@ export default function BusinessManage() {
   }, [id, navigate, showAlert]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (id) fetchBusinessData();
   }, [id, fetchBusinessData]);
 
@@ -316,6 +367,7 @@ export default function BusinessManage() {
           { id: 'gallery', label: `Gallery (${gallery.length})` },
           { id: 'promotions', label: `Promotions (${promotions.length})` },
           { id: 'events', label: `Events (${events.length})` },
+          { id: 'bookings', label: `Bookings (${bookings.length})` },
           { id: 'reviews', label: `Reviews (${reviews.length})` },
         ].map((t) => (
           <button
@@ -730,6 +782,149 @@ export default function BusinessManage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+
+        {/* BOOKINGS TAB */}
+        {activeTab === 'bookings' && (
+          <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-4 transition-colors">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-zinc-800">
+              <div>
+                <h4 className="text-base font-bold text-gray-900 dark:text-white">Customer Reservations ({bookings.length})</h4>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Incoming booking requests and confirmed reservations for this business.</p>
+              </div>
+              <button
+                onClick={fetchBusinessData}
+                className="px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 text-xs font-semibold rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+              >
+                Refresh
+              </button>
+            </div>
+
+            {bookings.length === 0 ? (
+              <div className="py-12 text-center space-y-2">
+                <CalendarCheck className="w-10 h-10 text-gray-300 dark:text-zinc-700 mx-auto" />
+                <h5 className="font-bold text-sm text-gray-800 dark:text-zinc-200">No Bookings Received Yet</h5>
+                <p className="text-xs text-gray-500 max-w-sm mx-auto">
+                  When travelers book your services or make reservations, they will appear here for you to accept or decline.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {bookings.map((b) => {
+                  const isPending = b.status === 'pending';
+                  const isConfirmed = b.status === 'confirmed';
+                  const isProcessing = actionLoadingId === b.id;
+
+                  return (
+                    <div
+                      key={b.id}
+                      className={`p-4 rounded-lg border text-xs space-y-3 transition-colors ${
+                        isPending
+                          ? 'bg-amber-50/30 dark:bg-amber-950/10 border-amber-300 dark:border-amber-800/60'
+                          : 'bg-gray-50 dark:bg-zinc-800/60 border-gray-200 dark:border-zinc-700/60'
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200/60 dark:border-zinc-700/60 pb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-gray-900 dark:text-white">{b.customer_name}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                            b.status === 'confirmed'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                              : b.status === 'completed'
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                              : b.status === 'cancelled'
+                              ? 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300'
+                              : b.status === 'rejected'
+                              ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                              : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 animate-pulse'
+                          }`}>
+                            {b.status}
+                          </span>
+                        </div>
+
+                        <span className="font-mono text-gray-500 font-semibold text-[11px]">#{b.booking_reference}</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <div>
+                          <span className="text-gray-400 block text-[11px]">Service</span>
+                          <span className="font-semibold text-gray-900 dark:text-white truncate block">{b.service?.name || 'General Visit'}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-400 block text-[11px]">Date & Time</span>
+                          <span className="font-semibold text-gray-900 dark:text-white">{b.booking_date} {b.booking_time ? `@ ${b.booking_time}` : ''}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-400 block text-[11px]">Party Size</span>
+                          <span className="font-semibold text-gray-900 dark:text-white">{b.number_of_guests} guest(s)</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-400 block text-[11px]">Amount</span>
+                          <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                            {b.total_price > 0 ? `$${Number(b.total_price).toFixed(2)}` : 'Table / Unpriced'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-gray-600 dark:text-zinc-400">
+                        {b.customer_phone && (
+                          <a href={`tel:${b.customer_phone}`} className="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium">
+                            <Phone className="w-3.5 h-3.5" />
+                            <span>{b.customer_phone}</span>
+                          </a>
+                        )}
+                        {b.customer_email && (
+                          <a href={`mailto:${b.customer_email}`} className="flex items-center gap-1 hover:underline">
+                            <Mail className="w-3.5 h-3.5" />
+                            <span>{b.customer_email}</span>
+                          </a>
+                        )}
+                      </div>
+
+                      {b.special_requests && (
+                        <p className="text-[11px] text-gray-600 dark:text-zinc-300 bg-white/80 dark:bg-zinc-900/80 p-2 rounded border border-gray-200 dark:border-zinc-700">
+                          <span className="font-semibold">Special Request:</span> {b.special_requests}
+                        </p>
+                      )}
+
+                      {/* Actions */}
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-200/50 dark:border-zinc-700/50">
+                        {isPending && (
+                          <>
+                            <button
+                              onClick={() => handleConfirmBooking(b.id)}
+                              disabled={isProcessing}
+                              className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-md shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+                            >
+                              Confirm Request
+                            </button>
+                            <button
+                              onClick={() => handleRejectBooking(b.id)}
+                              disabled={isProcessing}
+                              className="px-3 py-1.5 border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-semibold rounded-md transition-colors cursor-pointer"
+                            >
+                              Decline
+                            </button>
+                          </>
+                        )}
+
+                        {isConfirmed && (
+                          <button
+                            onClick={() => handleCompleteBooking(b.id)}
+                            disabled={isProcessing}
+                            className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-md shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+                          >
+                            Mark Completed
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 

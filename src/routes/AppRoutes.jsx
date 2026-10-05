@@ -24,6 +24,7 @@ import Settings from '../pages/settings/Settings';
 import Login from '../pages/auth/Login';
 import Trips from '../pages/trips/Trips';
 import TripDetails from '../pages/trips/TripDetails';
+import MyBookings from '../pages/bookings/MyBookings';
 
 // Business Discovery Pages
 import Businesses from '../pages/businesses/Businesses';
@@ -35,6 +36,7 @@ import BusinessList from '../pages/business/BusinessList';
 import BusinessForm from '../pages/business/BusinessForm';
 import BusinessManage from '../pages/business/BusinessManage';
 import BusinessAnalytics from '../pages/business/BusinessAnalytics';
+import BusinessBookings from '../pages/business/BusinessBookings';
 
 export default function AppRoutes() {
   return (
@@ -62,6 +64,7 @@ export default function AppRoutes() {
           <Route element={<ProtectedRoute />}>
             <Route path="/trips" element={<Trips />} />
             <Route path="/trips/:id" element={<TripDetails />} />
+            <Route path="/bookings" element={<MyBookings />} />
             <Route path="/wishlist" element={<Favorites />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/profile" element={<Profile />} />
@@ -74,6 +77,7 @@ export default function AppRoutes() {
           {/* Business Owner Dedicated Portal */}
           <Route element={<ProtectedRoute allowedRoles={['business_owner']} />}>
             <Route path="/business/dashboard" element={<BusinessDashboard />} />
+            <Route path="/business/bookings" element={<BusinessBookings />} />
             <Route path="/business/businesses" element={<BusinessList />} />
             <Route path="/business/businesses/new" element={<BusinessForm />} />
             <Route path="/business/businesses/:id" element={<BusinessManage />} />

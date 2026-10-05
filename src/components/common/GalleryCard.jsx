@@ -20,6 +20,7 @@ export default function GalleryCard({ item, onPreview }) {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLiked(galleryService.isMediaLiked(item.id, item.is_liked || false));
     setLikesCount(galleryService.getMediaLikesCount(item.id, item.likes_count || 0));
 

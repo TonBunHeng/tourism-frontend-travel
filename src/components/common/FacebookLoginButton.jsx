@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
 
 const FB_APP_ID = import.meta.env.VITE_FACEBOOK_APP_ID || '1084920496184291';
 
-export default function FacebookLoginButton({ onSuccess, onError }) {
-  const { facebookLogin } = useAuth();
+export default function FacebookLoginButton() {
   const { showToast } = useTravel();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   useEffect(() => {
     if (!window.FB && !document.getElementById('facebook-jssdk')) {

@@ -5,18 +5,19 @@ import {
   TrendingUp,
   Loader2,
   PieChart as PieChartIcon,
-  Calendar,
   Users,
-  Eye,
+  DollarSign,
   Tag,
   Sparkles,
-  ArrowUpRight,
   ShieldCheck,
   Award,
+  CalendarCheck,
+  CheckCircle2,
+  Clock,
+  Layers,
 } from 'lucide-react';
 import {
   LineChart,
-  
   Line,
   XAxis,
   YAxis,
@@ -31,40 +32,10 @@ import {
 import businessService from '../../services/businessService';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
-const fallbackMonthlyData = [
-  { month: 'Jan', unitsSold: 27, totalTransaction: 1395, interactions: 27, visits: 1395 },
-  { month: 'Feb', unitsSold: 39, totalTransaction: 1935, interactions: 39, visits: 1935 },
-  { month: 'Mar', unitsSold: 51, totalTransaction: 2475, interactions: 51, visits: 2475 },
-  { month: 'Apr', unitsSold: 63, totalTransaction: 3015, interactions: 63, visits: 3015 },
-  { month: 'May', unitsSold: 75, totalTransaction: 3555, interactions: 75, visits: 3555 },
-  { month: 'Jun', unitsSold: 87, totalTransaction: 4095, interactions: 87, visits: 4095 },
-  { month: 'Jul', unitsSold: 99, totalTransaction: 4635, interactions: 99, visits: 4635 },
-  { month: 'Aug', unitsSold: 111, totalTransaction: 5175, interactions: 111, visits: 5175 },
-  { month: 'Sep', unitsSold: 123, totalTransaction: 5715, interactions: 123, visits: 5715 },
-  { month: 'Oct', unitsSold: 0, totalTransaction: 0, interactions: 0, visits: 0 },
-  { month: 'Nov', unitsSold: 0, totalTransaction: 0, interactions: 0, visits: 0 },
-  { month: 'Dec', unitsSold: 0, totalTransaction: 0, interactions: 0, visits: 0 },
-];
-
-const fallbackRatingData = [
-  { name: '5 Stars (Excellent)', value: 14, percentage: 64, color: '#10B981' },
-  { name: '4 Stars (Very Good)', value: 5, percentage: 23, color: '#3B82F6' },
-  { name: '3 Stars (Average)', value: 2, percentage: 9, color: '#F59E0B' },
-  { name: '2 Stars (Poor)', value: 1, percentage: 4, color: '#F97316' },
-  { name: '1 Star (Needs Work)', value: 0, percentage: 0, color: '#EF4444' },
-];
-
-const fallbackTrafficData = [
-  { name: 'Search & Explore', value: 45, percentage: 45, color: '#4472C4' },
-  { name: 'Category Directory', value: 25, percentage: 25, color: '#ED7D31' },
-  { name: 'Direct Profile Visits', value: 18, percentage: 18, color: '#10B981' },
-  { name: 'Promotions & Deals', value: 12, percentage: 12, color: '#8B5CF6' },
-];
-
 const CustomMonthlyTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 text-xs space-y-1.5 min-w-[170px]">
+      <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 text-xs space-y-1.5 min-w-[180px]">
         <p className="font-semibold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-1">
           {label} 2026
         </p>
@@ -73,12 +44,14 @@ const CustomMonthlyTooltip = ({ active, payload, label }) => {
             <span className="flex items-center gap-1.5 text-gray-600 dark:text-zinc-300">
               <span
                 className="w-2.5 h-2.5 rounded-xs shrink-0"
-                style={{ backgroundColor: entry.color || entry.fill || entry.stroke }}
+                style={{ backgroundColor: entry.color || entry.stroke }}
               />
               {entry.name}:
             </span>
             <span className="font-bold text-gray-900 dark:text-white">
-              {Number(entry.value).toLocaleString()}
+              {entry.dataKey === 'revenue' || entry.name.toLowerCase().includes('revenue')
+                ? `$${Number(entry.value).toLocaleString()}`
+                : Number(entry.value).toLocaleString()}
             </span>
           </div>
         ))}
@@ -92,12 +65,15 @@ const CustomPieTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="bg-white dark:bg-zinc-900 p-2.5 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 text-xs min-w-[140px]">
+      <div className="bg-white dark:bg-zinc-900 p-2.5 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 text-xs min-w-[150px]">
         <p className="font-semibold text-gray-900 dark:text-white flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: data.payload.color }} />
           {data.name}
         </p>
         <p className="text-gray-500 dark:text-zinc-400 mt-1">
+          Total: <span className="font-bold text-gray-900 dark:text-white">{data.value}</span>
+        </p>
+        <p className="text-gray-500 dark:text-zinc-400">
           Share: <span className="font-bold text-gray-900 dark:text-white">{data.payload.percentage || Math.round(data.percent * 100)}%</span>
         </p>
       </div>
@@ -111,19 +87,21 @@ export default function BusinessAnalytics() {
   const [selectedBiz, setSelectedBiz] = useState('');
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [pieMode, setPieMode] = useState('ratings'); // 'ratings' | 'traffic'
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [pieMode, setPieMode] = useState('ratings'); // 'ratings' | 'bookings'
 
   useEffect(() => {
     const init = async () => {
       try {
         const res = await businessService.getOwnerBusinesses();
         const list = res?.data?.businesses || res?.data || res || [];
-        setBusinesses(Array.isArray(list) ? list : []);
-        if (list.length > 0) {
-          setSelectedBiz(list[0].id);
+        const validList = Array.isArray(list) ? list : [];
+        setBusinesses(validList);
+        if (validList.length > 0) {
+          setSelectedBiz(validList[0].id);
         }
       } catch (err) {
-        console.error(err);
+        console.error('Failed to load owned businesses:', err);
       } finally {
         setLoading(false);
       }
@@ -134,11 +112,14 @@ export default function BusinessAnalytics() {
   useEffect(() => {
     if (selectedBiz) {
       const loadStats = async () => {
+        setStatsLoading(true);
         try {
           const res = await businessService.getStatistics(selectedBiz);
-          setStats(res?.data || res);
+          setStats(res?.data || res || null);
         } catch (err) {
-          console.error(err);
+          console.error('Failed to fetch business statistics:', err);
+        } finally {
+          setStatsLoading(false);
         }
       };
       loadStats();
@@ -154,32 +135,30 @@ export default function BusinessAnalytics() {
     );
   }
 
-  const chartData = (Array.isArray(stats?.growth_data) && stats.growth_data.length > 0)
-    ? stats.growth_data
-    : ((Array.isArray(stats?.monthly_growth) && stats.monthly_growth.length > 0)
-      ? stats.monthly_growth
-      : fallbackMonthlyData);
+  // All data comes strictly from the DB response
+  const chartData = Array.isArray(stats?.growth_data) ? stats.growth_data : [];
+  const ratingData = Array.isArray(stats?.rating_distribution) ? stats.rating_distribution : [];
+  const bookingData = Array.isArray(stats?.booking_distribution) ? stats.booking_distribution : [];
 
-  const ratingData = (Array.isArray(stats?.rating_distribution) && stats.rating_distribution.length > 0)
-    ? stats.rating_distribution
-    : fallbackRatingData;
+  const activePieData = pieMode === 'ratings' ? ratingData : bookingData;
+  const hasPieData = activePieData.some((item) => (Number(item.value) || 0) > 0);
 
-  const trafficData = (Array.isArray(stats?.traffic_sources) && stats.traffic_sources.length > 0)
-    ? stats.traffic_sources
-    : fallbackTrafficData;
-
-  const activePieData = pieMode === 'ratings' ? ratingData : trafficData;
-
-  // Calculate year-to-date total visits and engagements
-  const totalVisits = chartData.reduce((acc, item) => acc + (Number(item.totalTransaction) || 0), 0);
-  const totalEngagements = chartData.reduce((acc, item) => acc + (Number(item.unitsSold) || 0), 0);
+  // Peak metrics computed strictly from DB chart data
+  const peakBookingsItem = chartData.reduce(
+    (prev, curr) => ((curr.bookings || 0) > (prev?.bookings || 0) ? curr : prev),
+    null
+  );
+  const peakRevenueItem = chartData.reduce(
+    (prev, curr) => ((curr.revenue || 0) > (prev?.revenue || 0) ? curr : prev),
+    null
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <Breadcrumb
         items={[
           { label: 'Business Portal', to: '/business/dashboard' },
-          { label: 'Performance Analytics' }
+          { label: 'Performance Analytics' },
         ]}
       />
 
@@ -191,7 +170,7 @@ export default function BusinessAnalytics() {
             <span>Business Performance Analytics</span>
           </h1>
           <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1">
-            Real-time tracking of visitor traffic, customer reach, and ratings distribution.
+            Real-time tracking of bookings, earned revenue, and traveler reviews computed directly from database records.
           </p>
         </div>
 
@@ -206,80 +185,101 @@ export default function BusinessAnalytics() {
               className="px-3 py-2 bg-gray-50 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs font-semibold text-gray-900 dark:text-white focus:outline-none cursor-pointer"
             >
               {businesses.map((b) => (
-                <option key={b.id} value={b.id}>{b.name}</option>
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
               ))}
             </select>
           </div>
         )}
       </div>
 
-      {stats ? (
+      {statsLoading ? (
+        <div className="min-h-[40vh] flex flex-col items-center justify-center gap-2">
+          <Loader2 className="w-6 h-6 text-[#003E83] dark:text-[#60a5fa] animate-spin" />
+          <p className="text-xs text-gray-500 dark:text-zinc-400">Loading business metrics...</p>
+        </div>
+      ) : stats ? (
         <div className="space-y-6">
           {/* KPI Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 1. Rating */}
             <div className="bg-white dark:bg-zinc-900 p-5 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-2 shadow-xs transition-colors">
               <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase">Average Rating</span>
               <p className="text-3xl font-bold text-amber-500 flex items-center gap-1.5">
-                <Star className="w-6 h-6 fill-amber-400 text-amber-400" /> {stats.rating}
+                <Star className="w-6 h-6 fill-amber-400 text-amber-400" />
+                {stats.rating > 0 ? stats.rating : 'N/A'}
               </p>
-              <span className="text-xs text-gray-500 dark:text-zinc-400">{stats.total_reviews} total reviews</span>
-            </div>
-
-            <div className="bg-white dark:bg-zinc-900 p-5 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-2 shadow-xs transition-colors">
-              <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase">Profile Visits (YTD)</span>
-              <p className="text-3xl font-bold text-[#ED7D31] flex items-center gap-1.5">
-                <Eye className="w-6 h-6 text-[#ED7D31]" />
-                {totalVisits.toLocaleString()}
-              </p>
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-0.5">
-                <ArrowUpRight className="w-3.5 h-3.5" /> +24.8% YoY Growth
+              <span className="text-xs text-gray-500 dark:text-zinc-400">
+                {stats.approved_reviews || 0} approved review{stats.approved_reviews === 1 ? '' : 's'} ({stats.total_reviews || 0} total)
               </span>
             </div>
 
+            {/* 2. Total Bookings */}
             <div className="bg-white dark:bg-zinc-900 p-5 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-2 shadow-xs transition-colors">
-              <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase">Customer Inquiries</span>
-              <p className="text-3xl font-bold text-[#4472C4] flex items-center gap-1.5">
-                <Users className="w-6 h-6 text-[#4472C4]" />
-                {totalEngagements.toLocaleString()}
+              <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase">Total Reservations</span>
+              <p className="text-3xl font-bold text-[#003E83] dark:text-[#60a5fa] flex items-center gap-1.5">
+                <CalendarCheck className="w-6 h-6 text-[#003E83] dark:text-[#60a5fa]" />
+                {stats.total_bookings || 0}
               </p>
-              <span className="text-xs text-gray-500 dark:text-zinc-400">Direct engagements</span>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                {stats.completed_bookings || 0} completed • {stats.pending_bookings || 0} pending
+              </span>
             </div>
 
+            {/* 3. Earned Revenue */}
             <div className="bg-white dark:bg-zinc-900 p-5 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-2 shadow-xs transition-colors">
-              <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase">Active Promotions</span>
+              <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase">Confirmed Revenue</span>
               <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                <Tag className="w-6 h-6 text-emerald-500" />
-                {stats.active_promotions}
+                <DollarSign className="w-6 h-6 text-emerald-500" />
+                ${Number(stats.total_revenue || 0).toLocaleString()}
               </p>
-              <span className="text-xs text-gray-500 dark:text-zinc-400">{stats.total_services} services listed</span>
+              <span className="text-xs text-gray-500 dark:text-zinc-400 flex items-center gap-1">
+                <Users className="w-3.5 h-3.5" />
+                {stats.total_guests || 0} traveler guest{stats.total_guests === 1 ? '' : 's'} hosted
+              </span>
+            </div>
+
+            {/* 4. Active Services */}
+            <div className="bg-white dark:bg-zinc-900 p-5 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-2 shadow-xs transition-colors">
+              <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase">Listed Services</span>
+              <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                <Layers className="w-6 h-6 text-indigo-500" />
+                {stats.total_services || 0}
+              </p>
+              <span className="text-xs text-gray-500 dark:text-zinc-400 flex items-center gap-1">
+                <Tag className="w-3.5 h-3.5 text-amber-500" />
+                {stats.active_promotions || 0} active promotion{stats.active_promotions === 1 ? '' : 's'}
+              </span>
             </div>
           </div>
 
-          {/* Charts Row: Monthly Composed Chart (Line + Bar) & Pie Chart */}
+          {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* 1. Monthly Performance Line & Bar Chart (Matches Screenshot) */}
+            {/* 1. Monthly Performance Line Chart */}
             <div className="lg:col-span-2 bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-6 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
                   <div>
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-[#ED7D31]" />
-                      <span>Monthly Traffic Reach & Customer Volume</span>
+                      <TrendingUp className="w-5 h-5 text-[#003E83] dark:text-[#60a5fa]" />
+                      <span>Monthly Bookings & Revenue (2026)</span>
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
-                      Jan - Dec 2026 Monthly Profile Visits & Traveler Inquiries
+                      Jan - Dec 2026 Monthly Reservations & Earned Revenue from Database
                     </p>
                   </div>
                   <div className="flex items-center gap-2 self-start sm:self-auto">
-                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-md border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
-                      <TrendingUp className="w-3.5 h-3.5" />
-                      Active 2026
+                    <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 px-2.5 py-1 rounded-md border border-blue-200 dark:border-blue-800 flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      Live Database Sync
                     </span>
                   </div>
                 </div>
 
                 <div className="h-72 sm:h-80 w-full">
-                  <ResponsiveContainer width="100%" height="100%" className="relative z-10">
+                  <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
                       <XAxis
@@ -292,8 +292,7 @@ export default function BusinessAnalytics() {
                         tick={{ fontSize: 12, fill: '#6B7280' }}
                         axisLine={false}
                         tickLine={false}
-                        ticks={[0, 1500, 3000, 4500, 6000]}
-                        domain={[0, 6000]}
+                        allowDecimals={false}
                       />
                       <Tooltip content={<CustomMonthlyTooltip />} />
                       <Legend
@@ -304,35 +303,46 @@ export default function BusinessAnalytics() {
                       />
                       <Line
                         type="monotone"
-                        dataKey="unitsSold"
-                        name="New Traveler Engagements"
-                        stroke="#4472C4"
-                        strokeWidth={3}
-                        dot={false}
-                        activeDot={{ r: 5 }}
+                        dataKey="bookings"
+                        name="Customer Bookings"
+                        stroke="#003E83"
+                        strokeWidth={2.5}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 6 }}
                       />
                       <Line
                         type="monotone"
-                        dataKey="totalTransaction"
-                        name="Monthly Profile Visits"
-                        stroke="#ED7D31"
-                        strokeWidth={3}
-                        dot={false}
-                        activeDot={{ r: 5 }}
+                        dataKey="revenue"
+                        name="Revenue ($ USD)"
+                        stroke="#10B981"
+                        strokeWidth={2.5}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 6 }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-gray-100 dark:border-zinc-800 flex flex-wrap items-center justify-between text-[11px] text-gray-500 dark:text-zinc-400">
+              {/* Dynamic Peaks Summary calculated from DB */}
+              <div className="mt-4 pt-3 border-t border-gray-100 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-500 dark:text-zinc-400">
                 <span className="flex items-center gap-1.5">
-                  <span className="w-3 h-1 bg-[#ED7D31] rounded-full inline-block" />
-                  Peak Traffic: <strong>5,715 visits in September</strong>
+                  <span className="w-3 h-1 bg-[#003E83] dark:bg-[#60a5fa] rounded-full inline-block" />
+                  Peak Reservations:{'} '}
+                  <strong>
+                    {peakBookingsItem && peakBookingsItem.bookings > 0
+                      ? `${peakBookingsItem.bookings} booking${peakBookingsItem.bookings === 1 ? '' : 's'} in ${peakBookingsItem.month}`
+                      : 'No bookings recorded in 2026'}
+                  </strong>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 bg-[#4472C4] rounded-xs inline-block" />
-                  Peak Inquiries: <strong>123 in September</strong>
+                  <span className="w-2.5 h-2.5 bg-[#10B981] rounded-xs inline-block" />
+                  Peak Revenue:{'} '}
+                  <strong>
+                    {peakRevenueItem && peakRevenueItem.revenue > 0
+                      ? `$${Number(peakRevenueItem.revenue).toLocaleString()} in ${peakRevenueItem.month}`
+                      : 'No revenue recorded in 2026'}
+                  </strong>
                 </span>
               </div>
             </div>
@@ -344,10 +354,10 @@ export default function BusinessAnalytics() {
                   <div>
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                       <PieChartIcon className="w-5 h-5 text-[#003E83] dark:text-[#60a5fa]" />
-                      <span>{pieMode === 'ratings' ? 'Ratings Distribution' : 'Traffic Breakdown'}</span>
+                      <span>{pieMode === 'ratings' ? 'Ratings Distribution' : 'Booking Status'}</span>
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
-                      {pieMode === 'ratings' ? 'Tourist feedback breakdown' : 'Visitor acquisition channels'}
+                      {pieMode === 'ratings' ? 'Reviews breakdown from travelers' : 'Reservation status breakdown'}
                     </p>
                   </div>
                   <div className="flex items-center bg-gray-100 dark:bg-zinc-800 p-0.5 rounded-md text-[11px] font-semibold">
@@ -362,71 +372,90 @@ export default function BusinessAnalytics() {
                       Ratings
                     </button>
                     <button
-                      onClick={() => setPieMode('traffic')}
+                      onClick={() => setPieMode('bookings')}
                       className={`px-2 py-1 rounded cursor-pointer transition-colors ${
-                        pieMode === 'traffic'
+                        pieMode === 'bookings'
                           ? 'bg-white dark:bg-zinc-700 text-[#003E83] dark:text-white shadow-xs'
                           : 'text-gray-500 dark:text-zinc-400 hover:text-gray-900'
                       }`}
                     >
-                      Channels
+                      Bookings
                     </button>
                   </div>
                 </div>
 
-                <div className="h-56 sm:h-60 w-full relative">
-                  <ResponsiveContainer width="100%" height="100%" className="relative z-10">
-                    <PieChart>
-                      <Pie
-                        data={activePieData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={78}
-                        paddingAngle={3}
-                        dataKey="value"
-                      >
-                        {activePieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<CustomPieTooltip />} wrapperStyle={{ zIndex: 50 }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  {/* Donut Center Summary */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
-                    <span className="text-2xl font-extrabold text-gray-900 dark:text-white">
-                      {pieMode === 'ratings' ? `${stats.rating}★` : '100%'}
-                    </span>
-                    <span className="text-[10px] uppercase font-semibold text-gray-400 dark:text-zinc-500">
-                      {pieMode === 'ratings' ? 'Overall' : 'Channels'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Slices Legend List */}
-                <div className="space-y-2 mt-2">
-                  {activePieData.slice(0, 4).map((slice, index) => (
-                    <div key={index} className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: slice.color }} />
-                        <span className="text-gray-700 dark:text-zinc-300 truncate font-medium">
-                          {slice.name}
+                {hasPieData ? (
+                  <>
+                    <div className="h-56 sm:h-60 w-full relative">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={activePieData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={50}
+                            outerRadius={78}
+                            paddingAngle={3}
+                            dataKey="value"
+                          >
+                            {activePieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomPieTooltip />} wrapperStyle={{ zIndex: 50 }} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      {/* Donut Center Summary */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
+                        <span className="text-2xl font-extrabold text-gray-900 dark:text-white">
+                          {pieMode === 'ratings' ? (stats.rating > 0 ? `${stats.rating}★` : '0★') : stats.total_bookings}
+                        </span>
+                        <span className="text-[10px] uppercase font-semibold text-gray-400 dark:text-zinc-500">
+                          {pieMode === 'ratings' ? 'Average' : 'Bookings'}
                         </span>
                       </div>
-                      <span className="text-gray-900 dark:text-white font-bold ml-2">
-                        {slice.percentage}%
-                      </span>
                     </div>
-                  ))}
-                </div>
+
+                    {/* Slices Legend List */}
+                    <div className="space-y-2 mt-2">
+                      {activePieData.map((slice, index) => (
+                        <div key={index} className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: slice.color }} />
+                            <span className="text-gray-700 dark:text-zinc-300 truncate font-medium">
+                              {slice.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-500 text-[11px]">{slice.value}</span>
+                            <span className="text-gray-900 dark:text-white font-bold min-w-[28px] text-right">
+                              {slice.percentage}%
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-56 sm:h-60 flex flex-col items-center justify-center text-center p-4 border border-dashed border-gray-200 dark:border-zinc-800 rounded-lg">
+                    <PieChartIcon className="w-8 h-8 text-gray-300 dark:text-zinc-600 mb-2" />
+                    <p className="text-xs font-bold text-gray-700 dark:text-zinc-300">
+                      {pieMode === 'ratings' ? 'No Reviews Yet' : 'No Bookings Yet'}
+                    </p>
+                    <p className="text-[11px] text-gray-400 dark:text-zinc-500 max-w-[200px] mt-0.5">
+                      {pieMode === 'ratings'
+                        ? 'Tourist reviews and star ratings will automatically calculate here.'
+                        : 'Customer reservations will appear in this breakdown once booked.'}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 pt-3 border-t border-gray-100 dark:border-zinc-800 text-center">
                 <span className="text-[11px] text-gray-500 dark:text-zinc-400">
                   {pieMode === 'ratings'
-                    ? `${stats.total_reviews} total validated traveler ratings`
-                    : 'Tracked across AngkorVerses mobile & web portals'}
+                    ? `${stats.approved_reviews || 0} validated traveler ratings in database`
+                    : `${stats.total_bookings || 0} total reservations tracked in database`}
                 </span>
               </div>
             </div>
@@ -437,17 +466,20 @@ export default function BusinessAnalytics() {
             <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-3 shadow-xs transition-colors">
               <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-emerald-500" />
-                <span>Engagement Overview for {stats.name}</span>
+                <span>Operational Overview for {stats.name}</span>
               </h3>
               <p className="text-xs text-gray-600 dark:text-zinc-300 leading-relaxed">
-                Your business profile is actively featured to tourists searching for dining, cultural activities, and hospitality. Keeping your profile images, promotional discounts, and opening hours up to date ensures higher booking inquiries and review conversion.
+                This business currently has <strong>{stats.total_services || 0} listed services</strong> and <strong>{stats.total_images || 0} promotional photos</strong>.
+                {stats.pending_bookings > 0
+                  ? ` You have ${stats.pending_bookings} reservation request(s) awaiting your action.`
+                  : ' All received customer bookings are up to date.'}
               </p>
-              <div className="pt-2 flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-zinc-400">
+              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-medium text-gray-500 dark:text-zinc-400">
                 <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                   <ShieldCheck className="w-4 h-4" />
-                  Verified Business Listing
+                  {stats.verification_status === 'approved' ? 'Verified Business Listing' : 'Pending Verification'}
                 </span>
-                <span>• Status: <strong className="text-emerald-600 dark:text-emerald-400 capitalize">{stats.status}</strong></span>
+                <span>• Listing Status: <strong className="text-emerald-600 dark:text-emerald-400 capitalize">{stats.status}</strong></span>
               </div>
             </div>
 
@@ -457,16 +489,33 @@ export default function BusinessAnalytics() {
                 <span>Performance Optimization Recommendations</span>
               </h3>
               <ul className="text-xs text-gray-600 dark:text-zinc-300 space-y-2 list-disc list-inside">
-                <li>Respond promptly to tourist reviews to maintain a high customer satisfaction index.</li>
-                <li>Add seasonal promotion codes before upcoming festival dates in Siem Reap.</li>
-                <li>Ensure photos represent signature culinary dishes or tour itineraries.</li>
+                {stats.pending_bookings > 0 ? (
+                  <li className="text-amber-600 dark:text-amber-400 font-semibold">
+                    Review and confirm {stats.pending_bookings} pending customer reservation(s) in Customer Bookings.
+                  </li>
+                ) : (
+                  <li>Maintain fast response times to keep traveler satisfaction high.</li>
+                )}
+                {stats.total_services === 0 ? (
+                  <li className="text-blue-600 dark:text-blue-400 font-semibold">
+                    Add bookable packages and menus in Business Manage to attract direct customer bookings.
+                  </li>
+                ) : (
+                  <li>Keep package details and seasonal pricing updated for incoming tourists.</li>
+                )}
+                {stats.total_reviews === 0 ? (
+                  <li>Encourage guests who visited your establishment to leave verified ratings.</li>
+                ) : (
+                  <li>Respond to traveler reviews to boost your establishment profile ranking.</li>
+                )}
               </ul>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-white dark:bg-zinc-900 p-12 rounded-lg border border-gray-200 dark:border-zinc-800 text-center text-gray-500 dark:text-zinc-400 text-xs">
-          No statistics available for the selected business.
+        <div className="p-12 text-center bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-2">
+          <p className="text-sm font-bold text-gray-800 dark:text-zinc-200">No Business Selected</p>
+          <p className="text-xs text-gray-500 dark:text-zinc-400">Please select an owned business to inspect performance analytics.</p>
         </div>
       )}
     </div>

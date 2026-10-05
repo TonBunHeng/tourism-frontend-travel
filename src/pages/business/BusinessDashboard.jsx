@@ -9,14 +9,17 @@ import {
   BarChart3, 
   MessageSquare, 
   Loader2,
-  ChevronRight
+  ChevronRight,
+  CalendarCheck
 } from 'lucide-react';
 import businessService from '../../services/businessService';
+import bookingService from '../../services/bookingService';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function BusinessDashboard() {
   const [profileData, setProfileData] = useState(null);
   const [businesses, setBusinesses] = useState([]);
+  const [bookingStats, setBookingStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,7 +27,9 @@ export default function BusinessDashboard() {
     Promise.all([
       businessService.getOwnerProfile().catch(() => null),
       businessService.getOwnerBusinesses().catch(() => ({ data: { businesses: [] } })),
-    ]).then(([profRes, bizRes]) => {
+      bookingService.getBookingStatistics().catch(() => null),
+    ]).then(([profRes, bizRes, statsRes]) => {
+      if (statsRes?.data) setBookingStats(statsRes.data);
       if (!isMounted) return;
       setProfileData(profRes?.data || profRes);
       const bizList = bizRes?.data?.businesses || bizRes?.data || bizRes || [];
@@ -71,6 +76,16 @@ export default function BusinessDashboard() {
 
         <div className="flex items-center gap-2">
           <Link
+            to="/business/bookings"
+            className="px-3.5 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-200 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 relative"
+          >
+            <CalendarCheck className="w-3.5 h-3.5 text-[#003E83] dark:text-[#60a5fa]" />
+            <span>Customer Bookings</span>
+            {bookingStats && bookingStats.pending_bookings > 0 && (
+              <span className="w-2 h-2 rounded-full bg-amber-500 absolute top-1.5 right-1.5 animate-ping" />
+            )}
+          </Link>
+          <Link
             to="/business/analytics"
             className="px-3.5 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-200 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5"
           >
@@ -99,7 +114,20 @@ export default function BusinessDashboard() {
       )}
 
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <Link
+          to="/business/bookings"
+          className="bg-white dark:bg-zinc-900 p-5 rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs space-y-1 hover:border-[#003E83] dark:hover:border-blue-400 transition-all block"
+        >
+          <div className="flex items-center justify-between text-gray-500 dark:text-zinc-400 text-xs">
+            <span className="font-semibold">Guest Bookings</span>
+            <CalendarCheck className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
+          </div>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{bookingStats ? bookingStats.total_bookings : 0}</p>
+          <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
+            {bookingStats ? `${bookingStats.pending_bookings} Pending Action` : 'Manage'}
+          </span>
+        </Link>
         <div className="bg-white dark:bg-zinc-900 p-5 rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
           <div className="flex items-center justify-between text-gray-500 dark:text-zinc-400 text-xs">
             <span className="font-semibold">My Businesses</span>

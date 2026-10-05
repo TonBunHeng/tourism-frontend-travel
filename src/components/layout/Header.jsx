@@ -4,7 +4,8 @@ import {
   Compass, 
   MapPin, 
   Sparkles, 
-  Calendar, 
+  Calendar,
+  CalendarCheck, 
   Image as ImageIcon, 
   Heart, 
   Award, 
@@ -43,7 +44,7 @@ export default function Header() {
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 
   const [currentTheme, setCurrentTheme] = useState(() => getInitialTheme());
-  const [isDarkMode, setIsDarkMode] = useState(() => isDarkTheme(getInitialTheme()));
+  const [, setIsDarkMode] = useState(() => isDarkTheme(getInitialTheme()));
 
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -274,6 +275,7 @@ export default function Header() {
                 <Link
                   key={link.name}
                   to={link.path}
+                  onClick={() => setMenuOpen(false)}
                   className={`flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                     active
                       ? 'bg-blue-50 dark:bg-blue-950/60 text-[#003E83] dark:text-[#60a5fa]'
@@ -530,26 +532,44 @@ export default function Header() {
 
                     <div className="py-1">
                       {/* Role Dashboard Link inside dropdown */}
-                      {(isBusinessOwner) && (
-                        <Link
+                      {isBusinessOwner && (
+                        <>
+                          <Link
                           to={getDashboardPath()}
+                          onClick={() => setDropdownOpen(false)}
                           className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
-                            isLinkActive(getDashboardPath()) || location.pathname.startsWith('/business/') || location.pathname.startsWith('/guide/')
+                            isLinkActive(getDashboardPath())
                               ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
                               : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
                           }`}
                         >
                           <LayoutDashboard className={`w-3.5 h-3.5 ${
-                            isLinkActive(getDashboardPath()) || location.pathname.startsWith('/business/') || location.pathname.startsWith('/guide/')
+                            isLinkActive(getDashboardPath())
                               ? 'text-[#003E83] dark:text-[#60a5fa]'
                               : 'text-gray-400 dark:text-zinc-500'
                           }`} /> 
                           <span>Business Dashboard</span>
                         </Link>
+                        <Link
+                          to="/business/bookings"
+                          onClick={() => setDropdownOpen(false)}
+                          className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                            isLinkActive('/business/bookings')
+                              ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                              : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                          }`}
+                        >
+                          <CalendarCheck className={`w-3.5 h-3.5 ${
+                            isLinkActive('/business/bookings') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'
+                          }`} />
+                          <span>Customer Bookings</span>
+                        </Link>
+                        </>
                       )}
 
                       <Link
                         to="/profile"
+                        onClick={() => setDropdownOpen(false)}
                         className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
                           isLinkActive('/profile')
                             ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
@@ -561,7 +581,21 @@ export default function Header() {
                       </Link>
 
                       <Link
+                        to="/bookings"
+                        onClick={() => setDropdownOpen(false)}
+                        className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                          isLinkActive('/bookings')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
+                        <CalendarCheck className={`w-3.5 h-3.5 ${isLinkActive('/bookings') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                        <span>My Bookings</span>
+                      </Link>
+
+                      <Link
                         to="/notifications"
+                        onClick={() => setDropdownOpen(false)}
                         className={`flex items-center justify-between px-3.5 py-2 transition-colors ${
                           isLinkActive('/notifications')
                             ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
@@ -582,6 +616,7 @@ export default function Header() {
 
                       <Link
                         to="/achievements"
+                        onClick={() => setDropdownOpen(false)}
                         className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
                           isLinkActive('/achievements')
                             ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
@@ -604,6 +639,7 @@ export default function Header() {
                     <div className="border-t border-gray-100 dark:border-zinc-800/80 py-1">
                       <Link
                         to="/settings"
+                        onClick={() => setDropdownOpen(false)}
                         className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
                           isLinkActive('/settings')
                             ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
@@ -703,16 +739,38 @@ export default function Header() {
             {(isBusinessOwner) && (
               <Link
                 to={getDashboardPath()}
+                onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg font-bold text-[#003E83] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
               >
                 <LayoutDashboard className="w-4 h-4 text-[#003E83] dark:text-blue-400" />
                 <span>Business Owner Dashboard</span>
               </Link>
             )}
+            {(isBusinessOwner) && (
+              <Link
+                to="/business/bookings"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg font-bold text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
+              >
+                <CalendarCheck className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
+                <span>Customer Bookings</span>
+              </Link>
+            )}
+            {isAuthenticated && (
+              <Link
+                to="/bookings"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
+              >
+                <CalendarCheck className="w-4 h-4 text-emerald-500" />
+                <span>My Bookings</span>
+              </Link>
+            )}
 
 
             <Link
               to="/achievements"
+              onClick={() => setMenuOpen(false)}
               className="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
             >
               <Award className="w-4 h-4 text-amber-500" />
@@ -732,6 +790,7 @@ export default function Header() {
 
             <Link
               to="/settings"
+              onClick={() => setMenuOpen(false)}
               className="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
             >
               <ShieldAlert className="w-4 h-4 text-emerald-500" />
