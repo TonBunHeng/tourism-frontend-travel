@@ -68,11 +68,11 @@ export default function DeletionRequests() {
       <Breadcrumb items={[{ label: 'Data Privacy' }]} />
       <DeletionHeader />
 
-      <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg p-6 space-y-5 shadow-xs transition-colors">
-        <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-md text-amber-800 dark:text-amber-300 text-xs leading-relaxed space-y-1">
-          <p className="font-bold flex items-center gap-1.5">
+      <div className="bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs transition-colors">
+        <div className="p-4 sm:p-5 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 rounded-2xl text-amber-800 dark:text-amber-300 text-xs sm:text-sm leading-relaxed space-y-1.5 shadow-2xs">
+          <p className="font-bold flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-            Important Warning Regarding Account Deletion
+            Important Notice Regarding Account Deletion
           </p>
           <p>
             Submitting this request initiates the permanent erasure of your account <span className="font-bold text-red-600 dark:text-red-400">&quot;{userName}&quot;</span>, saved wishlist, earned badges/achievements, and review logs from the AngkorVerses database.
@@ -80,22 +80,22 @@ export default function DeletionRequests() {
         </div>
 
         {successMsg && (
-          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs rounded-md flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 shrink-0" />
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs sm:text-sm rounded-2xl flex items-center gap-2 font-medium shadow-2xs">
+            <CheckCircle className="w-4 h-4 shrink-0 text-emerald-600" />
             <span>{successMsg}</span>
           </div>
         )}
 
         {errorMsg && (
-          <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-xs rounded-md flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+          <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-xs sm:text-sm rounded-2xl flex items-center gap-2 font-medium shadow-2xs">
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-5 text-xs sm:text-sm">
           <div>
-            <label className="block font-semibold text-gray-700 dark:text-zinc-300 mb-1">
+            <label className="block font-bold text-gray-700 dark:text-zinc-300 mb-1.5">
               Account Email *
             </label>
             <input
@@ -103,12 +103,12 @@ export default function DeletionRequests() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white rounded-md border border-gray-300 dark:border-zinc-700 focus:border-red-500 focus:outline-none"
+              className="w-full px-4 py-2.5 bg-gray-50/50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-2xl border border-gray-200 dark:border-zinc-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-gray-700 dark:text-zinc-300 mb-1">
+            <label className="block font-bold text-gray-700 dark:text-zinc-300 mb-1.5">
               Reason for Deletion <span className="font-bold text-red-600 dark:text-red-400">&quot;Delete Account {userName}&quot;</span> *
             </label>
             <textarea
@@ -117,17 +117,17 @@ export default function DeletionRequests() {
               placeholder={`Please describe why you would like account "${userName}" and travel logs deleted...`}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-3 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white rounded-md border border-gray-300 dark:border-zinc-700 focus:border-red-500 focus:outline-none resize-none"
+              className="w-full px-4 py-3 bg-gray-50/50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-2xl border border-gray-200 dark:border-zinc-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 resize-none leading-relaxed"
             />
           </div>
 
-          <div className="flex justify-end pt-1">
+          <div className="flex justify-end pt-2">
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-md shadow-xs transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+              className="px-6 py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xs transition-colors cursor-pointer flex items-center gap-2 disabled:opacity-50"
             >
-              <ShieldAlert className="w-3.5 h-3.5" />
+              <ShieldAlert className="w-4 h-4" />
               {loading ? 'Submitting Request...' : 'Submit Deletion Request'}
             </button>
           </div>

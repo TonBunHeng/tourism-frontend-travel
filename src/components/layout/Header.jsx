@@ -26,7 +26,9 @@ import {
   ArrowRight,
   Briefcase,
   LayoutDashboard,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Info,
+  PhoneCall
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
@@ -224,13 +226,17 @@ export default function Header() {
     }
   };
 
+  const normRole = (user?.role || '').toLowerCase().trim().replace(/[\s/-]+/g, '_');
+  const isTourGuide = ['tour_guide', 'guide_editor', 'content_editor', 'guide'].includes(normRole);
+
   const navLinks = [
     { name: 'Destinations', path: '/places', icon: Compass },
+    { name: 'Tours', path: '/tours', icon: Sparkles },
+    { name: 'Guides', path: '/guides', icon: User },
     { name: 'Businesses', path: '/businesses', icon: Briefcase },
     { name: 'Provinces', path: '/provinces', icon: MapPin },
-    { name: 'Categories', path: '/categories', icon: Sparkles },
-    { name: 'Events', path: '/events', icon: Calendar },
-    { name: 'Gallery', path: '/gallery', icon: ImageIcon },
+    { name: 'About', path: '/about', icon: Info },
+    { name: 'Contact', path: '/contact', icon: PhoneCall },
   ];
 
   const isLinkActive = (path) => {
@@ -240,17 +246,18 @@ export default function Header() {
 
   const getDashboardPath = () => {
     if (isBusinessOwner) return '/business/dashboard';
+    if (isTourGuide) return '/guide/dashboard';
     return '/profile';
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 transition-colors shadow-xs">
+    <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-gray-200/80 dark:border-zinc-800 transition-colors shadow-2xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-2 xl:gap-3">
           
           {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="w-9 h-9 rounded-lg overflow-hidden bg-[#003E83]/10 dark:bg-blue-900/30 flex items-center justify-center p-1 border border-gray-200/60 dark:border-zinc-700/60 group-hover:scale-105 transition-transform">
+          <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-9 h-9 rounded-xl overflow-hidden bg-[#003E83]/10 dark:bg-blue-900/30 flex items-center justify-center p-1.5 border border-blue-200/60 dark:border-blue-900/50 shadow-2xs group-hover:scale-105 transition-transform">
               <img
                 src={logoImg}
                 alt="AngkorVerses"
@@ -258,17 +265,17 @@ export default function Header() {
               />
             </div>
             <div>
-              <span className="text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight block group-hover:text-[#003E83] dark:group-hover:text-[#60a5fa] transition-colors">
-                Angkor<span className="text-[#003E83] dark:text-[#60a5fa]">Verses</span>
+              <span className="text-base font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight block group-hover:text-[#003E83] dark:group-hover:text-blue-400 transition-colors">
+                Angkor<span className="text-[#003E83] dark:text-blue-400">Verses</span>
               </span>
-              <span className="text-[10px] font-semibold text-gray-500 dark:text-zinc-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
                 Travel & Culture
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 shrink-0">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 shrink-0">
             {navLinks.map((link) => {
               const active = isLinkActive(link.path);
               const Icon = link.icon;
@@ -277,13 +284,13 @@ export default function Header() {
                   key={link.name}
                   to={link.path}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                     active
-                      ? 'bg-blue-50 dark:bg-blue-950/60 text-[#003E83] dark:text-[#60a5fa]'
-                      : 'text-gray-700 dark:text-zinc-300 hover:text-[#003E83] dark:hover:text-[#60a5fa] hover:bg-gray-50 dark:hover:bg-zinc-800'
+                      ? 'bg-blue-50 dark:bg-blue-950/60 text-[#003E83] dark:text-blue-400 shadow-2xs'
+                      : 'text-gray-600 dark:text-zinc-300 hover:text-[#003E83] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-zinc-800/70'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${active ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${active ? 'text-[#003E83] dark:text-blue-400' : 'text-gray-400 dark:text-zinc-500'}`} />
                   <span>{link.name}</span>
                 </Link>
               );
@@ -582,6 +589,41 @@ export default function Header() {
                         </>
                       )}
 
+                      {isTourGuide && (
+                        <>
+                          <Link
+                            to="/guide/dashboard"
+                            onClick={() => setDropdownOpen(false)}
+                            className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                              isLinkActive('/guide/dashboard')
+                                ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                                : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                            }`}
+                          >
+                            <LayoutDashboard className={`w-3.5 h-3.5 ${
+                              isLinkActive('/guide/dashboard')
+                                ? 'text-[#003E83] dark:text-[#60a5fa]'
+                                : 'text-gray-400 dark:text-zinc-500'
+                            }`} />
+                            <span>Guide Portal</span>
+                          </Link>
+                          <Link
+                            to="/guide/places"
+                            onClick={() => setDropdownOpen(false)}
+                            className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                              isLinkActive('/guide/places')
+                                ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                                : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                            }`}
+                          >
+                            <Compass className={`w-3.5 h-3.5 ${
+                              isLinkActive('/guide/places') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'
+                            }`} />
+                            <span>Curate Places</span>
+                          </Link>
+                        </>
+                      )}
+
                       <Link
                         to="/profile"
                         onClick={() => setDropdownOpen(false)}
@@ -593,6 +635,19 @@ export default function Header() {
                       >
                         <User className={`w-3.5 h-3.5 ${isLinkActive('/profile') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
                         <span>My Profile</span>
+                      </Link>
+
+                      <Link
+                        to="/trips"
+                        onClick={() => setDropdownOpen(false)}
+                        className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                          isLinkActive('/trips')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
+                        <Compass className={`w-3.5 h-3.5 ${isLinkActive('/trips') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
+                        <span>My Trips & Plans</span>
                       </Link>
 
                       <Link
@@ -781,15 +836,45 @@ export default function Header() {
                 <span>Business Reports</span>
               </Link>
             )}
+            {(isTourGuide) && (
+              <>
+                <Link
+                  to="/guide/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg font-bold text-[#003E83] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-[#003E83] dark:text-blue-400" />
+                  <span>Tour Guide Portal</span>
+                </Link>
+                <Link
+                  to="/guide/places"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg font-bold text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                >
+                  <Compass className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa]" />
+                  <span>Curate Destinations</span>
+                </Link>
+              </>
+            )}
             {isAuthenticated && (
-              <Link
-                to="/bookings"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
-              >
-                <CalendarCheck className="w-4 h-4 text-emerald-500" />
-                <span>My Bookings</span>
-              </Link>
+              <>
+                <Link
+                  to="/trips"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                >
+                  <Compass className="w-4 h-4 text-[#003E83] dark:text-blue-400" />
+                  <span>My Trips & Itineraries</span>
+                </Link>
+                <Link
+                  to="/bookings"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                >
+                  <CalendarCheck className="w-4 h-4 text-emerald-500" />
+                  <span>My Bookings</span>
+                </Link>
+              </>
             )}
 
 

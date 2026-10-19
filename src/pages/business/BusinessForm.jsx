@@ -232,20 +232,18 @@ export default function BusinessForm() {
           { label: isEdit ? 'Edit Business' : 'Register New Business' }
         ]}
       />
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {isEdit ? 'Edit Business Profile' : 'Register New Business'}
-          </h1>
-          <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
-            Submit your hospitality, dining, hotel, or activity listing for tourist discovery and admin verification.
-          </p>
-        </div>
+      {/* Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-blue-100 dark:border-zinc-800 bg-gradient-to-br from-blue-50/60 via-white to-slate-50 dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 p-6 sm:p-8 shadow-sm space-y-2">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+          {isEdit ? 'Edit Business Profile' : 'Register New Business'}
+        </h1>
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-zinc-400 max-w-xl">
+          Submit your hospitality, dining, hotel, or activity listing for tourist discovery and official Ministry verification.
+        </p>
       </div>
 
       {/* Form Container */}
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-lg border border-gray-200 dark:border-zinc-800 space-y-6 shadow-xs transition-colors">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-3xl border border-gray-200/80 dark:border-zinc-800 space-y-6 shadow-xs transition-colors">
 
         <div className="space-y-4">
           <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider border-b border-gray-100 dark:border-zinc-800 pb-2">
@@ -539,17 +537,17 @@ export default function BusinessForm() {
           </div>
         </div>
 
-        <div className="pt-4 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-end gap-3">
+        <div className="pt-5 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-end gap-3">
           <Link
             to={isEdit ? `/business/businesses/${id}` : '/business/dashboard'}
-            className="px-4 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-700 text-xs font-semibold rounded-md transition-colors"
+            className="px-5 py-2.5 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-700 text-xs sm:text-sm font-bold rounded-2xl transition-colors"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50 transition-colors"
+            className="px-6 py-2.5 bg-gradient-to-r from-[#003E83] to-blue-700 hover:from-[#002e62] hover:to-blue-800 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xs flex items-center gap-2 cursor-pointer disabled:opacity-50 transition-colors"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             <span>{isEdit ? 'Save Changes' : 'Submit Business'}</span>

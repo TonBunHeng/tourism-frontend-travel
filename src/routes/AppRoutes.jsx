@@ -10,6 +10,10 @@ import ProtectedRoute from './ProtectedRoute';
 import Home from '../pages/home/Home';
 import Places from '../pages/places/Places';
 import PlaceDetails from '../pages/places/PlaceDetails';
+import Tours from '../pages/tours/Tours';
+import Guides from '../pages/guides/Guides';
+import About from '../pages/about/About';
+import Contact from '../pages/contact/Contact';
 import Provinces from '../pages/provinces/Provinces';
 import ProvinceDetails from '../pages/provinces/ProvinceDetails';
 import Categories from '../pages/categories/Categories';
@@ -39,6 +43,16 @@ import BusinessAnalytics from '../pages/business/BusinessAnalytics';
 import BusinessBookings from '../pages/business/BusinessBookings';
 import BusinessReports from '../pages/business/BusinessReports';
 
+// Tour Guide & Content Editor Portal Pages
+import GuideDashboard from '../pages/guide/GuideDashboard';
+import GuidePlaces from '../pages/guide/GuidePlaces';
+import GuidePlaceForm from '../pages/guide/GuidePlaceForm';
+import GuideEvents from '../pages/guide/GuideEvents';
+import GuideEventForm from '../pages/guide/GuideEventForm';
+import GuideGallery from '../pages/guide/GuideGallery';
+import GuideReviews from '../pages/guide/GuideReviews';
+import GuideInquiries from '../pages/guide/GuideInquiries';
+
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -50,6 +64,10 @@ export default function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/places" element={<Places />} />
           <Route path="/places/:id" element={<PlaceDetails />} />
+          <Route path="/tours" element={<Tours />} />
+          <Route path="/guides" element={<Guides />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/businesses" element={<Businesses />} />
           <Route path="/businesses/:id" element={<BusinessDetails />} />
           <Route path="/provinces" element={<Provinces />} />
@@ -85,6 +103,20 @@ export default function AppRoutes() {
             <Route path="/business/businesses/:id/edit" element={<BusinessForm />} />
             <Route path="/business/analytics" element={<BusinessAnalytics />} />
             <Route path="/business/reports" element={<BusinessReports />} />
+          </Route>
+
+          {/* Tour Guide & Content Editor Dedicated Portal */}
+          <Route element={<ProtectedRoute allowedRoles={['tour_guide', 'guide_editor', 'content_editor', 'guide']} />}>
+            <Route path="/guide/dashboard" element={<GuideDashboard />} />
+            <Route path="/guide/places" element={<GuidePlaces />} />
+            <Route path="/guide/places/new" element={<GuidePlaceForm />} />
+            <Route path="/guide/places/:id/edit" element={<GuidePlaceForm />} />
+            <Route path="/guide/events" element={<GuideEvents />} />
+            <Route path="/guide/events/new" element={<GuideEventForm />} />
+            <Route path="/guide/events/:id/edit" element={<GuideEventForm />} />
+            <Route path="/guide/gallery" element={<GuideGallery />} />
+            <Route path="/guide/reviews" element={<GuideReviews />} />
+            <Route path="/guide/inquiries" element={<GuideInquiries />} />
           </Route>
 
         </Route>

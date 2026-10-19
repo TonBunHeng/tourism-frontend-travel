@@ -234,37 +234,40 @@ export default function Notifications() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <Breadcrumb items={[{ label: 'Notifications' }]} />
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-gray-200/80 dark:border-zinc-800">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
-            <Bell className="w-6 h-6 text-[#003E83] dark:text-[#60a5fa]" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#003E83] dark:text-blue-400 text-xs font-bold mb-2">
+            <Bell className="w-3.5 h-3.5" />
+            <span>Activity & Communication Hub</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             Notifications Center
           </h1>
-          <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 mt-1">
             Stay updated with your travel wishlist, support chats, review approvals, and Angkor festival events
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2.5 flex-wrap self-start sm:self-auto">
           <button
             type="button"
             onClick={() => fetchNotifications(true)}
             disabled={refreshing || loading}
-            className="py-1.5 px-3 rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-700 text-xs font-semibold text-gray-700 dark:text-zinc-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="py-2 px-3.5 rounded-2xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-700 text-xs font-bold text-gray-700 dark:text-zinc-200 flex items-center gap-2 transition-all shadow-2xs cursor-pointer"
             title="Refresh notifications"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            <span>Refresh</span>
           </button>
 
           {unreadCount > 0 && (
             <button
               type="button"
               onClick={handleMarkAllRead}
-              className="py-1.5 px-3 rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-700 text-xs font-semibold text-gray-700 dark:text-zinc-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="py-2 px-3.5 rounded-2xl border border-teal-200 dark:border-teal-900/60 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 text-xs font-bold text-teal-700 dark:text-teal-300 flex items-center gap-2 transition-all shadow-2xs cursor-pointer"
             >
-              <CheckCheck className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-              Mark All Read
+              <CheckCheck className="w-3.5 h-3.5" />
+              <span>Mark All Read</span>
             </button>
           )}
 
@@ -272,17 +275,17 @@ export default function Notifications() {
             <button
               type="button"
               onClick={handleClearAll}
-              className="py-1.5 px-3 rounded-md border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 hover:bg-red-100 text-xs font-semibold text-red-600 dark:text-red-400 flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="py-2 px-3.5 rounded-2xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 hover:bg-red-100 text-xs font-bold text-red-600 dark:text-red-400 flex items-center gap-2 transition-all shadow-2xs cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              Clear All
+              <span>Clear All</span>
             </button>
           )}
         </div>
       </div>
 
       {/* Filter Tabs Toolbar */}
-      <div className="bg-white dark:bg-zinc-900 p-3 rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white dark:bg-zinc-900 p-3 sm:p-4 rounded-3xl border border-gray-200/80 dark:border-zinc-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
           {categories.map(cat => (
             <button
@@ -292,9 +295,9 @@ export default function Notifications() {
                 setFilterCategory(cat);
                 setPage(1);
               }}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 filterCategory === cat
-                  ? 'bg-[#003E83] text-white shadow-xs font-bold'
+                  ? 'bg-[#003E83] text-white shadow-xs'
                   : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800'
               }`}
             >

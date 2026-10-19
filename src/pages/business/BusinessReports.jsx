@@ -486,45 +486,45 @@ export default function BusinessReports() {
         />
       </div>
 
-      {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-zinc-800">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+      {/* Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-blue-100 dark:border-zinc-800 bg-gradient-to-br from-blue-50/60 via-white to-slate-50 dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 p-6 sm:p-8 shadow-sm space-y-4 print:hidden">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#003E83]/10 dark:bg-blue-400/10 text-[#003E83] dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Financial & Analytics Intelligence</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
               Business Performance Reports
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-              Live Real-Time Data
-            </span>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-zinc-400 mt-1 max-w-2xl">
+              Analyze reservation volume, gross revenue, guest satisfaction, customer retention, and export financial statements.
+            </p>
           </div>
-          <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1">
-            Analyze reservation volume, gross revenue, guest satisfaction, customer retention, and export financial statements.
-          </p>
-        </div>
 
-        {/* Action Controls - PDF Export */}
-        <div className="flex items-center gap-2 w-full sm:w-auto print:hidden">
-          {/* Export PDF */}
-          <button
-            type="button"
-            disabled={exportingPdf}
-            onClick={handleExportPdf}
-            className={`${actionBtnClass} border border-transparent bg-red-600 hover:bg-red-700 text-white shadow-sm`}
-            title="Export Stylized PDF Document"
-          >
-            {exportingPdf ? (
-              <Loader2 className="w-4 h-4 animate-spin shrink-0" />
-            ) : (
-              <Download className="w-4 h-4 shrink-0" />
-            )}
-            <span>PDF</span>
-          </button>
+          {/* Action Controls - PDF Export */}
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              disabled={exportingPdf}
+              onClick={handleExportPdf}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 border border-transparent bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white shadow-xs"
+              title="Export Stylized PDF Document"
+            >
+              {exportingPdf ? (
+                <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+              ) : (
+                <Download className="w-4 h-4 shrink-0" />
+              )}
+              <span>Export PDF</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs space-y-3 transition-colors print:hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <div className="bg-white dark:bg-zinc-900 p-5 sm:p-6 rounded-3xl border border-gray-200/80 dark:border-zinc-800 shadow-xs space-y-4 transition-colors print:hidden">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Business & Timeframe Selectors */}
           <div className="flex flex-wrap items-center gap-3">
             {/* Business Dropdown */}
@@ -533,7 +533,7 @@ export default function BusinessReports() {
               <select
                 value={selectedBusinessId}
                 onChange={(e) => setSelectedBusinessId(e.target.value)}
-                className="text-xs font-medium rounded-md border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white px-3 py-1.5 focus:ring-2 focus:ring-[#003E83] dark:focus:ring-blue-400 outline-hidden"
+                className="text-xs sm:text-sm font-bold rounded-2xl border border-gray-200 dark:border-zinc-700 bg-gray-50/60 dark:bg-zinc-800 text-gray-900 dark:text-white px-3.5 py-2 focus:ring-2 focus:ring-[#003E83]/20 outline-hidden cursor-pointer"
               >
                 <option value="">All My Businesses ({displayBusinesses.length})</option>
                 {displayBusinesses.map((b) => (

@@ -18,16 +18,24 @@ export default function Favorites() {
 
   if (!isAuthenticated) {
     return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center space-y-3">
-        <Heart className="w-12 h-12 text-gray-400 mx-auto" />
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Your Saved Wishlist</h2>
-        <p className="text-xs text-gray-500 dark:text-zinc-400">Sign in to save and manage your favorite destinations.</p>
-        <button
-          onClick={() => openAuthModal('login')}
-          className="px-4 py-2 bg-[#003E83] dark:bg-[#60a5fa] dark:text-zinc-950 hover:bg-[#002e62] text-white text-xs font-semibold rounded-md cursor-pointer"
-        >
-          Sign In
-        </button>
+      <div className="max-w-md mx-auto px-4 py-20 text-center">
+        <div className="bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 rounded-3xl p-10 sm:p-12 shadow-sm space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center mx-auto border border-rose-100 dark:border-rose-900/50 shadow-2xs">
+            <Heart className="w-8 h-8 fill-rose-500 text-rose-500" />
+          </div>
+          <div className="space-y-1.5">
+            <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">Your Saved Wishlist</h2>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 max-w-xs mx-auto">
+              Sign in to save and sync your dream destinations across all devices.
+            </p>
+          </div>
+          <button
+            onClick={() => openAuthModal('login')}
+            className="px-6 py-2.5 bg-gradient-to-r from-[#003E83] to-blue-700 hover:from-[#002e62] hover:to-blue-800 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xs transition-all cursor-pointer"
+          >
+            Sign In to View Wishlist
+          </button>
+        </div>
       </div>
     );
   }

@@ -181,34 +181,34 @@ export default function ProvinceDetails() {
       </div>
 
       {/* Hero Overview Card */}
-      <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs">
+      <div className="bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-12">
           {/* Province Information (Left 7 cols) */}
           <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-[#003E83]/10 dark:bg-[#60a5fa]/20 text-[#003E83] dark:text-[#60a5fa] border border-[#003E83]/20 dark:border-[#60a5fa]/30">
+                <span className="px-3 py-1 text-xs font-extrabold rounded-full bg-[#003E83]/10 dark:bg-blue-950/60 text-[#003E83] dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/40">
                   {province.type || 'Province'} of Cambodia
                 </span>
-                <div className="flex items-center gap-1 text-xs font-bold text-amber-500 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800/60">
+                <div className="flex items-center gap-1 text-xs font-bold text-amber-500 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-800/60">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span>{Number(province.rating || 4.9).toFixed(2)}</span>
-                  <span className="text-[10px] text-gray-500 font-normal">Rating</span>
+                  <span className="text-[10px] text-gray-400 font-normal">Rating</span>
                 </div>
               </div>
 
               <div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
                   {province.name}
                 </h1>
-                <p className="flex items-center gap-1 text-xs text-gray-500 dark:text-zinc-400 mt-1 font-medium">
-                  <MapPin className="w-3.5 h-3.5 text-[#003E83] dark:text-[#60a5fa]" />
-                  Kingdom of Cambodia
+                <p className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-zinc-400 mt-1.5 font-medium">
+                  <MapPin className="w-3.5 h-3.5 text-rose-500" />
+                  <span>Kingdom of Cambodia</span>
                 </p>
               </div>
 
               {province.description && (
-                <p className="text-sm text-gray-600 dark:text-zinc-300 leading-relaxed pt-1">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-zinc-300 leading-relaxed pt-1 font-normal">
                   {province.description}
                 </p>
               )}
@@ -216,7 +216,7 @@ export default function ProvinceDetails() {
 
             {/* Quick Metrics Strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800">
-              <div className="bg-gray-50 dark:bg-zinc-800/60 p-3 rounded-lg border border-gray-100 dark:border-zinc-800">
+              <div className="bg-gray-50/80 dark:bg-zinc-800/60 p-3.5 rounded-2xl border border-gray-100 dark:border-zinc-800">
                 <div className="flex items-center gap-1.5 text-gray-500 dark:text-zinc-400 text-[11px]">
                   <Compass className="w-3.5 h-3.5 text-[#003E83] dark:text-[#60a5fa]" />
                   <span>Attractions</span>

@@ -319,49 +319,41 @@ export default function BusinessManage() {
         ]}
       />
       {/* Top Header Card */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white dark:bg-zinc-900 p-6 rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs transition-colors">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-[#003E83] dark:text-[#60a5fa] capitalize">{business.verification_status}</span>
+      <div className="relative overflow-hidden rounded-3xl border border-blue-100 dark:border-zinc-800 bg-gradient-to-br from-blue-50/60 via-white to-slate-50 dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 p-6 sm:p-8 shadow-sm transition-colors">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#003E83]/10 dark:bg-blue-400/10 text-[#003E83] dark:text-blue-300 text-xs font-bold uppercase tracking-wider">
+              <CheckCircle className="w-3.5 h-3.5" />
+              <span>Listing Verification: {business.verification_status}</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{business.name}</h1>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-zinc-400">
+              Manage your services, promotions, photo gallery, operating hours, and customer bookings in one place.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{business.name}</h1>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <Link
-            to={`/businesses/${business.id}`}
-            target="_blank"
-            className="px-3.5 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 text-xs font-semibold rounded-md flex items-center gap-1.5 transition-colors"
-          >
-            <ExternalLink className="w-3.5 h-3.5" /> Public View
-          </Link>
-          <Link
-            to={`/business/businesses/${business.id}/edit`}
-            className="px-3.5 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] dark:text-zinc-950 text-white text-xs font-semibold rounded-md shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Edit3 className="w-3.5 h-3.5" /> Edit Basic Profile
-          </Link>
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <Link
+              to={`/businesses/${business.id}`}
+              target="_blank"
+              className="px-4 py-2.5 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 text-xs sm:text-sm font-bold rounded-2xl flex items-center gap-2 shadow-2xs transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" /> Public View
+            </Link>
+            <Link
+              to={`/business/businesses/${business.id}/edit`}
+              className="px-4 py-2.5 bg-gradient-to-r from-[#003E83] to-blue-700 hover:from-[#002e62] hover:to-blue-800 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-xs flex items-center gap-2 transition-colors cursor-pointer"
+            >
+              <Edit3 className="w-4 h-4" /> Edit Profile
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Status Tracker Banner */}
-      <div className="p-4 rounded-lg bg-blue-50 dark:bg-zinc-900 border border-blue-200 dark:border-zinc-800 flex items-center justify-between gap-4 text-xs transition-colors">
-        <div className="flex items-center gap-3">
-          <CheckCircle className="w-4 h-4 text-[#003E83] dark:text-[#60a5fa] shrink-0" />
-          <div>
-            <span className="font-semibold text-gray-900 dark:text-white">Verification Lifecycle Status: </span>
-            <span className="font-bold text-[#003E83] dark:text-[#60a5fa] uppercase">{business.verification_status}</span>
-          </div>
-        </div>
-        {business.verification_status === 'rejected' && business.rejection_reason && (
-          <p className="text-rose-600 font-bold">Reason: {business.rejection_reason}</p>
-        )}
-      </div>
-
-      {/* Tab Selection */}
-      <div className="flex items-center gap-2 border-b border-gray-200 dark:border-zinc-800 overflow-x-auto pb-1">
+      {/* Tab Selection Switcher */}
+      <div className="flex p-1.5 bg-gray-100/90 dark:bg-zinc-800/90 backdrop-blur-md rounded-2xl border border-gray-200/60 dark:border-zinc-700/60 overflow-x-auto gap-1">
         {[
-          { id: 'overview', label: 'Profile' },
+          { id: 'overview', label: 'Overview' },
           { id: 'services', label: `Services (${services.length})` },
           { id: 'hours', label: 'Opening Hours' },
           { id: 'gallery', label: `Gallery (${gallery.length})` },
@@ -373,10 +365,10 @@ export default function BusinessManage() {
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
-            className={`px-4 py-2 text-xs font-semibold whitespace-nowrap rounded-t-md transition-all border-b-2 cursor-pointer ${
+            className={`px-4 py-2 text-xs font-bold whitespace-nowrap rounded-xl transition-all cursor-pointer ${
               activeTab === t.id
-                ? 'border-[#003E83] dark:border-[#60a5fa] text-[#003E83] dark:text-[#60a5fa] bg-blue-50/50 dark:bg-zinc-800/50'
-                : 'border-transparent text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white'
+                ? 'bg-white dark:bg-zinc-700 text-[#003E83] dark:text-blue-300 shadow-xs'
+                : 'text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             {t.label}

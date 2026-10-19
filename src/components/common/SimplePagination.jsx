@@ -60,17 +60,17 @@ export default function SimplePagination({
         flex flex-col sm:flex-row
         items-center justify-between
         gap-3
-        px-4 py-3
-        border-t border-gray-200 dark:border-zinc-800
-        bg-white dark:bg-zinc-900
-        rounded-b-lg
+        px-5 py-3.5
+        border border-gray-200/80 dark:border-zinc-800/80
+        bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm
+        rounded-2xl shadow-xs
         ${className}
       `}
     >
       {/* Record information: 1-10, 11-20, etc. */}
-      <div className="text-sm text-gray-500 dark:text-zinc-400">
+      <div className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 font-medium">
         Showing{' '}
-        <span className="font-semibold text-gray-900 dark:text-white">
+        <span className="font-semibold text-gray-900 dark:text-white px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-zinc-800/80">
           {from === to ? from.toLocaleString() : `${from.toLocaleString()}-${to.toLocaleString()}`}
         </span>{' '}
         of{' '}
@@ -88,20 +88,22 @@ export default function SimplePagination({
           onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
           disabled={currentPage <= 1}
           className="
-            h-8 px-3
-            flex items-center gap-1
-            rounded-md
-            border border-gray-300 dark:border-zinc-700
-            bg-white dark:bg-zinc-800
-            text-sm text-gray-700 dark:text-zinc-200
+            h-8.5 px-3
+            flex items-center gap-1.5
+            rounded-xl
+            border border-gray-200 dark:border-zinc-700/80
+            bg-white dark:bg-zinc-800/90
+            text-xs font-semibold text-gray-700 dark:text-zinc-200
             hover:bg-gray-50 dark:hover:bg-zinc-700
-            disabled:opacity-40
+            hover:border-gray-300 dark:hover:border-zinc-600
+            disabled:opacity-35
             disabled:cursor-not-allowed
-            transition-colors
+            shadow-2xs
+            transition-all duration-150 active:scale-95
             cursor-pointer
           "
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-3.5 h-3.5" />
           <span>Previous</span>
         </button>
 
@@ -117,12 +119,12 @@ export default function SimplePagination({
                 onClick={() => onPageChange(targetPage)}
                 title={isLeftDots ? `Go to page ${targetPage}` : `Go to page ${targetPage}`}
                 className="
-                  w-8 h-8
+                  w-8.5 h-8.5
                   flex items-center justify-center
-                  rounded-md
+                  rounded-xl
                   border border-transparent
-                  text-sm text-gray-500 dark:text-zinc-400
-                  hover:border-gray-300 dark:hover:border-zinc-700
+                  text-xs text-gray-400 dark:text-zinc-500
+                  hover:border-gray-200 dark:hover:border-zinc-700
                   hover:bg-gray-100 dark:hover:bg-zinc-800
                   transition-colors
                   cursor-pointer
@@ -141,17 +143,16 @@ export default function SimplePagination({
               type="button"
               onClick={() => onPageChange(pageNum)}
               className={`
-                w-8 h-8
+                w-8.5 h-8.5
                 flex items-center justify-center
-                rounded-md
-                border
-                text-sm font-medium
-                transition-colors
+                rounded-xl
+                text-xs font-bold
+                transition-all duration-150 active:scale-95
                 cursor-pointer
                 ${
                   isActive
-                    ? 'border-[#003E83] bg-[#003E83] text-white dark:border-[#60a5fa] dark:bg-[#60a5fa] dark:text-zinc-950 font-semibold'
-                    : 'border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700'
+                    ? 'bg-gradient-to-br from-[#003E83] to-blue-600 dark:from-blue-500 dark:to-indigo-600 text-white shadow-sm shadow-blue-900/20'
+                    : 'border border-gray-200 dark:border-zinc-700/80 bg-white dark:bg-zinc-800/90 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-700 hover:border-gray-300 shadow-2xs'
                 }
               `}
             >
@@ -166,21 +167,23 @@ export default function SimplePagination({
           onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
           disabled={currentPage >= totalPages}
           className="
-            h-8 px-3
-            flex items-center gap-1
-            rounded-md
-            border border-gray-300 dark:border-zinc-700
-            bg-white dark:bg-zinc-800
-            text-sm text-gray-700 dark:text-zinc-200
+            h-8.5 px-3
+            flex items-center gap-1.5
+            rounded-xl
+            border border-gray-200 dark:border-zinc-700/80
+            bg-white dark:bg-zinc-800/90
+            text-xs font-semibold text-gray-700 dark:text-zinc-200
             hover:bg-gray-50 dark:hover:bg-zinc-700
-            disabled:opacity-40
+            hover:border-gray-300 dark:hover:border-zinc-600
+            disabled:opacity-35
             disabled:cursor-not-allowed
-            transition-colors
+            shadow-2xs
+            transition-all duration-150 active:scale-95
             cursor-pointer
           "
         >
           <span>Next</span>
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>

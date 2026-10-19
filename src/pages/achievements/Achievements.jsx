@@ -39,13 +39,13 @@ export default function Achievements() {
       <AchievementsHeader unlockedCount={unlockedCount} totalCount={achievements.length} />
 
       {!isAuthenticated && (
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-3.5 flex items-center justify-between text-xs text-[#003E83]">
-          <span>Sign in to record your unlocked explorer achievements.</span>
+        <div className="bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-900/50 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-[#003E83] dark:text-blue-300 font-semibold shadow-2xs">
+          <span>Sign in to record your unlocked explorer achievements and progress tracking.</span>
           <button
             onClick={() => openAuthModal('login')}
-            className="px-3 py-1 bg-[#003E83] text-white rounded font-semibold hover:bg-[#002e62]"
+            className="px-4 py-2 bg-[#003E83] hover:bg-[#002e62] text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer shrink-0"
           >
-            Sign In
+            Sign In Now
           </button>
         </div>
       )}

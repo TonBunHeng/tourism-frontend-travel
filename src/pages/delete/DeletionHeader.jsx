@@ -2,20 +2,17 @@ import { ShieldAlert } from 'lucide-react';
 
 export default function DeletionHeader() {
   return (
-    <div className="pb-4 border-b border-gray-200 dark:border-zinc-800">
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-md bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center">
-          <ShieldAlert className="w-4 h-4" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            Account Deletion & Data Privacy
-          </h1>
-          <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
-            Submit an official data deletion request in compliance with GDPR and privacy laws
-          </p>
-        </div>
+    <div className="relative overflow-hidden rounded-3xl border border-rose-100 dark:border-zinc-800 bg-gradient-to-br from-rose-50/50 via-white to-slate-50 dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 p-6 sm:p-8 shadow-sm space-y-2">
+      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-xs font-bold uppercase tracking-wider">
+        <ShieldAlert className="w-3.5 h-3.5" />
+        <span>Privacy & Data Erasure Compliance</span>
       </div>
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+        Account Deletion & Data Privacy
+      </h1>
+      <p className="text-xs sm:text-sm text-gray-600 dark:text-zinc-400 max-w-xl">
+        Submit an official data deletion request in compliance with international privacy regulations and Cambodian e-commerce laws.
+      </p>
     </div>
   );
 }

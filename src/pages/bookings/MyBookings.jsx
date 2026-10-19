@@ -160,9 +160,9 @@ export default function MyBookings() {
   const totalCount = stats ? stats.total : bookings.length;
 
   return (
-    <div className="min-h-screen bg-gray-50/50 dark:bg-zinc-950 pb-16 transition-colors">
-      {/* Header Container */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 transition-colors">
+    <div className="min-h-screen bg-slate-50/60 dark:bg-zinc-950 pb-16 transition-colors">
+      {/* Header Container with Modern Hero */}
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-gray-200/80 dark:border-zinc-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
           <Breadcrumb
             items={[
@@ -172,46 +172,47 @@ export default function MyBookings() {
           />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <span className="text-[10px] font-bold text-[#003E83] dark:text-[#60a5fa] uppercase tracking-wider">
-                Reservations & Orders
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                My Bookings
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#003E83]/10 dark:bg-blue-400/10 text-[#003E83] dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Travel Reservations & Orders</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                My Bookings & Reservations
               </h1>
-              <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1">
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 mt-1 max-w-xl">
                 Track and manage your upcoming reservations with local Cambodian businesses and tour operators.
               </p>
             </div>
 
             <Link
               to="/businesses"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] text-white dark:text-zinc-950 text-xs font-bold rounded-lg shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#003E83] hover:bg-[#002e62] text-white text-xs font-bold rounded-2xl shadow-md shadow-blue-900/20 active:scale-95 transition-all self-start sm:self-auto cursor-pointer"
             >
               <Building2 className="w-4 h-4" />
               <span>Explore Businesses</span>
             </Link>
           </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
-            <div className="p-3 bg-gray-50 dark:bg-zinc-800/60 rounded-lg border border-gray-200 dark:border-zinc-700/60 space-y-0.5">
-              <span className="text-[11px] text-gray-500 dark:text-zinc-400 font-medium">Total Bookings</span>
-              <p className="text-xl font-bold text-gray-900 dark:text-white">{totalCount}</p>
+          {/* Quick Modern Metrics Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-6">
+            <div className="p-4 bg-white dark:bg-zinc-800/80 rounded-2xl border border-gray-200/80 dark:border-zinc-700/70 shadow-2xs space-y-1">
+              <span className="text-xs text-gray-500 dark:text-zinc-400 font-semibold">Total Bookings</span>
+              <p className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">{totalCount}</p>
             </div>
-            <div className="p-3 bg-amber-50/60 dark:bg-amber-950/20 rounded-lg border border-amber-200/80 dark:border-amber-900/40 space-y-0.5">
-              <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium">Pending Requests</span>
-              <p className="text-xl font-bold text-amber-700 dark:text-amber-400">{pendingCount}</p>
+            <div className="p-4 bg-amber-50/70 dark:bg-amber-950/20 rounded-2xl border border-amber-200 dark:border-amber-900/40 shadow-2xs space-y-1">
+              <span className="text-xs text-amber-700 dark:text-amber-400 font-semibold">Pending Requests</span>
+              <p className="text-2xl font-extrabold text-amber-700 dark:text-amber-400 tracking-tight">{pendingCount}</p>
             </div>
-            <div className="p-3 bg-blue-50/60 dark:bg-blue-950/20 rounded-lg border border-blue-200/80 dark:border-blue-900/40 space-y-0.5">
-              <span className="text-[11px] text-blue-700 dark:text-blue-400 font-medium">Confirmed Visits</span>
-              <p className="text-xl font-bold text-blue-700 dark:text-blue-400">{confirmedCount}</p>
+            <div className="p-4 bg-blue-50/70 dark:bg-blue-950/20 rounded-2xl border border-blue-200 dark:border-blue-900/40 shadow-2xs space-y-1">
+              <span className="text-xs text-blue-700 dark:text-blue-400 font-semibold">Confirmed Visits</span>
+              <p className="text-2xl font-extrabold text-blue-700 dark:text-blue-400 tracking-tight">{confirmedCount}</p>
             </div>
-            <div className="p-3 bg-emerald-50/60 dark:bg-emerald-950/20 rounded-lg border border-emerald-200/80 dark:border-emerald-900/40 space-y-0.5">
-              <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium">Completed</span>
-              <p className="text-xl font-bold text-emerald-700 dark:text-emerald-400">{completedCount}</p>
+            <div className="p-4 bg-emerald-50/70 dark:bg-emerald-950/20 rounded-2xl border border-emerald-200 dark:border-emerald-900/40 shadow-2xs space-y-1">
+              <span className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">Completed</span>
+              <p className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400 tracking-tight">{completedCount}</p>
             </div>
           </div>
         </div>
@@ -221,8 +222,8 @@ export default function MyBookings() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-6">
         {/* Filters and Search Bar */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          {/* Status Filter Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 bg-white dark:bg-zinc-900 p-1.5 rounded-lg border border-gray-200 dark:border-zinc-800">
+          {/* Status Filter Capsule Switcher */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 bg-white dark:bg-zinc-900 p-1.5 rounded-2xl border border-gray-200/80 dark:border-zinc-800 shadow-2xs">
             {[
               { id: 'all', label: 'All' },
               { id: 'pending', label: 'Pending' },
@@ -237,9 +238,9 @@ export default function MyBookings() {
                   setStatusFilter(tab.id);
                   setPage(1);
                 }}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors cursor-pointer ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap transition-all duration-150 cursor-pointer ${
                   statusFilter === tab.id
-                    ? 'bg-[#003E83] dark:bg-[#60a5fa] text-white dark:text-zinc-950 shadow-xs'
+                    ? 'bg-[#003E83] dark:bg-blue-600 text-white shadow-xs'
                     : 'text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
@@ -249,8 +250,8 @@ export default function MyBookings() {
           </div>
 
           {/* Search Box */}
-          <div className="relative w-full md:w-72">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <div className="relative w-full md:w-80">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search reference or business..."
@@ -259,7 +260,7 @@ export default function MyBookings() {
                 setSearchQuery(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-9 pr-3 py-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg text-xs text-gray-900 dark:text-white focus:outline-none focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl text-xs sm:text-sm text-gray-900 dark:text-white focus:outline-none focus:border-[#003E83] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#003E83]/20 shadow-2xs transition-all"
             />
           </div>
         </div>
@@ -267,38 +268,40 @@ export default function MyBookings() {
         {/* Bookings List */}
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-8 h-8 text-[#003E83] dark:text-[#60a5fa] animate-spin" />
-            <p className="text-xs text-gray-500 dark:text-zinc-400 font-medium">Loading your bookings...</p>
+            <Loader2 className="w-8 h-8 text-[#003E83] dark:text-blue-400 animate-spin" />
+            <p className="text-xs text-gray-500 dark:text-zinc-400 font-semibold">Loading your bookings...</p>
           </div>
         ) : error ? (
-          <div className="p-6 bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 text-center space-y-2">
+          <div className="p-8 bg-white dark:bg-zinc-900 rounded-3xl border border-gray-200 dark:border-zinc-800 text-center space-y-3">
             <AlertCircle className="w-8 h-8 text-rose-500 mx-auto" />
-            <p className="text-xs text-rose-600 font-medium">{error}</p>
+            <p className="text-xs text-rose-600 font-semibold">{error}</p>
             <button
               onClick={fetchBookings}
-              className="px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 text-xs font-semibold rounded-md hover:bg-gray-200"
+              className="px-4 py-2 bg-gray-100 dark:bg-zinc-800 text-xs font-bold rounded-xl hover:bg-gray-200"
             >
               Try Again
             </button>
           </div>
         ) : bookings.length === 0 ? (
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 p-12 text-center space-y-3">
-            <div className="w-14 h-14 bg-gray-100 dark:bg-zinc-800 text-gray-400 rounded-full flex items-center justify-center mx-auto">
-              <Calendar className="w-7 h-7" />
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-gray-200/80 dark:border-zinc-800 p-14 text-center space-y-4 shadow-xs">
+            <div className="w-16 h-16 bg-blue-50 dark:bg-zinc-800 text-[#003E83] dark:text-blue-400 rounded-3xl flex items-center justify-center mx-auto border border-blue-100 dark:border-zinc-700">
+              <Calendar className="w-8 h-8" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white">No Bookings Found</h3>
-            <p className="text-xs text-gray-500 dark:text-zinc-400 max-w-sm mx-auto">
-              {statusFilter !== 'all' 
-                ? `You have no ${statusFilter} bookings at this moment.`
-                : 'You have not booked any hotels, restaurants, or tour services yet.'}
-            </p>
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">No Bookings Found</h3>
+              <p className="text-xs text-gray-500 dark:text-zinc-400 max-w-sm mx-auto leading-relaxed">
+                {statusFilter !== 'all' 
+                  ? `You have no ${statusFilter} bookings at this moment.`
+                  : 'You have not booked any hotels, restaurants, or tour services yet.'}
+              </p>
+            </div>
             <div className="pt-2">
               <Link
                 to="/businesses"
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-[#60a5fa] dark:hover:bg-[#3b82f6] text-white dark:text-zinc-950 text-xs font-bold rounded-lg shadow-xs transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#003E83] hover:bg-[#002e62] text-white text-xs font-bold rounded-2xl shadow-md shadow-blue-900/20 active:scale-95 transition-all"
               >
                 <span>Browse Tourism Businesses</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
@@ -313,18 +316,18 @@ export default function MyBookings() {
               return (
                 <div
                   key={b.id}
-                  className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 p-5 shadow-xs hover:border-gray-300 dark:hover:border-zinc-700 transition-all flex flex-col lg:flex-row gap-5"
+                  className="modern-card bg-white dark:bg-zinc-900 rounded-3xl border border-gray-200/80 dark:border-zinc-800 p-6 shadow-xs hover:border-blue-300 dark:hover:border-blue-500/50 transition-all flex flex-col lg:flex-row gap-6"
                 >
                   {/* Business Thumbnail */}
-                  <div className="w-full lg:w-44 h-36 lg:h-auto rounded-lg overflow-hidden shrink-0 bg-gray-100 dark:bg-zinc-800 relative">
+                  <div className="w-full lg:w-48 h-40 lg:h-auto rounded-2xl overflow-hidden shrink-0 bg-gray-100 dark:bg-zinc-800 relative">
                     <img
                       src={coverImg}
                       alt={biz.name || 'Business'}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-2 left-2">
+                    <div className="absolute top-2.5 left-2.5">
                       {biz.category && (
-                        <span className="px-2 py-0.5 bg-black/60 backdrop-blur-md text-white font-semibold text-[10px] rounded">
+                        <span className="px-2.5 py-1 bg-black/60 backdrop-blur-md text-white font-bold text-[10px] rounded-full">
                           {biz.category.name || 'Business'}
                         </span>
                       )}
@@ -417,8 +420,8 @@ export default function MyBookings() {
                     </div>
 
                     {/* Action Bar */}
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-zinc-800/80">
-                      <span className="text-[11px] text-gray-400">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800/80">
+                      <span className="text-xs text-gray-400 font-medium">
                         Booked on {new Date(b.created_at).toLocaleDateString()}
                       </span>
 
@@ -426,7 +429,7 @@ export default function MyBookings() {
                         {canCancel && (
                           <button
                             onClick={() => handleOpenCancelModal(b)}
-                            className="px-3 py-1.5 border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-semibold rounded-md transition-colors cursor-pointer"
+                            className="px-4 py-2 border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                           >
                             Cancel Booking
                           </button>
@@ -434,10 +437,10 @@ export default function MyBookings() {
 
                         <Link
                           to={`/businesses/${biz.id}`}
-                          className="px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-200 text-xs font-semibold rounded-md transition-colors flex items-center gap-1"
+                          className="px-4 py-2 bg-[#003E83] hover:bg-[#002e62] dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5"
                         >
                           <span>Business Details</span>
-                          <ExternalLink className="w-3 h-3" />
+                          <ExternalLink className="w-3.5 h-3.5" />
                         </Link>
                       </div>
                     </div>
@@ -460,45 +463,47 @@ export default function MyBookings() {
           endIndex={endIndex}
           totalRecords={bookings.length}
           label="bookings"
-          className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
         />
       </div>
 
-      {/* Cancellation Confirmation Modal */}
+      {/* Modern Cancellation Confirmation Modal */}
       {cancelModalOpen && selectedBookingToCancel && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
           onClick={() => setCancelModalOpen(false)}
         >
           <div
-            className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-xl shadow-2xl border border-gray-200 dark:border-zinc-800 p-6 space-y-4"
+            className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-zinc-800 p-7 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="space-y-1">
-              <h3 className="text-base font-bold text-gray-900 dark:text-white">Cancel Booking Request?</h3>
-              <p className="text-xs text-gray-500 dark:text-zinc-400">
-                Are you sure you want to cancel booking <span className="font-mono font-bold text-[#003E83] dark:text-[#60a5fa]">#{selectedBookingToCancel.booking_reference}</span>? The host will be notified immediately.
+              <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                Cancel Confirmation
+              </span>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Cancel Booking Request?</h3>
+              <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1 leading-relaxed">
+                Are you sure you want to cancel booking <span className="font-mono font-bold text-[#003E83] dark:text-blue-400">#{selectedBookingToCancel.booking_reference}</span>? The merchant will be notified immediately.
               </p>
             </div>
 
-            <div className="space-y-1">
-              <label className="block text-xs font-semibold text-gray-700 dark:text-zinc-300">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
                 Reason for Cancellation (Optional)
               </label>
               <textarea
                 rows={3}
-                placeholder="Change of schedule, personal reasons..."
+                placeholder="Change of schedule, personal reasons, travel dates changed..."
                 value={cancellationReason}
                 onChange={(e) => setCancellationReason(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg text-xs text-gray-900 dark:text-white focus:outline-none focus:border-[#003E83] dark:focus:border-[#60a5fa] resize-none"
+                className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-2xl text-xs sm:text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#003E83] resize-none"
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100 dark:border-zinc-800">
               <button
                 type="button"
                 onClick={() => setCancelModalOpen(false)}
-                className="px-3.5 py-2 text-xs font-semibold text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
               >
                 Keep Booking
               </button>
@@ -506,7 +511,7 @@ export default function MyBookings() {
                 type="button"
                 disabled={cancelling}
                 onClick={handleConfirmCancel}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg shadow-xs flex items-center gap-1.5 transition-colors disabled:opacity-60 cursor-pointer"
+                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 transition-all disabled:opacity-60 cursor-pointer"
               >
                 {cancelling ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
                 <span>Confirm Cancellation</span>
