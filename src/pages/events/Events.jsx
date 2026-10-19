@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { eventService } from '../../services/eventService';
+import SimplePagination from '../../components/common/SimplePagination';
 import EventsHeader from './EventsHeader';
 import EventsGrid from './EventsGrid';
 import EventDetailsModal from './EventDetailsModal';
@@ -131,29 +131,16 @@ export default function Events() {
         onViewDetails={handleViewDetails}
       />
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-4">
-          <button
-            disabled={currentPage <= 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
-          <span className="text-xs font-semibold text-gray-700 dark:text-zinc-300 px-3 py-1 bg-white dark:bg-zinc-800 rounded-md border border-gray-200 dark:border-zinc-700">
-            {currentPage} / {totalPages}
-          </span>
-
-          <button
-            disabled={currentPage >= totalPages}
-            onClick={() => handlePageChange(currentPage + 1)}
-            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+      <SimplePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        startIndex={isServerPaginated && pagination?.from ? pagination.from - 1 : (currentPage - 1) * 8}
+        endIndex={isServerPaginated && pagination?.to ? pagination.to : Math.min((currentPage - 1) * 8 + displayedEvents.length, pagination?.total ?? events.length)}
+        totalRecords={pagination?.total ?? events.length}
+        label="events"
+        className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
+      />
 
       <EventDetailsModal
         isOpen={isDetailsOpen}

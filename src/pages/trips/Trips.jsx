@@ -7,6 +7,7 @@ import {
 import tripService from '../../services/tripService';
 import { useAlert } from '../../context/AlertContext';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import SimplePagination from '../../components/common/SimplePagination';
 
 export default function Trips() {
   const navigate = useNavigate();
@@ -16,6 +17,14 @@ export default function Trips() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [page, setPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 6;
+  const totalPages = Math.ceil(trips.length / ITEMS_PER_PAGE) || 1;
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, trips.length);
+  const paginatedTrips = trips.slice(startIndex, endIndex);
 
   // Create Trip Modal State
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -157,7 +166,10 @@ export default function Trips() {
         {['all', 'planning', 'confirmed', 'completed', 'cancelled'].map((st) => (
           <button
             key={st}
-            onClick={() => setFilterStatus(st)}
+            onClick={() => {
+              setFilterStatus(st);
+              setPage(1);
+            }}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
               filterStatus === st
                 ? 'bg-[#003E83] text-white shadow-xs'
@@ -206,7 +218,7 @@ export default function Trips() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {trips.map((trip) => (
+          {paginatedTrips.map((trip) => (
             <div
               key={trip.id}
               onClick={() => navigate(`/trips/${trip.id}`)}
@@ -280,6 +292,21 @@ export default function Trips() {
           ))}
         </div>
       )}
+
+      {/* Standard Pagination */}
+      <SimplePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(p) => {
+          setPage(p);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        startIndex={startIndex}
+        endIndex={endIndex}
+        totalRecords={trips.length}
+        label="travel plans"
+        className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
+      />
 
       {/* Create Trip Modal */}
       {showCreateModal && (

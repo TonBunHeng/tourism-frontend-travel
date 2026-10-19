@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Briefcase, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Briefcase, Loader2, ChevronDown } from 'lucide-react';
 import businessService from '../../services/businessService';
 import provinceService from '../../services/provinceService';
 import categoryService from '../../services/categoryService';
 import BusinessCard from '../../components/common/BusinessCard';
 import BusinessesHeader from './BusinessesHeader';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import SimplePagination from '../../components/common/SimplePagination';
 
 export default function Businesses() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -132,37 +133,39 @@ export default function Businesses() {
             />
           </div>
 
-          <div>
+          <div className="relative">
             <select
               value={selectedProvince}
               onChange={(e) => updateParam('province_id', e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
+              className="w-full pl-2.5 pr-8 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 appearance-none focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Provinces</option>
               {provinces.map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
+            <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
-          <div>
+          <div className="relative">
             <select
               value={selectedCategory}
               onChange={(e) => updateParam('category_id', e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
+              className="w-full pl-2.5 pr-8 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 appearance-none focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Categories</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
+            <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
-          <div>
+          <div className="relative">
             <select
               value={selectedPrice}
               onChange={(e) => updateParam('price_range', e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
+              className="w-full pl-2.5 pr-8 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 appearance-none focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="">All Price Ranges</option>
               <option value="$">$ Budget</option>
@@ -170,19 +173,21 @@ export default function Businesses() {
               <option value="$$$">$$$ Luxury</option>
               <option value="$$$$">$$$$ Premium</option>
             </select>
+            <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
-          <div>
+          <div className="relative">
             <select
               value={sort}
               onChange={(e) => updateParam('sort', e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
+              className="w-full pl-2.5 pr-8 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 appearance-none focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
             >
               <option value="latest">Recently Added</option>
               <option value="rating">Highest Rated</option>
               <option value="popular">Most Reviewed</option>
               <option value="name_asc">Name (A-Z)</option>
             </select>
+            <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
         </div>
       </div>
@@ -232,29 +237,16 @@ export default function Businesses() {
       )}
 
       {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-4">
-          <button
-            disabled={currentPage <= 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
-          <span className="text-xs font-semibold text-gray-700 dark:text-zinc-300 px-3 py-1 bg-white dark:bg-zinc-800 rounded-md border border-gray-200 dark:border-zinc-700">
-            {currentPage} / {totalPages}
-          </span>
-
-          <button
-            disabled={currentPage >= totalPages}
-            onClick={() => handlePageChange(currentPage + 1)}
-            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+      <SimplePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        startIndex={isServerPaginated && pagination?.from ? pagination.from - 1 : (currentPage - 1) * 8}
+        endIndex={isServerPaginated && pagination?.to ? pagination.to : Math.min((currentPage - 1) * 8 + displayedBusinesses.length, pagination?.total ?? businesses.length)}
+        totalRecords={pagination?.total ?? businesses.length}
+        label="businesses"
+        className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
+      />
 
     </div>
   );

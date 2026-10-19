@@ -19,6 +19,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useAlert } from '../../context/AlertContext';
 import notificationService from '../../services/notificationService';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import SimplePagination from '../../components/common/SimplePagination';
 
 export default function Notifications() {
   const { isAuthenticated, openAuthModal } = useAuth();
@@ -30,6 +31,14 @@ export default function Notifications() {
   const [filterCategory, setFilterCategory] = useState('All');
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [page, setPage] = useState(1);
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(notifications.length / itemsPerPage) || 1;
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, notifications.length);
+  const paginatedNotifications = notifications.slice(startIndex, endIndex);
 
   const categories = ['All', 'Alerts', 'Reviews', 'Messages', 'Events', 'System'];
 
@@ -279,7 +288,10 @@ export default function Notifications() {
             <button
               key={cat}
               type="button"
-              onClick={() => setFilterCategory(cat)}
+              onClick={() => {
+                setFilterCategory(cat);
+                setPage(1);
+              }}
               className={`px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 filterCategory === cat
                   ? 'bg-[#003E83] text-white shadow-xs font-bold'
@@ -296,8 +308,11 @@ export default function Notifications() {
             <input
               type="checkbox"
               checked={showUnreadOnly}
-              onChange={(e) => setShowUnreadOnly(e.target.checked)}
-              className="rounded border-gray-300 text-[#003E83] focus:ring-[#003E83] w-3.5 h-3.5"
+              onChange={(e) => {
+                setShowUnreadOnly(e.target.checked);
+                setPage(1);
+              }}
+              className="rounded border-gray-300 text-[#003E83] focus:ring-[#003E83] w-3.5 h-3.5 cursor-pointer"
             />
             Show unread only ({unreadCount})
           </label>
@@ -313,8 +328,8 @@ export default function Notifications() {
               Loading your travel notifications...
             </p>
           </div>
-        ) : notifications.length > 0 ? (
-          notifications.map((notification) => {
+        ) : paginatedNotifications.length > 0 ? (
+          paginatedNotifications.map((notification) => {
             const { icon: Icon, iconBg, iconColor } = getNotificationIcon(
               notification.type,
               notification.category
@@ -393,6 +408,17 @@ export default function Notifications() {
             </p>
           </div>
         )}
+
+        {/* Standard Pagination */}
+        <SimplePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalRecords={notifications.length}
+          label="notifications"
+        />
       </div>
     </div>
   );

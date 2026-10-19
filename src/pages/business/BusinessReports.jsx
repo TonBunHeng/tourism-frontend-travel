@@ -47,6 +47,7 @@ import {
 } from 'recharts';
 import businessService from '../../services/businessService';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import SimplePagination from '../../components/common/SimplePagination';
 
 // Custom Tooltip for Trend Chart
 const TrendCustomTooltip = ({ active, payload, label }) => {
@@ -1285,35 +1286,17 @@ export default function BusinessReports() {
               </div>
             )}
 
-            {/* Pagination footer */}
-            {totalPages > 1 && (
-              <div className="p-3 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-between text-xs text-gray-500 print:hidden">
-                <span>
-                  Showing {tableStartIndex + 1} to {Math.min(tableStartIndex + tableItemsPerPage, filteredRecords.length)} of {filteredRecords.length} records
-                </span>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    disabled={tablePage === 1}
-                    onClick={() => setTablePage(p => Math.max(p - 1, 1))}
-                    className="px-2.5 py-1 rounded border border-gray-300 dark:border-zinc-700 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-zinc-800 font-medium cursor-pointer"
-                  >
-                    Previous
-                  </button>
-                  <span className="px-2 font-bold text-gray-900 dark:text-white">
-                    {tablePage} / {totalPages}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={tablePage === totalPages}
-                    onClick={() => setTablePage(p => Math.min(p + 1, totalPages))}
-                    className="px-2.5 py-1 rounded border border-gray-300 dark:border-zinc-700 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-zinc-800 font-medium cursor-pointer"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            )}
+            {/* Standard Pagination Footer */}
+            <SimplePagination
+              currentPage={tablePage}
+              totalPages={totalPages}
+              onPageChange={setTablePage}
+              startIndex={tableStartIndex}
+              endIndex={Math.min(tableStartIndex + tableItemsPerPage, filteredRecords.length)}
+              totalRecords={filteredRecords.length}
+              label="records"
+              className="print:hidden border-t border-gray-100 dark:border-zinc-800"
+            />
           </div>
 
         </>

@@ -1,4 +1,4 @@
-import { Search, X } from 'lucide-react';
+import { Search, X, ChevronDown } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
 
 export default function PlacesToolbar({
@@ -33,11 +33,11 @@ export default function PlacesToolbar({
           />
         </div>
 
-        <div>
+        <div className="relative">
           <select
             value={provinceId}
             onChange={(e) => setProvinceId(e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+            className="w-full pl-2.5 pr-8 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 appearance-none focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
           >
             <option value="">All Provinces (25)</option>
             {provinces.map((prov) => (
@@ -46,13 +46,14 @@ export default function PlacesToolbar({
               </option>
             ))}
           </select>
+          <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
 
-        <div>
+        <div className="relative">
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+            className="w-full pl-2.5 pr-8 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 appearance-none focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
           >
             <option value="">All Categories</option>
             {categories.map((cat) => (
@@ -61,26 +62,28 @@ export default function PlacesToolbar({
               </option>
             ))}
           </select>
+          <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
 
-        <div>
+        <div className="relative">
           <select
             value={minRating}
             onChange={(e) => setMinRating(e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+            className="w-full pl-2.5 pr-8 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 appearance-none focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
           >
             <option value="">Any Rating</option>
             <option value="4.8">4.8+ Stars</option>
             <option value="4.5">4.5+ Stars</option>
             <option value="4.0">4.0+ Stars</option>
           </select>
+          <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
 
-        <div>
+        <div className="relative">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none"
+            className="w-full pl-2.5 pr-8 py-1.5 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs rounded-md border border-gray-300 dark:border-zinc-700 appearance-none focus:bg-white dark:focus:bg-zinc-900 focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] focus:outline-none cursor-pointer"
           >
             <option value="popular">Most Popular</option>
             <option value="rating">Highest Rated</option>
@@ -88,6 +91,7 @@ export default function PlacesToolbar({
             <option value="newest">Newest Added</option>
             <option value="name">Alphabetical</option>
           </select>
+          <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
       </div>
 

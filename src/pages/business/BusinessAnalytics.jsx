@@ -16,7 +16,8 @@ import {
   CheckCircle2,
   Clock,
   Layers,
-  FileSpreadsheet
+  FileSpreadsheet,
+  ChevronDown
 } from 'lucide-react';
 import {
   LineChart,
@@ -181,17 +182,20 @@ export default function BusinessAnalytics() {
             <label className="text-xs font-medium text-gray-500 dark:text-zinc-400 hidden sm:inline">
               Selected Business:
             </label>
-            <select
-              value={selectedBiz}
-              onChange={(e) => setSelectedBiz(e.target.value)}
-              className="px-3 py-2 bg-gray-50 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs font-semibold text-gray-900 dark:text-white focus:outline-none cursor-pointer"
-            >
-              {businesses.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                value={selectedBiz}
+                onChange={(e) => setSelectedBiz(e.target.value)}
+                className="pl-3 pr-8 py-2 bg-gray-50 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-xs font-semibold text-gray-900 dark:text-white appearance-none focus:outline-none cursor-pointer"
+              >
+                {businesses.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
             <Link
               to="/business/reports"
               className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors shrink-0"

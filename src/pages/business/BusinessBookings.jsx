@@ -14,12 +14,14 @@ import {
   Phone, 
   Mail,
   RefreshCw,
-  ChevronRight
+  ChevronRight,
+  ChevronDown
 } from 'lucide-react';
 import bookingService from '../../services/bookingService';
 import businessService from '../../services/businessService';
 import { useAlert } from '../../context/AlertContext';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import SimplePagination from '../../components/common/SimplePagination';
 
 export default function BusinessBookings() {
   const { showAlert } = useAlert();
@@ -34,6 +36,14 @@ export default function BusinessBookings() {
   const [error, setError] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
+  const [page, setPage] = useState(1);
+
+  const itemsPerPage = 8;
+  const totalPages = Math.ceil(bookings.length / itemsPerPage) || 1;
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, bookings.length);
+  const paginatedBookings = bookings.slice(startIndex, endIndex);
 
   // Reject Modal State
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
@@ -293,7 +303,10 @@ export default function BusinessBookings() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setStatusFilter(tab.id)}
+                onClick={() => {
+                  setStatusFilter(tab.id);
+                  setPage(1);
+                }}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors cursor-pointer ${
                   statusFilter === tab.id
                     ? 'bg-[#003E83] dark:bg-[#60a5fa] text-white dark:text-zinc-950 shadow-xs'
@@ -308,16 +321,22 @@ export default function BusinessBookings() {
           {/* Business Select and Search */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             {businesses.length > 1 && (
-              <select
-                value={selectedBusinessId}
-                onChange={(e) => setSelectedBusinessId(e.target.value)}
-                className="px-3 py-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg text-xs text-gray-900 dark:text-white focus:outline-none focus:border-[#003E83] dark:focus:border-[#60a5fa]"
-              >
-                <option value="">All My Businesses</option>
-                {businesses.map((b) => (
-                  <option key={b.id} value={b.id}>{b.name}</option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={selectedBusinessId}
+                  onChange={(e) => {
+                    setSelectedBusinessId(e.target.value);
+                    setPage(1);
+                  }}
+                  className="pl-3 pr-8 py-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg text-xs text-gray-900 dark:text-white appearance-none focus:outline-none focus:border-[#003E83] dark:focus:border-[#60a5fa] cursor-pointer"
+                >
+                  <option value="">All My Businesses</option>
+                  {businesses.map((b) => (
+                    <option key={b.id} value={b.id}>{b.name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
             )}
 
             <div className="relative w-full sm:w-64">
@@ -326,7 +345,10 @@ export default function BusinessBookings() {
                 type="text"
                 placeholder="Search guest or ref..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
                 className="w-full pl-9 pr-3 py-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg text-xs text-gray-900 dark:text-white focus:outline-none focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83]"
               />
             </div>
@@ -364,7 +386,7 @@ export default function BusinessBookings() {
           </div>
         ) : (
           <div className="space-y-4">
-            {bookings.map((b) => {
+            {paginatedBookings.map((b) => {
               const biz = b.business || {};
               const srv = b.service || {};
               const isPending = b.status === 'pending';
@@ -557,6 +579,21 @@ export default function BusinessBookings() {
             })}
           </div>
         )}
+
+        {/* Standard Pagination */}
+        <SimplePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(p) => {
+            setPage(p);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalRecords={bookings.length}
+          label="bookings"
+          className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
+        />
       </div>
 
       {/* Reject Reason Modal */}

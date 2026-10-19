@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { placeService } from '../../services/placeService';
 import { useTravel } from '../../context/TravelContext';
 import PlacesHeader from './PlacesHeader';
 import PlacesToolbar from './PlacesToolbar';
 import PlacesGrid from './PlacesGrid';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import SimplePagination from '../../components/common/SimplePagination';
 
 export default function Places() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -106,43 +106,22 @@ export default function Places() {
 
       <PlacesGrid places={places} loading={loading} onClearFilters={handleClear} />
 
-      {pagination && pagination.last_page > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-4">
-          <button
-            disabled={page <= 1}
-            onClick={() => {
-              const newPage = page - 1;
-              setPage(newPage);
-              const p = new URLSearchParams(searchParams);
-              p.set('page', String(newPage));
-              setSearchParams(p);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
-          <span className="text-xs font-semibold text-gray-700 dark:text-zinc-300 px-3 py-1 bg-white dark:bg-zinc-800 rounded-md border border-gray-200 dark:border-zinc-700">
-            {pagination.current_page} / {pagination.last_page}
-          </span>
-
-          <button
-            disabled={page >= pagination.last_page}
-            onClick={() => {
-              const newPage = page + 1;
-              setPage(newPage);
-              const p = new URLSearchParams(searchParams);
-              p.set('page', String(newPage));
-              setSearchParams(p);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+      <SimplePagination
+        currentPage={pagination?.current_page || page}
+        totalPages={pagination?.last_page || 1}
+        onPageChange={(newPage) => {
+          setPage(newPage);
+          const p = new URLSearchParams(searchParams);
+          p.set('page', String(newPage));
+          setSearchParams(p);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        startIndex={pagination?.from ? pagination.from - 1 : (page - 1) * (pagination?.per_page || 8)}
+        endIndex={pagination?.to || Math.min((page - 1) * (pagination?.per_page || 8) + places.length, pagination?.total || places.length)}
+        totalRecords={pagination?.total || places.length}
+        label="destinations"
+        className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
+      />
     </div>
   );
 }

@@ -19,6 +19,7 @@ import {
 import bookingService from '../../services/bookingService';
 import { useAlert } from '../../context/AlertContext';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import SimplePagination from '../../components/common/SimplePagination';
 
 export default function MyBookings() {
   const { showAlert } = useAlert();
@@ -30,6 +31,14 @@ export default function MyBookings() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState(null);
+  const [page, setPage] = useState(1);
+
+  const itemsPerPage = 8;
+  const totalPages = Math.ceil(bookings.length / itemsPerPage) || 1;
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, bookings.length);
+  const paginatedBookings = bookings.slice(startIndex, endIndex);
 
   // Cancellation Modal State
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
@@ -224,7 +233,10 @@ export default function MyBookings() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setStatusFilter(tab.id)}
+                onClick={() => {
+                  setStatusFilter(tab.id);
+                  setPage(1);
+                }}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors cursor-pointer ${
                   statusFilter === tab.id
                     ? 'bg-[#003E83] dark:bg-[#60a5fa] text-white dark:text-zinc-950 shadow-xs'
@@ -243,7 +255,10 @@ export default function MyBookings() {
               type="text"
               placeholder="Search reference or business..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
               className="w-full pl-9 pr-3 py-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg text-xs text-gray-900 dark:text-white focus:outline-none focus:border-[#003E83] dark:focus:border-[#60a5fa] focus:ring-1 focus:ring-[#003E83] transition-colors"
             />
           </div>
@@ -289,7 +304,7 @@ export default function MyBookings() {
           </div>
         ) : (
           <div className="space-y-4">
-            {bookings.map((b) => {
+            {paginatedBookings.map((b) => {
               const biz = b.business || {};
               const srv = b.service || {};
               const coverImg = biz.cover_image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80';
@@ -432,6 +447,21 @@ export default function MyBookings() {
             })}
           </div>
         )}
+
+        {/* Standard Pagination */}
+        <SimplePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(p) => {
+            setPage(p);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalRecords={bookings.length}
+          label="bookings"
+          className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
+        />
       </div>
 
       {/* Cancellation Confirmation Modal */}

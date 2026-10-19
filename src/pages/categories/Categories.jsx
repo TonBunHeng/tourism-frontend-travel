@@ -1,9 +1,10 @@
 import { useSearchParams } from 'react-router-dom';
-import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
 import CategoriesHeader from './CategoriesHeader';
 import CategoriesGrid from './CategoriesGrid';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import SimplePagination from '../../components/common/SimplePagination';
 
 export default function Categories() {
   const { categories, loadingGlobal } = useTravel();
@@ -41,29 +42,16 @@ export default function Categories() {
       <CategoriesHeader totalCount={categories.length} />
       <CategoriesGrid categories={paginatedCategories} />
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-4">
-          <button
-            disabled={currentPage <= 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
-          <span className="text-xs font-semibold text-gray-700 dark:text-zinc-300 px-3 py-1 bg-white dark:bg-zinc-800 rounded-md border border-gray-200 dark:border-zinc-700">
-            {currentPage} / {totalPages}
-          </span>
-
-          <button
-            disabled={currentPage >= totalPages}
-            onClick={() => handlePageChange(currentPage + 1)}
-            className="p-1.5 rounded-md bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-zinc-700 cursor-pointer"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+      <SimplePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        startIndex={(currentPage - 1) * ITEMS_PER_PAGE}
+        endIndex={Math.min(currentPage * ITEMS_PER_PAGE, categories.length)}
+        totalRecords={categories.length}
+        label="categories"
+        className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
+      />
     </div>
   );
 }
