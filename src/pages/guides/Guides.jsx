@@ -1,11 +1,15 @@
-import { useState, useMemo } from 'react';
-import { Search, ShieldCheck, Star, Users, MapPin, Languages, Check, X, Award } from 'lucide-react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Search, ShieldCheck, Star, Users, MapPin, Languages, Check, X, Award, Loader2, RefreshCw } from 'lucide-react';
 import { GUIDES_DATA } from '../../data/guidesData';
+import guideService from '../../services/guideService';
 import TourGuideCard from '../../components/common/TourGuideCard';
 import BookingModal from '../../components/common/BookingModal';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Guides() {
+  const [guidesList, setGuidesList] = useState(GUIDES_DATA);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('All');
   const [selectedProvince, setSelectedProvince] = useState('All');
@@ -14,27 +18,69 @@ export default function Guides() {
   const [selectedGuideForBooking, setSelectedGuideForBooking] = useState(null);
 
   const languages = ['All', 'English', 'French', 'Mandarin', 'Japanese', 'German'];
-  const provinces = ['All', 'Siem Reap', 'Phnom Penh', 'Koh Kong', 'Battambang', 'Kampot'];
+  const provinces = ['All', 'Siem Reap', 'Phnom Penh', 'Koh Kong', 'Battambang', 'Kampot', 'Mondulkiri', 'Preah Sihanouk'];
+
+  const fetchLiveGuides = useCallback(async (isManualRefresh = false) => {
+    if (isManualRefresh) setRefreshing(true);
+    else setLoading(true);
+
+    try {
+      const params = {};
+      if (search.trim()) params.search = search.trim();
+      if (selectedProvince !== 'All') params.province = selectedProvince;
+      if (selectedLanguage !== 'All') params.language = selectedLanguage;
+
+      const res = await guideService.getGuides(params);
+      const list = res?.data?.guides || res?.data || res || [];
+
+      if (Array.isArray(list) && list.length > 0) {
+        setGuidesList(list);
+      } else if (!search && selectedProvince === 'All' && selectedLanguage === 'All') {
+        // Fallback only if no filters and backend returned empty
+        setGuidesList(GUIDES_DATA);
+      } else {
+        setGuidesList([]);
+      }
+    } catch (err) {
+      console.warn('Backend guides endpoint fallback active:', err?.message || err);
+      // Fallback to local dataset on offline mode
+      setGuidesList(GUIDES_DATA);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [search, selectedProvince, selectedLanguage]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchLiveGuides();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [fetchLiveGuides]);
 
   const filteredGuides = useMemo(() => {
-    return GUIDES_DATA.filter((guide) => {
+    return guidesList.filter((guide) => {
+      const q = search.toLowerCase().trim();
       const matchSearch =
-        guide.name.toLowerCase().includes(search.toLowerCase()) ||
-        guide.title.toLowerCase().includes(search.toLowerCase()) ||
-        guide.specialties.some(s => s.toLowerCase().includes(search.toLowerCase())) ||
-        guide.province.toLowerCase().includes(search.toLowerCase());
+        !q ||
+        guide.name?.toLowerCase().includes(q) ||
+        (guide.title || '').toLowerCase().includes(q) ||
+        (guide.specialties && (Array.isArray(guide.specialties) 
+          ? guide.specialties.some(s => s.toLowerCase().includes(q))
+          : String(guide.specialties).toLowerCase().includes(q))) ||
+        (guide.province || '').toLowerCase().includes(q);
 
       const matchLang =
         selectedLanguage === 'All' ||
-        guide.languages.some(l => l.toLowerCase().includes(selectedLanguage.toLowerCase()));
+        (guide.languages && guide.languages.some(l => l.toLowerCase().includes(selectedLanguage.toLowerCase())));
 
       const matchProv =
         selectedProvince === 'All' ||
-        guide.province.toLowerCase().includes(selectedProvince.toLowerCase());
+        (guide.province || '').toLowerCase().includes(selectedProvince.toLowerCase());
 
       return matchSearch && matchLang && matchProv;
     });
-  }, [search, selectedLanguage, selectedProvince]);
+  }, [guidesList, search, selectedLanguage, selectedProvince]);
 
   const handleOpenBooking = (guide) => {
     setSelectedGuideForBooking(guide);
@@ -42,7 +88,7 @@ export default function Guides() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
       <Breadcrumb items={[{ label: 'Local Tour Guides' }]} />
 
       {/* Hero Overview Banner */}
@@ -57,12 +103,20 @@ export default function Guides() {
               Top-Rated Local Tour Guides
             </h1>
             <p className="text-xs sm:text-sm text-gray-600 dark:text-zinc-400 leading-relaxed">
-              Connect directly with verified Cambodian storytellers, temple historians, wildlife rangers, and culinary guides fluent in multiple international languages.
+              Connect directly with verified Cambodian storytellers, temple historians, wildlife rangers, and culinary guides fluent in multiple international languages live from our official registry.
             </p>
           </div>
 
           <div className="flex items-center gap-2 self-start lg:self-center">
-            <span className="px-4 py-2 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-xs font-bold text-[#003E83] dark:text-blue-400 shadow-2xs">
+            <button
+              onClick={() => fetchLiveGuides(true)}
+              disabled={refreshing}
+              className="p-2.5 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-600 dark:text-zinc-300 hover:bg-gray-50 transition-colors shadow-2xs cursor-pointer"
+              title="Refresh Live Guides Directory"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-[#003E83]' : ''}`} />
+            </button>
+            <span className="px-4 py-2.5 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-xs font-bold text-[#003E83] dark:text-blue-400 shadow-2xs">
               {filteredGuides.length} Verified Guides
             </span>
           </div>
@@ -131,13 +185,29 @@ export default function Guides() {
       </div>
 
       {/* Guides Grid */}
-      {filteredGuides.length === 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="h-80 rounded-3xl bg-gray-200 dark:bg-zinc-800" />
+          ))}
+        </div>
+      ) : filteredGuides.length === 0 ? (
         <div className="bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 rounded-3xl p-14 text-center max-w-lg mx-auto space-y-3">
           <Users className="w-12 h-12 text-gray-300 dark:text-zinc-600 mx-auto" />
           <h3 className="text-base font-bold text-gray-900 dark:text-white">No Tour Guides Found</h3>
           <p className="text-xs text-gray-500 dark:text-zinc-400">
             Try choosing a different language or province to view available local guides.
           </p>
+          <button
+            onClick={() => {
+              setSearch('');
+              setSelectedLanguage('All');
+              setSelectedProvince('All');
+            }}
+            className="px-4 py-2 bg-[#003E83] text-white text-xs font-bold rounded-xl cursor-pointer"
+          >
+            Reset Filters
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

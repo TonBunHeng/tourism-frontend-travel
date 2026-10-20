@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Compass, MapPin, Sparkles, ChevronRight, Calendar, Users } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
 
-const TRENDING_DESTINATIONS = [
+const DEFAULT_TRENDING = [
   'Angkor Wat',
   'Siem Reap',
   'Phnom Penh',
@@ -21,9 +21,46 @@ export default function HomeHero() {
   const handleHeroSearch = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (destination.trim()) params.append('search', destination.trim());
+    const cleanDest = destination.trim();
+
+    if (cleanDest) {
+      params.append('search', cleanDest);
+
+      // Check if user destination matches a known Cambodian province
+      const matchedProvince = provinces.find(
+        (p) => p.name?.toLowerCase() === cleanDest.toLowerCase()
+      );
+      if (matchedProvince) {
+        params.append('province_id', String(matchedProvince.id));
+      }
+    }
+
+    if (dates) {
+      params.append('date', dates);
+    }
+    if (travelers > 1) {
+      params.append('travelers', String(travelers));
+    }
+
     navigate(`/places?${params.toString()}`);
   };
+
+  const handleTrendingClick = (dest) => {
+    const matched = provinces.find(
+      (p) => p.name?.toLowerCase().includes(dest.toLowerCase()) || dest.toLowerCase().includes(p.name?.toLowerCase())
+    );
+    const params = new URLSearchParams();
+    params.set('search', dest);
+    if (matched) {
+      params.set('province_id', String(matched.id));
+    }
+    navigate(`/places?${params.toString()}`);
+  };
+
+  // Derive trending destinations dynamically from live provinces or fallback
+  const trendingList = provinces.length > 0
+    ? provinces.slice(0, 5).map(p => p.name)
+    : DEFAULT_TRENDING;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#002855] via-[#003E83] to-[#00224b] text-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-blue-900/50 transition-colors">
@@ -63,11 +100,17 @@ export default function HomeHero() {
                 <MapPin className="w-4 h-4 text-[#003E83] dark:text-blue-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
+                  list="cambodia-provinces-list"
                   placeholder="Angkor Wat, Siem Reap, Koh Rong..."
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
                   className="w-full pl-10 pr-3 py-2 bg-transparent text-gray-900 dark:text-white text-xs sm:text-sm font-semibold focus:outline-none"
                 />
+                <datalist id="cambodia-provinces-list">
+                  {provinces.map((p) => (
+                    <option key={p.id} value={p.name} />
+                  ))}
+                </datalist>
               </div>
             </div>
 
@@ -118,17 +161,14 @@ export default function HomeHero() {
           </form>
         </div>
 
-        {/* Trending Suggestions */}
+        {/* Dynamic Trending Suggestions */}
         <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs">
           <span className="text-blue-200 font-medium">Popular Highlights:</span>
-          {TRENDING_DESTINATIONS.map((dest) => (
+          {trendingList.map((dest) => (
             <button
               key={dest}
               type="button"
-              onClick={() => {
-                setDestination(dest);
-                navigate(`/places?search=${encodeURIComponent(dest)}`);
-              }}
+              onClick={() => handleTrendingClick(dest)}
               className="px-3.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold backdrop-blur-sm border border-white/15 transition-all cursor-pointer"
             >
               {dest}

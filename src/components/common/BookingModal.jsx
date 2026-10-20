@@ -1,18 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Calendar, Users, DollarSign, CheckCircle2, ShieldCheck, Clock, CreditCard, Sparkles, Loader2 } from 'lucide-react';
 import bookingService from '../../services/bookingService';
+import { useAuth } from '../../context/AuthContext';
 
 export default function BookingModal({ isOpen, onClose, targetItem, type = 'tour' }) {
+  const { user } = useAuth();
   const [step, setStep] = useState('form'); // 'form' | 'success'
   const [travelers, setTravelers] = useState(2);
   const [bookingDate, setBookingDate] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [fullName, setFullName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState(user?.phone || '');
   const [notes, setNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('aba');
   const [submitting, setSubmitting] = useState(false);
   const [bookingRef, setBookingRef] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      if (user.name) setFullName(prev => prev || user.name);
+      if (user.email) setEmail(prev => prev || user.email);
+      if (user.phone) setPhone(prev => prev || user.phone);
+    }
+  }, [user]);
 
   if (!isOpen || !targetItem) return null;
 

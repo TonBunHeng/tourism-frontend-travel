@@ -1,6 +1,15 @@
-import { guideApi } from './api';
+import { api, guideApi } from './api';
 
 export const guideService = {
+  // Public Tourist Directory API (/api/travel/guides)
+  async getGuides(params = {}) {
+    return await api.get('/guides', { params });
+  },
+
+  async getGuide(id) {
+    return await api.get(`/guides/${id}`);
+  },
+
   async getDashboardStats() {
     return await guideApi.get('/dashboard');
   },

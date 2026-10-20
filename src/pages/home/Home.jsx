@@ -4,6 +4,7 @@ import { ArrowRight, Star, MapPin, Compass, ShieldCheck, Heart, Award, Users, Lo
 import { placeService } from '../../services/placeService';
 import businessService from '../../services/businessService';
 import reviewService from '../../services/reviewService';
+import guideService from '../../services/guideService';
 import HomeHero from './HomeHero';
 import PlaceCard from '../../components/common/PlaceCard';
 import BusinessCard from '../../components/common/BusinessCard';
@@ -21,7 +22,7 @@ import { TESTIMONIALS_DATA } from '../../data/testimonialsData';
 export default function Home() {
   const [popularPlaces, setPopularPlaces] = useState(POPULAR_DESTINATIONS_DATA);
   const [tours, setTours] = useState(TOURS_DATA);
-  const [guides] = useState(GUIDES_DATA);
+  const [guides, setGuides] = useState(GUIDES_DATA);
   const [testimonials, setTestimonials] = useState(TESTIMONIALS_DATA);
   const [featuredBusinesses, setFeaturedBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -112,6 +113,17 @@ export default function Home() {
           }
         } catch (err) {
           console.warn('Backend reviews endpoint fallback active:', err.message);
+        }
+
+        // 4. Fetch live tour guides from backend API
+        try {
+          const guideRes = await guideService.getGuides({ per_page: 3, sort: 'rating' });
+          const rawGuides = guideRes?.data?.guides || guideRes?.data || guideRes || [];
+          if (Array.isArray(rawGuides) && rawGuides.length > 0) {
+            setGuides(rawGuides.slice(0, 3));
+          }
+        } catch (err) {
+          console.warn('Backend guides endpoint fallback active:', err.message);
         }
       } catch (err) {
         console.error('Failed to load home page data from backend', err);

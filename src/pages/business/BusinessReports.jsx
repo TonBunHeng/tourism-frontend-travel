@@ -502,13 +502,28 @@ export default function BusinessReports() {
             </p>
           </div>
 
-          {/* Action Controls - PDF Export */}
+          {/* Action Controls - PDF, Excel & CSV Export */}
           <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              disabled={exportingExcel}
+              onClick={handleExportExcel}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 border border-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 shadow-xs"
+              title="Export Full Dataset as Excel Spreadsheet (.xlsx)"
+            >
+              {exportingExcel ? (
+                <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+              ) : (
+                <FileSpreadsheet className="w-4 h-4 shrink-0" />
+              )}
+              <span>Export Excel</span>
+            </button>
+
             <button
               type="button"
               disabled={exportingPdf}
               onClick={handleExportPdf}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 border border-transparent bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white shadow-xs"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-2xl transition-all cursor-pointer disabled:opacity-50 border border-transparent bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white shadow-xs"
               title="Export Stylized PDF Document"
             >
               {exportingPdf ? (
