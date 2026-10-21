@@ -25,14 +25,32 @@ const FAQS = [
   }
 ];
 
+import contactService from '../../services/contactService';
+
 export default function Contact() {
   const [openFaq, setOpenFaq] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', subject: 'booking', message: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [ticketCode, setTicketCode] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: 'booking', message: '' });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setErrorMessage('');
+    setSubmitting(true);
+    try {
+      const res = await contactService.submitInquiry(form);
+      const data = res?.data || res;
+      setTicketCode(data?.ticket_code || 'INQ-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+      setSubmitted(true);
+      setForm({ name: '', email: '', phone: '', subject: 'booking', message: '' });
+    } catch (err) {
+      console.error('Contact inquiry error:', err);
+      setErrorMessage(err?.response?.data?.message || err?.message || 'Failed to submit inquiry. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -120,14 +138,17 @@ export default function Contact() {
               <div className="w-16 h-16 rounded-3xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto border border-emerald-200 shadow-sm animate-in zoom-in-95">
                 <CheckCircle2 size={36} />
               </div>
-              <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white">Message Received!</h3>
+              <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white">Inquiry Received!</h3>
+              <div className="inline-block px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 text-xs font-mono font-bold text-[#003E83] dark:text-blue-300">
+                Ticket Reference: {ticketCode}
+              </div>
               <p className="text-xs text-gray-500 dark:text-zinc-400 max-w-sm mx-auto leading-relaxed">
-                Thank you for contacting AngkorVerses. Our traveler support specialist will reply to your email within 2 hours.
+                Thank you for contacting AngkorVerses. Your message has been saved to our traveler support queue and an administrator will respond shortly.
               </p>
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="px-6 py-2.5 bg-[#003E83] text-white text-xs font-bold rounded-xl shadow-xs"
+                className="px-6 py-2.5 bg-[#003E83] text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer hover:bg-[#002e62] transition-colors"
               >
                 Send Another Message
               </button>
@@ -137,9 +158,15 @@ export default function Contact() {
               <div>
                 <h3 className="text-lg font-extrabold text-gray-900 dark:text-white">Send Us an Inquiry</h3>
                 <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
-                  We typically reply in under 2 hours during Cambodian daytime hours.
+                  Direct connection to our Cambodian travel administration desk.
                 </p>
               </div>
+
+              {errorMessage && (
+                <div className="p-3 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 rounded-xl text-xs text-red-600 dark:text-red-300 font-medium">
+                  {errorMessage}
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -203,10 +230,11 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 bg-gradient-to-r from-[#003E83] to-blue-600 hover:from-[#002e62] hover:to-blue-700 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-900/20 active:scale-95 transition-all cursor-pointer"
+                disabled={submitting}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 bg-gradient-to-r from-[#003E83] to-blue-600 hover:from-[#002e62] hover:to-blue-700 disabled:opacity-60 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-900/20 active:scale-95 transition-all cursor-pointer"
               >
-                <span>Send Support Message</span>
-                <Send size={14} />
+                <span>{submitting ? 'Submitting Inquiry...' : 'Send Support Message'}</span>
+                <Send size={14} className={submitting ? 'animate-pulse' : ''} />
               </button>
             </form>
           )}

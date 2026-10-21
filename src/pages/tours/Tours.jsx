@@ -1,70 +1,63 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Search, Compass, SlidersHorizontal, X, Sparkles, Calendar, DollarSign, ArrowRight, Loader2 } from 'lucide-react';
-import { TOURS_DATA } from '../../data/toursData';
-import businessService from '../../services/businessService';
+import tourService from '../../services/tourService';
 import TourPackageCard from '../../components/common/TourPackageCard';
 import BookingModal from '../../components/common/BookingModal';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Tours() {
-  const [toursList, setToursList] = useState(TOURS_DATA);
+  const [toursList, setToursList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedDestination, setSelectedDestination] = useState('All');
   const [durationFilter, setDurationFilter] = useState('All');
   const [sortBy, setSortBy] = useState('popular');
+  const [apiDestinations, setApiDestinations] = useState(['All']);
 
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedTourForBooking, setSelectedTourForBooking] = useState(null);
 
-  useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        setLoading(true);
-        const res = await businessService.getBusinesses({ per_page: 50 });
-        const businesses = res?.data?.businesses || res?.data?.data || res?.data || res || [];
-        
-        if (Array.isArray(businesses) && businesses.length > 0) {
-          const liveTours = businesses.map((b) => ({
-            id: b.id,
-            business_id: b.id,
-            service_id: b.services?.[0]?.id || null,
-            title: b.services?.[0]?.name || b.name,
-            destination: b.province?.name || b.address || 'Cambodia',
-            province: b.province?.name || 'Cambodia',
-            duration: b.services?.[0]?.duration_minutes
-              ? (b.services[0].duration_minutes >= 1440
-                  ? `${Math.round(b.services[0].duration_minutes / 1440)} Days`
-                  : `${b.services[0].duration_minutes} Mins`)
-              : 'Full Day',
-            durationDays: b.services?.[0]?.duration_minutes ? Math.max(1, Math.round(b.services[0].duration_minutes / 1440)) : 1,
-            price: parseFloat(b.services?.[0]?.price || (b.price_range === '$$$$' ? 120 : b.price_range === '$$$' ? 85 : 45)),
-            rating: parseFloat(b.rating || 4.9),
-            reviewsCount: b.review_count || 16,
-            image: b.cover_image_url || 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
-            description: b.description || 'Authentic Cambodian travel experience with certified local operator.',
-            highlights: ['Licensed English Guide', 'Hotel Pickup & Dropoff', 'Instant Confirmation'],
-            badge: b.category?.name || 'Recommended',
-            groupSize: 'Small Group',
-          }));
-
-          setToursList(liveTours);
-        }
-      } catch (err) {
-        console.warn('Using verified fallback tours:', err.message);
-      } finally {
-        setLoading(false);
+  const fetchTours = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = {};
+      if (search.trim()) params.search = search.trim();
+      if (selectedDestination !== 'All') params.destination = selectedDestination;
+      if (durationFilter !== 'All') {
+        params.duration = durationFilter === '1day' ? '1' : durationFilter === 'short' ? '2-3' : '4+';
       }
-    };
+      if (sortBy) params.sort = sortBy;
 
-    fetchTours();
-  }, []);
+      const res = await tourService.getTours(params);
+      const data = res?.data || res;
+      const list = data?.tours || (Array.isArray(data) ? data : []);
 
-  // Derive dynamic list of destinations from current tours
+      if (Array.isArray(list)) {
+        setToursList(list);
+      }
+      if (Array.isArray(data?.destinations) && data.destinations.length > 0) {
+        setApiDestinations(data.destinations);
+      }
+    } catch (err) {
+      console.error('Failed to load tours from backend:', err);
+      setToursList([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [search, selectedDestination, durationFilter, sortBy]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchTours();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [fetchTours]);
+
+  // Derive dynamic list of destinations from current tours and API
   const destinations = useMemo(() => {
-    const set = new Set(toursList.map(t => t.province || t.destination).filter(Boolean));
-    return ['All', ...Array.from(set)];
-  }, [toursList]);
+    const set = new Set([...apiDestinations, ...toursList.map(t => t.province || t.destination)].filter(Boolean));
+    return ['All', ...Array.from(set).filter(d => d !== 'All')];
+  }, [toursList, apiDestinations]);
 
   const filteredTours = useMemo(() => {
     return toursList.filter((tour) => {

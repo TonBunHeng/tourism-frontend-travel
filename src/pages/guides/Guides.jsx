@@ -1,13 +1,12 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Search, ShieldCheck, Star, Users, MapPin, Languages, Check, X, Award, Loader2, RefreshCw } from 'lucide-react';
-import { GUIDES_DATA } from '../../data/guidesData';
 import guideService from '../../services/guideService';
 import TourGuideCard from '../../components/common/TourGuideCard';
 import BookingModal from '../../components/common/BookingModal';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Guides() {
-  const [guidesList, setGuidesList] = useState(GUIDES_DATA);
+  const [guidesList, setGuidesList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
@@ -31,20 +30,13 @@ export default function Guides() {
       if (selectedLanguage !== 'All') params.language = selectedLanguage;
 
       const res = await guideService.getGuides(params);
-      const list = res?.data?.guides || res?.data || res || [];
+      const data = res?.data || res;
+      const list = data?.guides || (Array.isArray(data) ? data : []);
 
-      if (Array.isArray(list) && list.length > 0) {
-        setGuidesList(list);
-      } else if (!search && selectedProvince === 'All' && selectedLanguage === 'All') {
-        // Fallback only if no filters and backend returned empty
-        setGuidesList(GUIDES_DATA);
-      } else {
-        setGuidesList([]);
-      }
+      setGuidesList(Array.isArray(list) ? list : []);
     } catch (err) {
-      console.warn('Backend guides endpoint fallback active:', err?.message || err);
-      // Fallback to local dataset on offline mode
-      setGuidesList(GUIDES_DATA);
+      console.error('Failed to load guides from backend:', err?.message || err);
+      setGuidesList([]);
     } finally {
       setLoading(false);
       setRefreshing(false);

@@ -49,14 +49,14 @@ export const authService = {
       const { token, user } = extractAuth(res);
       if (token && user) {
         const normRole = String(user.role || '').toLowerCase().trim().replace(/[\s/-]+/g, '_');
-        if (['super_admin', 'admin', 'guide_editor', 'tourism_content_editor', 'superadmin', 'administrator', 'editor', 'guide'].includes(normRole)) {
+        if (['super_admin', 'admin', 'superadmin', 'administrator'].includes(normRole)) {
           localStorage.removeItem('auth_token');
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           window.dispatchEvent(new Event('user-profile-updated'));
           return {
             success: false,
-            message: 'Access restricted. Administrative accounts (Super Admin, Admin, Tourism Content Editor) must sign in via the Admin Portal.'
+            message: 'Access restricted. Administrator accounts (Super Admin, Admin) must sign in via the Admin Portal.'
           };
         }
         localStorage.setItem('auth_token', token);
