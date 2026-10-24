@@ -16,7 +16,6 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
 import GoogleLoginButton from './GoogleLoginButton';
-import FacebookLoginButton from './FacebookLoginButton';
 import logoImg from '../../assets/tourism_logo.png';
 
 export default function AuthModal() {
@@ -298,7 +297,7 @@ export default function AuthModal() {
             )}
           </button>
 
-          {/* Social Sign In (Google & Facebook) */}
+          {/* Social Sign In (Google) */}
           {isLogin && (
             <div className="pt-2 space-y-3">
               <div className="relative flex items-center">
@@ -308,9 +307,8 @@ export default function AuthModal() {
                 </span>
                 <div className="flex-grow border-t border-gray-200 dark:border-zinc-800"></div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
                 <GoogleLoginButton onSuccess={handleClose} />
-                <FacebookLoginButton onSuccess={handleClose} />
               </div>
             </div>
           )}

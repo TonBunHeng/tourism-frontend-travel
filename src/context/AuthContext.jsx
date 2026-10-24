@@ -81,19 +81,6 @@ export const AuthProvider = ({ children }) => {
     throw new Error(res?.message || 'Google login failed');
   };
 
-  const facebookLogin = async (data) => {
-    const res = await authService.facebookLogin(data);
-    const token = res?.data?.token || res?.token || res?.access_token || localStorage.getItem('auth_token');
-    const userObj = res?.data?.user || res?.user || (res?.data && typeof res.data === 'object' && !res.data.token ? res.data : null) || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
-
-    if (token && userObj) {
-      setToken(token);
-      setUser(userObj);
-      closeAuthModal();
-      return userObj;
-    }
-    throw new Error(res?.message || 'Facebook login failed');
-  };
 
   const updateProfile = async (data) => {
     const res = await authService.updateProfile(data);
@@ -160,7 +147,6 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         googleLogin,
-        facebookLogin,
         logout,
         updateProfile,
         uploadAvatar,

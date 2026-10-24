@@ -176,47 +176,6 @@ export const authService = {
     }
   },
 
-  async facebookLogin(data) {
-    const payload = {
-      access_token: data.access_token || data.facebook_id,
-      token: data.access_token || data.facebook_id,
-      facebook_id: data.facebook_id,
-      provider_id: data.facebook_id,
-      provider: 'facebook',
-      email: data.email,
-      name: data.name,
-      avatar: data.avatar,
-    };
-    try {
-      const res = await postWithFallback('/auth/facebook', ['/auth/facebook', '/facebook', '/travel/auth/facebook'], payload);
-      const { token, user } = extractAuth(res);
-      if (token && user) {
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        window.dispatchEvent(new Event('user-profile-updated'));
-        return { success: true, data: { token, user } };
-      }
-      return res;
-    } catch (err) {
-      if (data && data.email && data.name) {
-        const fbUser = {
-          id: data.facebook_id || Date.now(),
-          name: data.name,
-          email: data.email,
-          avatar: data.avatar,
-          role: 'user',
-        };
-        const mockToken = `fb_token_${Date.now()}`;
-        localStorage.setItem('auth_token', mockToken);
-        localStorage.setItem('token', mockToken);
-        localStorage.setItem('user', JSON.stringify(fbUser));
-        window.dispatchEvent(new Event('user-profile-updated'));
-        return { success: true, data: { token: mockToken, user: fbUser } };
-      }
-      throw err;
-    }
-  },
 
   async me() {
     try {
