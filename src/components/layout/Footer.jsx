@@ -65,10 +65,12 @@ export default function Footer() {
             <h4 className="font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 text-xs">Explore</h4>
             <ul className="space-y-2 text-gray-600 dark:text-zinc-400 text-xs">
               <li><Link to="/places" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Destinations & Temples</Link></li>
-              <li><Link to="/provinces" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">25 Provinces</Link></li>
-              <li><Link to="/businesses" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Tourism Businesses</Link></li>
-              <li><Link to="/categories" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Categories</Link></li>
+              <li><Link to="/tours" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Recommended Tours & Packages</Link></li>
+              <li><Link to="/guides" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Tour Guides</Link></li>
+              <li><Link to="/reviews" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Traveler Reviews</Link></li>
+              <li><Link to="/gallery" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Photo Gallery</Link></li>
               <li><Link to="/events" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Events & Festivals</Link></li>
+              <li><Link to="/provinces" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">25 Provinces</Link></li>
             </ul>
           </div>
 
@@ -84,7 +86,11 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 text-xs">Official Support</h4>
+            <h4 className="font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 text-xs">About & Support</h4>
+            <ul className="space-y-2 text-gray-600 dark:text-zinc-400 text-xs mb-3">
+              <li><Link to="/about" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">About AngkorVerses</Link></li>
+              <li><Link to="/contact" className="hover:text-[#003E83] dark:hover:text-blue-400 transition-colors">Contact Support</Link></li>
+            </ul>
             <p className="text-gray-500 dark:text-zinc-400 text-xs leading-relaxed mb-2">
               For visitor inquiries and official tourism support: <br />
               <span className="font-bold text-[#003E83] dark:text-blue-400">support@tourism.gov.kh</span>

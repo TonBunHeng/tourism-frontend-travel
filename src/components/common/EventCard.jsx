@@ -1,4 +1,4 @@
-import { Calendar, MapPin, ArrowRight, Sparkles } from 'lucide-react';
+import { MapPin, ArrowRight } from 'lucide-react';
 
 export default function EventCard({ event, onViewDetails }) {
   const imageUrl = event.image_url || 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80';

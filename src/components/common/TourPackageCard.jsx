@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Star, ArrowRight, Check, Users } from 'lucide-react';
 
 export default function TourPackageCard({ tour, onBook }) {
@@ -7,7 +8,7 @@ export default function TourPackageCard({ tour, onBook }) {
     <div className="group modern-card bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-xs hover:border-blue-300 dark:hover:border-blue-500/50 flex flex-col justify-between h-full transition-all">
       <div>
         {/* Cover Photo Frame */}
-        <div className="relative aspect-16/10 w-full overflow-hidden bg-gray-100 dark:bg-zinc-800">
+        <Link to={`/tours/${tour.id}`} className="block relative aspect-16/10 w-full overflow-hidden bg-gray-100 dark:bg-zinc-800">
           <img
             src={tour.image}
             alt={tour.title}
@@ -44,24 +45,26 @@ export default function TourPackageCard({ tour, onBook }) {
               <span>{tour.groupSize || 'Small Group'}</span>
             </span>
           </div>
-        </div>
+        </Link>
 
         {/* Card Body */}
         <div className="p-5 space-y-3">
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center gap-1 text-gray-900 dark:text-white font-bold">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>{tour.rating.toFixed(2)}</span>
-              <span className="text-gray-400 font-normal">({tour.reviewsCount})</span>
+              <span>{tour.rating ? Number(tour.rating).toFixed(1) : '5.0'}</span>
+              <span className="text-gray-400 font-normal">({tour.reviewsCount || 0})</span>
             </div>
             <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60">
               Instant Confirmation
             </span>
           </div>
 
-          <h3 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-[#003E83] dark:group-hover:text-blue-400 transition-colors line-clamp-1">
-            {tour.title}
-          </h3>
+          <Link to={`/tours/${tour.id}`} className="block">
+            <h3 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-[#003E83] dark:group-hover:text-blue-400 transition-colors line-clamp-1">
+              {tour.title}
+            </h3>
+          </Link>
 
           <p className="text-xs text-gray-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
             {tour.description}

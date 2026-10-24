@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   MapPin, 
@@ -13,13 +13,17 @@ import {
   ShieldCheck,
   UserCheck,
   Sparkles,
-  Compass
+  Compass,
+  ArrowRight
 } from 'lucide-react';
 import { placeService } from '../../services/placeService';
 import { useTravel } from '../../context/TravelContext';
 import { useAuth } from '../../context/AuthContext';
 import ReviewModal from '../../components/reviews/ReviewModal';
 import Breadcrumb from '../../components/common/Breadcrumb';
+import TourPackageCard from '../../components/common/TourPackageCard';
+import BookingModal from '../../components/common/BookingModal';
+import { TOURS_DATA } from '../../data/toursData';
 
 export default function PlaceDetails() {
   const { id } = useParams();
@@ -30,26 +34,55 @@ export default function PlaceDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedTourForBooking, setSelectedTourForBooking] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
-  const fetchPlaceDetail = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await placeService.getPlaceById(id);
-      if (res?.data) {
-        setPlace(res.data);
-        document.title = `${res.data.name} | AngkorVerses`;
-      }
-    } catch (err) {
-      setError(err.message || 'Failed to load destination details');
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+  const recommendedTours = useMemo(() => {
+    if (!place) return TOURS_DATA.slice(0, 3);
+    const placeProv = (place.province || '').toLowerCase();
+    const placeNm = (place.name || '').toLowerCase();
+
+    const matched = TOURS_DATA.filter((t) => {
+      const tourProv = (t.province || '').toLowerCase();
+      const tourDest = (t.destination || '').toLowerCase();
+      const tourDesc = (t.description || '').toLowerCase();
+      return (
+        tourProv.includes(placeProv) ||
+        tourDest.includes(placeProv) ||
+        tourDesc.includes(placeNm)
+      );
+    });
+
+    if (matched.length >= 3) return matched.slice(0, 3);
+    const others = TOURS_DATA.filter((t) => !matched.some((m) => m.id === t.id));
+    return [...matched, ...others].slice(0, 3);
+  }, [place]);
 
   useEffect(() => {
-    fetchPlaceDetail();
+    let isMounted = true;
+    placeService.getPlaceById(id)
+      .then((res) => {
+        if (!isMounted) return;
+        if (res?.data) {
+          setPlace(res.data);
+          document.title = `${res.data.name} | AngkorVerses`;
+        }
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        setError(err.message || 'Failed to load destination details');
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
     window.scrollTo(0, 0);
-  }, [id, fetchPlaceDetail]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, reloadKey]);
 
   if (loading) {
     return (
@@ -395,12 +428,62 @@ export default function PlaceDetails() {
 
       </div>
 
+      {/* Recommended Tours & Packages Section */}
+      <section className="pt-8 border-t border-gray-200/80 dark:border-zinc-800 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-xs font-bold text-[#003E83] dark:text-blue-400 mb-2">
+              <Sparkles size={13} className="text-amber-500" />
+              <span>Guided Itineraries & Packages</span>
+            </div>
+            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+              Recommended Tours & Packages for {place.name}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 mt-1">
+              All-inclusive expeditions, certified Angkor guides, and comfortable transportation visiting {place.name}.
+            </p>
+          </div>
+          <Link
+            to="/tours"
+            className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#003E83] dark:text-blue-400 hover:underline group shrink-0"
+          >
+            <span>Browse All Tours & Packages</span>
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recommendedTours.map((tour) => (
+            <TourPackageCard
+              key={tour.id}
+              tour={tour}
+              onBook={(selected) => {
+                setSelectedTourForBooking(selected);
+                setBookingModalOpen(true);
+              }}
+            />
+          ))}
+        </div>
+      </section>
+
       <ReviewModal
         isOpen={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
         place={place}
-        onReviewSubmitted={fetchPlaceDetail}
+        onReviewSubmitted={() => setReloadKey((k) => k + 1)}
       />
+
+      {bookingModalOpen && (
+        <BookingModal
+          isOpen={bookingModalOpen}
+          onClose={() => {
+            setBookingModalOpen(false);
+            setSelectedTourForBooking(null);
+          }}
+          targetItem={selectedTourForBooking}
+          type="tour"
+        />
+      )}
     </div>
   );
 }

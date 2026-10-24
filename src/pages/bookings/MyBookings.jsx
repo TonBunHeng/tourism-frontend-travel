@@ -14,7 +14,8 @@ import {
   Loader2, 
   ExternalLink,
   Building2,
-  ChevronRight
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
 import bookingService from '../../services/bookingService';
 import { useAlert } from '../../context/AlertContext';
@@ -295,13 +296,19 @@ export default function MyBookings() {
                   : 'You have not booked any hotels, restaurants, or tour services yet.'}
               </p>
             </div>
-            <div className="pt-2">
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
               <Link
-                to="/businesses"
+                to="/tours"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-[#003E83] hover:bg-[#002e62] text-white text-xs font-bold rounded-2xl shadow-md shadow-blue-900/20 active:scale-95 transition-all"
               >
-                <span>Browse Tourism Businesses</span>
+                <span>Browse Recommended Tours & Packages</span>
                 <ChevronRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/businesses"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 text-xs font-bold rounded-2xl transition-all"
+              >
+                <span>Browse Tourism Businesses</span>
               </Link>
             </div>
           </div>
@@ -464,6 +471,29 @@ export default function MyBookings() {
           totalRecords={bookings.length}
           label="bookings"
         />
+
+        {/* Explore Recommended Tours & Packages Discovery Card */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-50/80 via-white to-indigo-50/80 dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 border border-blue-100 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-1.5 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#003E83]/10 dark:bg-blue-400/10 text-[#003E83] dark:text-blue-300 text-[11px] font-bold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Planning Your Next Journey?</span>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              Explore Recommended Tours & Packages
+            </h3>
+            <p className="text-xs text-gray-600 dark:text-zinc-400 leading-relaxed">
+              Discover Angkor temple sunrise circuits, Mekong sunset river cruises, and pristine island retreats with instant reservations and certified guides.
+            </p>
+          </div>
+          <Link
+            to="/tours"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#003E83] hover:bg-[#002e62] text-white text-xs font-bold transition-all shadow-md shrink-0 self-start md:self-center"
+          >
+            <span>View All Packages</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
 
       {/* Modern Cancellation Confirmation Modal */}

@@ -23,6 +23,9 @@ import Breadcrumb from '../../components/common/Breadcrumb';
 import PlaceCard from '../../components/common/PlaceCard';
 import EventCard from '../../components/common/EventCard';
 import EventDetailsModal from '../events/EventDetailsModal';
+import TourPackageCard from '../../components/common/TourPackageCard';
+import BookingModal from '../../components/common/BookingModal';
+import { TOURS_DATA } from '../../data/toursData';
 
 export default function ProvinceDetails() {
   const { id } = useParams();
@@ -41,6 +44,10 @@ export default function ProvinceDetails() {
   // Event modal state
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventModalOpen, setEventModalOpen] = useState(false);
+
+  // Booking modal state for tour packages
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedTourForBooking, setSelectedTourForBooking] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -120,6 +127,21 @@ export default function ProvinceDetails() {
     if (!provinces || !Array.isArray(provinces)) return [];
     return provinces.filter((p) => String(p.id) !== String(id)).slice(0, 4);
   }, [provinces, id]);
+
+  // Recommended tours for this province
+  const provinceTours = useMemo(() => {
+    if (!province?.name) return TOURS_DATA.slice(0, 3);
+    const provName = province.name.toLowerCase();
+    const matched = TOURS_DATA.filter(
+      (t) =>
+        (t.province || '').toLowerCase().includes(provName) ||
+        (t.destination || '').toLowerCase().includes(provName) ||
+        (t.description || '').toLowerCase().includes(provName)
+    );
+    if (matched.length >= 3) return matched.slice(0, 3);
+    const others = TOURS_DATA.filter((t) => !matched.some((m) => m.id === t.id));
+    return [...matched, ...others].slice(0, 3);
+  }, [province]);
 
   if (loading) {
     return (
@@ -455,6 +477,43 @@ export default function ProvinceDetails() {
         </section>
       )}
 
+      {/* Recommended Tours & Packages in Province */}
+      <section className="space-y-4 pt-6 border-t border-gray-200 dark:border-zinc-800">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-500" />
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                Recommended Tours & Packages in {province.name}
+              </h2>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
+              Curated travel packages, guided excursions, and day trips exploring {province.name}
+            </p>
+          </div>
+          <Link
+            to="/tours"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[#003E83] dark:text-[#60a5fa] hover:underline"
+          >
+            <span>All Recommended Tours</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {provinceTours.map((t) => (
+            <TourPackageCard
+              key={t.id}
+              tour={t}
+              onBook={(selected) => {
+                setSelectedTourForBooking(selected);
+                setBookingModalOpen(true);
+              }}
+            />
+          ))}
+        </div>
+      </section>
+
       {/* Travel Tips & Highlights */}
       <section className="bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-zinc-900 dark:to-zinc-800/80 border border-blue-100 dark:border-zinc-800 rounded-xl p-6 sm:p-8 space-y-4">
         <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -547,6 +606,19 @@ export default function ProvinceDetails() {
           setSelectedEvent(null);
         }}
       />
+
+      {/* Tour Package Booking Modal */}
+      {bookingModalOpen && (
+        <BookingModal
+          isOpen={bookingModalOpen}
+          onClose={() => {
+            setBookingModalOpen(false);
+            setSelectedTourForBooking(null);
+          }}
+          targetItem={selectedTourForBooking}
+          type="tour"
+        />
+      )}
     </div>
   );
 }

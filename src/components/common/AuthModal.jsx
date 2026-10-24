@@ -13,12 +13,15 @@ import {
   CheckCircle2,
   ArrowRight
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTravel } from '../../context/TravelContext';
+import { getRoleRedirectPath } from '../../utils/roleRedirect';
 import GoogleLoginButton from './GoogleLoginButton';
 import logoImg from '../../assets/tourism_logo.png';
 
 export default function AuthModal() {
+  const navigate = useNavigate();
   const { authModal, closeAuthModal, login, register } = useAuth();
   const { showToast } = useTravel();
 
@@ -66,11 +69,12 @@ export default function AuthModal() {
     setLoading(true);
 
     try {
+      let loggedUser = null;
       if (isLogin) {
-        await login({ email: email.trim(), password });
+        loggedUser = await login({ email: email.trim(), password });
         showToast('Signed in successfully!', 'success');
       } else {
-        await register({
+        loggedUser = await register({
           name: name.trim(),
           email: email.trim(),
           password,
@@ -80,6 +84,10 @@ export default function AuthModal() {
         showToast(`Registration successful! Welcome as ${selectedRole.replace('_', ' ')}.`, 'success');
       }
       handleClose();
+      if (loggedUser) {
+        const dest = getRoleRedirectPath(loggedUser);
+        navigate(dest);
+      }
     } catch (err) {
       setErrorMessage(err.message || 'Authentication failed. Please check your credentials.');
       if (err.errors) setErrors(err.errors);
@@ -308,7 +316,15 @@ export default function AuthModal() {
                 <div className="flex-grow border-t border-gray-200 dark:border-zinc-800"></div>
               </div>
               <div>
-                <GoogleLoginButton onSuccess={handleClose} />
+                <GoogleLoginButton
+                  onSuccess={(loggedUser) => {
+                    handleClose();
+                    if (loggedUser) {
+                      const dest = getRoleRedirectPath(loggedUser);
+                      navigate(dest);
+                    }
+                  }}
+                />
               </div>
             </div>
           )}

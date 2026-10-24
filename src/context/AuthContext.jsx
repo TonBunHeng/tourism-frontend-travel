@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }) => {
   const isSuperAdmin = normRole === 'super_admin' || normRole === 'superadmin';
   const isAdmin = normRole === 'admin' || normRole === 'super_admin' || normRole === 'superadmin' || normRole === 'administrator';
   const isBusinessOwner = normRole === 'business_owner' || normRole === 'business' || isAdmin;
-  const isGuideEditor = false;
+  const isGuideEditor = ['tour_guide', 'guide_editor', 'content_editor', 'guide'].includes(normRole) || isAdmin;
   const isTourist = normRole === 'user' || normRole === 'tourist' || normRole === 'member';
 
   return (

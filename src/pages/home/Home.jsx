@@ -14,10 +14,11 @@ import BookingModal from '../../components/common/BookingModal';
 import CarouselSlider from '../../components/common/CarouselSlider';
 
 import { tourService } from '../../services/tourService';
+import { TOURS_DATA } from '../../data/toursData';
 
 export default function Home() {
   const [popularPlaces, setPopularPlaces] = useState([]);
-  const [tours, setTours] = useState([]);
+  const [tours, setTours] = useState(TOURS_DATA);
   const [guides, setGuides] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [featuredBusinesses, setFeaturedBusinesses] = useState([]);
@@ -63,9 +64,13 @@ export default function Home() {
         // 2. Process Curated Tours from Database
         if (tourRes.status === 'fulfilled') {
           const rawTours = tourRes.value?.data?.tours || tourRes.value?.data || tourRes.value || [];
-          if (Array.isArray(rawTours)) {
+          if (Array.isArray(rawTours) && rawTours.length > 0) {
             setTours(rawTours);
+          } else {
+            setTours(TOURS_DATA);
           }
+        } else {
+          setTours(TOURS_DATA);
         }
 
         // 3. Process Featured Businesses from Database

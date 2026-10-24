@@ -1,13 +1,14 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Search, Compass, SlidersHorizontal, X, Sparkles, Calendar, DollarSign, ArrowRight, Loader2 } from 'lucide-react';
+import { Search, Compass, X } from 'lucide-react';
 import tourService from '../../services/tourService';
+import { TOURS_DATA } from '../../data/toursData';
 import TourPackageCard from '../../components/common/TourPackageCard';
 import BookingModal from '../../components/common/BookingModal';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
 export default function Tours() {
-  const [toursList, setToursList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [toursList, setToursList] = useState(TOURS_DATA);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedDestination, setSelectedDestination] = useState('All');
   const [durationFilter, setDurationFilter] = useState('All');
@@ -32,15 +33,16 @@ export default function Tours() {
       const data = res?.data || res;
       const list = data?.tours || (Array.isArray(data) ? data : []);
 
-      if (Array.isArray(list)) {
+      if (Array.isArray(list) && list.length > 0) {
         setToursList(list);
+      } else {
+        setToursList(TOURS_DATA);
       }
       if (Array.isArray(data?.destinations) && data.destinations.length > 0) {
         setApiDestinations(data.destinations);
       }
-    } catch (err) {
-      console.error('Failed to load tours from backend:', err);
-      setToursList([]);
+    } catch {
+      setToursList(TOURS_DATA);
     } finally {
       setLoading(false);
     }
@@ -93,7 +95,7 @@ export default function Tours() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      <Breadcrumb items={[{ label: 'Tour Packages' }]} />
+      <Breadcrumb items={[{ label: 'Recommended Tours & Packages' }]} />
 
       {/* Hero Overview Banner */}
       <div className="relative overflow-hidden rounded-3xl border border-blue-100 dark:border-zinc-800 bg-gradient-to-br from-blue-50/70 via-white to-slate-50 dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 p-6 sm:p-8 shadow-sm">

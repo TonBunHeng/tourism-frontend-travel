@@ -13,6 +13,15 @@ export default function Main() {
       if (pathname === '/') return 'Home';
       if (pathname.startsWith('/places/')) return 'Destination Details';
       if (pathname === '/places') return 'Destinations';
+      if (pathname.startsWith('/tours/')) return 'Tour Package Details';
+      if (pathname === '/tours') return 'Tour Packages';
+      if (pathname.startsWith('/guides/')) return 'Tour Guide Profile';
+      if (pathname === '/guides') return 'Local Tour Guides';
+      if (pathname === '/reviews') return 'Traveler Reviews';
+      if (pathname === '/about') return 'About Us';
+      if (pathname === '/contact') return 'Contact & Support';
+      if (pathname.startsWith('/businesses/')) return 'Business Profile';
+      if (pathname === '/businesses') return 'Tourism Businesses';
       if (pathname.startsWith('/provinces/')) return 'Explore Places';
       if (pathname === '/provinces') return 'Provinces';
       if (pathname === '/categories') return 'Categories';
@@ -22,6 +31,10 @@ export default function Main() {
       if (pathname === '/wishlist' || pathname === '/favorites') return 'Saved Wishlist';
       if (pathname === '/achievements') return 'Badges & Achievements';
       if (pathname === '/profile') return 'My Profile';
+      if (pathname.startsWith('/trips/')) return 'Trip Itinerary Planner';
+      if (pathname === '/trips') return 'My Travel Plans';
+      if (pathname === '/bookings') return 'My Bookings';
+      if (pathname === '/notifications') return 'Notifications Center';
       if (pathname === '/deletion-request' || pathname === '/delete') return 'Data Privacy';
       if (pathname === '/settings') return 'Emergency & Guidelines';
       if (pathname === '/login') return 'Tourist Sign In';

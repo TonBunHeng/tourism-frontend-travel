@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Compass, 
-  MapPin, 
   Sparkles, 
   Calendar,
   CalendarCheck, 
@@ -234,7 +233,9 @@ export default function Header() {
     { name: 'Tours', path: '/tours', icon: Sparkles },
     { name: 'Guides', path: '/guides', icon: User },
     { name: 'Businesses', path: '/businesses', icon: Briefcase },
-    { name: 'Provinces', path: '/provinces', icon: MapPin },
+    { name: 'Events', path: '/events', icon: Calendar },
+    { name: 'Gallery', path: '/gallery', icon: ImageIcon },
+    { name: 'Reviews', path: '/reviews', icon: MessageSquare },
     { name: 'About', path: '/about', icon: Info },
     { name: 'Contact', path: '/contact', icon: PhoneCall },
   ];
@@ -284,7 +285,7 @@ export default function Header() {
                   key={link.name}
                   to={link.path}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-1 xl:gap-1.5 px-2 xl:px-2.5 py-1.5 rounded-xl text-[11px] xl:text-xs font-bold transition-all whitespace-nowrap ${
                     active
                       ? 'bg-blue-50 dark:bg-blue-950/60 text-[#003E83] dark:text-blue-400 shadow-2xs'
                       : 'text-gray-600 dark:text-zinc-300 hover:text-[#003E83] dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-zinc-800/70'
@@ -625,6 +626,19 @@ export default function Header() {
                       )}
 
                       <Link
+                        to="/travel-user"
+                        onClick={() => setDropdownOpen(false)}
+                        className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                          isLinkActive('/travel-user')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
+                        <Sparkles className={`w-3.5 h-3.5 ${isLinkActive('/travel-user') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-amber-500'}`} />
+                        <span className="font-bold text-[#003E83] dark:text-blue-300">Traveler Space</span>
+                      </Link>
+
+                      <Link
                         to="/profile"
                         onClick={() => setDropdownOpen(false)}
                         className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
@@ -661,6 +675,19 @@ export default function Header() {
                       >
                         <CalendarCheck className={`w-3.5 h-3.5 ${isLinkActive('/bookings') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-gray-400 dark:text-zinc-500'}`} />
                         <span>My Bookings</span>
+                      </Link>
+
+                      <Link
+                        to="/tours"
+                        onClick={() => setDropdownOpen(false)}
+                        className={`flex items-center gap-2.5 px-3.5 py-2 transition-colors ${
+                          isLinkActive('/tours')
+                            ? 'bg-blue-50/60 dark:bg-blue-950/40 text-[#003E83] dark:text-[#60a5fa] font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-[#003E83] dark:hover:text-[#60a5fa] font-medium'
+                        }`}
+                      >
+                        <Sparkles className={`w-3.5 h-3.5 ${isLinkActive('/tours') ? 'text-[#003E83] dark:text-[#60a5fa]' : 'text-amber-500'}`} />
+                        <span>Recommended Tours</span>
                       </Link>
 
                       <Link

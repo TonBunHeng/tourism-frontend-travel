@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Sparkles, ArrowRight } from 'lucide-react';
 import { placeService } from '../../services/placeService';
 import { useTravel } from '../../context/TravelContext';
 import PlacesHeader from './PlacesHeader';
@@ -7,6 +8,9 @@ import PlacesToolbar from './PlacesToolbar';
 import PlacesGrid from './PlacesGrid';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import SimplePagination from '../../components/common/SimplePagination';
+import TourPackageCard from '../../components/common/TourPackageCard';
+import BookingModal from '../../components/common/BookingModal';
+import { TOURS_DATA } from '../../data/toursData';
 
 export default function Places() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,6 +26,8 @@ export default function Places() {
   const [places, setPlaces] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedTourForBooking, setSelectedTourForBooking] = useState(null);
 
   const currentProvince = provinces?.find((p) => String(p.id) === String(provinceId));
 
@@ -122,6 +128,56 @@ export default function Places() {
         label="destinations"
         className="rounded-lg border border-gray-200 dark:border-zinc-800 shadow-xs"
       />
+
+      {/* Recommended Tours & Packages Banner */}
+      <section className="pt-8 border-t border-gray-200/80 dark:border-zinc-800 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-xs font-bold text-[#003E83] dark:text-blue-400 mb-2">
+              <Sparkles size={13} className="text-amber-500" />
+              <span>Full-Service Guided Journeys</span>
+            </div>
+            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+              Recommended Tours & Packages
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 mt-1">
+              Want a hassle-free vacation? Browse multi-day guided packages with transport and tickets included.
+            </p>
+          </div>
+          <Link
+            to="/tours"
+            className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#003E83] dark:text-blue-400 hover:underline group shrink-0"
+          >
+            <span>View All Tour Packages</span>
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {TOURS_DATA.slice(0, 3).map((tour) => (
+            <TourPackageCard
+              key={tour.id}
+              tour={tour}
+              onBook={(selected) => {
+                setSelectedTourForBooking(selected);
+                setBookingModalOpen(true);
+              }}
+            />
+          ))}
+        </div>
+      </section>
+
+      {bookingModalOpen && (
+        <BookingModal
+          isOpen={bookingModalOpen}
+          onClose={() => {
+            setBookingModalOpen(false);
+            setSelectedTourForBooking(null);
+          }}
+          targetItem={selectedTourForBooking}
+          type="tour"
+        />
+      )}
     </div>
   );
 }

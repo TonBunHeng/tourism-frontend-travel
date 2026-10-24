@@ -1,40 +1,51 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// Layout
-import Main from '../layouts/Main';
+// Layouts
+import TravelUserLayout from '../layouts/TravelUserLayout/TravelUserLayout';
+import DashboardLayout from '../layouts/DashboardLayout/DashboardLayout';
 
 // Route Guards
 import ProtectedRoute from './ProtectedRoute';
 
-// Public Pages
+// Public Tourist Pages
 import Home from '../pages/home/Home';
+import Destinations from '../pages/destinations/Destinations';
+import DestinationDetails from '../pages/destinations/DestinationDetails';
 import Places from '../pages/places/Places';
 import PlaceDetails from '../pages/places/PlaceDetails';
 import Tours from '../pages/tours/Tours';
+import TourDetails from '../pages/tours/TourDetails';
 import Guides from '../pages/guides/Guides';
+import GuideDetails from '../pages/guides/GuideDetails';
+import Reviews from '../pages/reviews/Reviews';
 import About from '../pages/about/About';
 import Contact from '../pages/contact/Contact';
+import Businesses from '../pages/businesses/Businesses';
+import BusinessDetails from '../pages/businesses/BusinessDetails';
 import Provinces from '../pages/provinces/Provinces';
 import ProvinceDetails from '../pages/provinces/ProvinceDetails';
 import Categories from '../pages/categories/Categories';
 import Events from '../pages/events/Events';
 import Galleries from '../pages/galleries/Galleries';
-import Favorites from '../pages/favorites/Favorites';
 import Achievements from '../pages/achievements/Achievements';
-import Profile from '../pages/profiles/Profile';
-import Notifications from '../pages/notifications/Notifications';
-import DeletionRequests from '../pages/delete/DeletionRequests';
-import Settings from '../pages/settings/Settings';
+
+// Auth Pages
 import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Register';
+
+// Travel User Dedicated Portal Pages
+import TravelUserDashboard from '../pages/travel-user/TravelUserDashboard';
 import Trips from '../pages/trips/Trips';
 import TripDetails from '../pages/trips/TripDetails';
 import MyBookings from '../pages/bookings/MyBookings';
+import Favorites from '../pages/favorites/Favorites';
+import Profile from '../pages/profile/Profile';
+import Notifications from '../pages/notifications/Notifications';
+import DeletionRequests from '../pages/delete/DeletionRequests';
+import Settings from '../pages/settings/Settings';
 
-// Business Discovery Pages
-import Businesses from '../pages/businesses/Businesses';
-import BusinessDetails from '../pages/businesses/BusinessDetails';
-
-// Business Owner Portal Pages
+// Management & Dashboard Portal Pages
+import Dashboard from '../pages/dashboard/Dashboard';
 import BusinessDashboard from '../pages/business/BusinessDashboard';
 import BusinessList from '../pages/business/BusinessList';
 import BusinessForm from '../pages/business/BusinessForm';
@@ -53,19 +64,29 @@ import GuideGallery from '../pages/guide/GuideGallery';
 import GuideReviews from '../pages/guide/GuideReviews';
 import GuideInquiries from '../pages/guide/GuideInquiries';
 
+// Error Pages
+import NotFound from '../pages/error/NotFound';
+import Forbidden from '../pages/error/Forbidden';
+
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Main Application Layout */}
-        <Route element={<Main />}>
-          
-          {/* Public Pages */}
+        {/* ========================================================= */}
+        {/* TRAVEL USER & PUBLIC PORTAL (Header-based Layout, No Sidebar) */}
+        {/* ========================================================= */}
+        <Route element={<TravelUserLayout />}>
+          {/* Public Discovery Pages */}
           <Route path="/" element={<Home />} />
+          <Route path="/destinations" element={<Destinations />} />
+          <Route path="/destinations/:id" element={<DestinationDetails />} />
           <Route path="/places" element={<Places />} />
           <Route path="/places/:id" element={<PlaceDetails />} />
           <Route path="/tours" element={<Tours />} />
+          <Route path="/tours/:id" element={<TourDetails />} />
           <Route path="/guides" element={<Guides />} />
+          <Route path="/guides/:id" element={<GuideDetails />} />
+          <Route path="/reviews" element={<Reviews />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/businesses" element={<Businesses />} />
@@ -77,10 +98,15 @@ export default function AppRoutes() {
           <Route path="/events/:id" element={<Events />} />
           <Route path="/gallery" element={<Galleries />} />
           <Route path="/achievements" element={<Achievements />} />
-          <Route path="/login" element={<Login />} />
 
-          {/* General Protected Tourist Pages */}
+          {/* Authentication Pages */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Protected Travel User Dedicated Pages */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/travel-user" element={<TravelUserDashboard />} />
+            <Route path="/travel-user/overview" element={<TravelUserDashboard />} />
             <Route path="/trips" element={<Trips />} />
             <Route path="/trips/:id" element={<TripDetails />} />
             <Route path="/bookings" element={<MyBookings />} />
@@ -93,8 +119,40 @@ export default function AppRoutes() {
             <Route path="/settings" element={<Settings />} />
           </Route>
 
-          {/* Business Owner Dedicated Portal */}
-          <Route element={<ProtectedRoute allowedRoles={['business_owner']} />}>
+          {/* Error and Fallbacks within Public Layout */}
+          <Route path="/forbidden" element={<Forbidden />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+
+        {/* ========================================================= */}
+        {/* MANAGEMENT & DASHBOARD PORTAL (Sidebar & Header Layout) */}
+        {/* ========================================================= */}
+        <Route element={<DashboardLayout />}>
+          {/* Unified Management Dashboard */}
+          <Route
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  'business_owner',
+                  'business',
+                  'tour_guide',
+                  'guide_editor',
+                  'content_editor',
+                  'guide',
+                  'admin',
+                  'super_admin',
+                  'superadmin',
+                  'administrator',
+                  'manager',
+                ]}
+              />
+            }
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
+
+          {/* Business Owner Dedicated Management Routes */}
+          <Route element={<ProtectedRoute allowedRoles={['business_owner', 'business']} />}>
             <Route path="/business/dashboard" element={<BusinessDashboard />} />
             <Route path="/business/bookings" element={<BusinessBookings />} />
             <Route path="/business/businesses" element={<BusinessList />} />
@@ -105,7 +163,7 @@ export default function AppRoutes() {
             <Route path="/business/reports" element={<BusinessReports />} />
           </Route>
 
-          {/* Tour Guide & Content Editor Dedicated Portal */}
+          {/* Tour Guide & Content Editor Dedicated Management Routes */}
           <Route element={<ProtectedRoute allowedRoles={['tour_guide', 'guide_editor', 'content_editor', 'guide']} />}>
             <Route path="/guide/dashboard" element={<GuideDashboard />} />
             <Route path="/guide/places" element={<GuidePlaces />} />
@@ -118,11 +176,7 @@ export default function AppRoutes() {
             <Route path="/guide/reviews" element={<GuideReviews />} />
             <Route path="/guide/inquiries" element={<GuideInquiries />} />
           </Route>
-
         </Route>
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
